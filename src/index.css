@@ -1,0 +1,149 @@
+@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;300;400;700&display=swap');
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+@theme {
+  --font-sans: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+/* Base custom styles */
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background-color: var(--color-slate-300);
+  border-radius: 10px;
+}
+:is(.dark .custom-scrollbar)::-webkit-scrollbar-thumb {
+  background-color: var(--color-slate-700);
+}
+
+/* Soft Pastel (Light mode base) */
+:root[data-theme="soft-pastel"] {
+  --color-slate-50: var(--color-rose-50);
+  --color-slate-100: var(--color-rose-100);
+  --color-slate-200: var(--color-rose-200);
+  --color-slate-300: var(--color-rose-300);
+  --color-slate-400: var(--color-rose-400);
+  --color-slate-500: var(--color-rose-500);
+  --color-slate-600: var(--color-rose-600);
+  --color-slate-700: var(--color-rose-700);
+  --color-slate-800: var(--color-rose-800);
+  --color-slate-900: var(--color-rose-900);
+  --color-slate-950: var(--color-rose-950);
+
+  --color-indigo-50: var(--color-pink-50);
+  --color-indigo-100: var(--color-pink-100);
+  --color-indigo-400: var(--color-pink-400);
+  --color-indigo-500: var(--color-pink-500);
+  --color-indigo-600: var(--color-pink-600);
+  --color-indigo-700: var(--color-pink-700);
+  --color-indigo-800: var(--color-pink-800);
+  --color-indigo-900: var(--color-pink-900);
+}
+
+/* Midnight Blue (Dark mode base) */
+:root[data-theme="midnight-blue"] {
+  --color-slate-50: var(--color-blue-50);
+  --color-slate-100: var(--color-blue-100);
+  --color-slate-200: var(--color-blue-200);
+  --color-slate-300: var(--color-blue-300);
+  --color-slate-400: var(--color-blue-400);
+  --color-slate-500: var(--color-blue-500);
+  --color-slate-600: var(--color-blue-600);
+  --color-slate-700: var(--color-blue-700);
+  --color-slate-800: #0a192f;
+  --color-slate-900: #020c1b;
+  --color-slate-950: #010813;
+
+  --color-indigo-50: var(--color-cyan-50);
+  --color-indigo-100: var(--color-cyan-100);
+  --color-indigo-400: var(--color-cyan-400);
+  --color-indigo-500: var(--color-cyan-500);
+  --color-indigo-600: var(--color-cyan-600);
+  --color-indigo-700: var(--color-cyan-700);
+  --color-indigo-800: var(--color-cyan-800);
+  --color-indigo-900: var(--color-cyan-900);
+}
+
+/* Warm Beige (Light mode base) */
+:root[data-theme="warm-beige"] {
+  --color-slate-50: var(--color-stone-50);
+  --color-slate-100: var(--color-stone-100);
+  --color-slate-200: var(--color-stone-200);
+  --color-slate-300: var(--color-stone-300);
+  --color-slate-400: var(--color-stone-400);
+  --color-slate-500: var(--color-stone-500);
+  --color-slate-600: var(--color-stone-600);
+  --color-slate-700: var(--color-stone-700);
+  --color-slate-800: var(--color-stone-800);
+  --color-slate-900: var(--color-stone-900);
+  --color-slate-950: var(--color-stone-950);
+
+  --color-indigo-50: var(--color-amber-50);
+  --color-indigo-100: var(--color-amber-100);
+  --color-indigo-400: var(--color-amber-400);
+  --color-indigo-500: var(--color-amber-500);
+  --color-indigo-600: var(--color-amber-600);
+  --color-indigo-700: var(--color-amber-700);
+  --color-indigo-800: var(--color-amber-800);
+  --color-indigo-900: var(--color-amber-900);
+}
+
+/* Forest (Dark mode base) */
+:root[data-theme="forest"] {
+  --color-slate-50: var(--color-green-50);
+  --color-slate-100: var(--color-green-100);
+  --color-slate-200: var(--color-green-200);
+  --color-slate-300: var(--color-green-300);
+  --color-slate-400: var(--color-green-400);
+  --color-slate-500: var(--color-green-500);
+  --color-slate-600: var(--color-green-600);
+  --color-slate-700: var(--color-green-700);
+  --color-slate-800: var(--color-green-900);
+  --color-slate-900: #064e3b; /* green-900 is 14532d, slate 900 will be darker */
+  --color-slate-950: #022c22; 
+
+  --color-indigo-50: var(--color-emerald-50);
+  --color-indigo-100: var(--color-emerald-100);
+  --color-indigo-400: var(--color-emerald-400);
+  --color-indigo-500: var(--color-emerald-500);
+  --color-indigo-600: var(--color-emerald-600);
+  --color-indigo-700: var(--color-emerald-700);
+  --color-indigo-800: var(--color-emerald-800);
+  --color-indigo-900: var(--color-emerald-900);
+}
+
+/* Monochrome (Light mode base) */
+:root[data-theme="monochrome"] {
+  --color-slate-50: var(--color-zinc-50);
+  --color-slate-100: var(--color-zinc-100);
+  --color-slate-200: var(--color-zinc-200);
+  --color-slate-300: var(--color-zinc-300);
+  --color-slate-400: var(--color-zinc-400);
+  --color-slate-500: var(--color-zinc-500);
+  --color-slate-600: var(--color-zinc-600);
+  --color-slate-700: var(--color-zinc-700);
+  --color-slate-800: var(--color-zinc-800);
+  --color-slate-900: var(--color-zinc-900);
+  --color-slate-950: var(--color-zinc-950);
+
+  --color-indigo-50: var(--color-neutral-100);
+  --color-indigo-100: var(--color-neutral-200);
+  --color-indigo-400: var(--color-neutral-500);
+  --color-indigo-500: var(--color-neutral-600);
+  --color-indigo-600: var(--color-neutral-700);
+  --color-indigo-700: var(--color-neutral-800);
+  --color-indigo-800: var(--color-neutral-900);
+  --color-indigo-900: #171717;
+}
+
+body {
+  @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
