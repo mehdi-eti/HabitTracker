@@ -84,6 +84,7 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 			currentStartDate: startDate,
 			durationDays,
 			category,
+			color,
 		};
 
 		if (isEditing) {
@@ -141,7 +142,7 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 		<div
 			className='fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-sm animate-in fade-in duration-200'
 			dir={dir}>
-			<div className='bg-white dark:bg-slate-900 rounded-[2rem] w-full max-w-2xl shadow-2xl border border-slate-100 dark:border-slate-800 flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200'>
+			<div className='bg-white dark:bg-slate-900 rounded-4xl w-full max-w-2xl shadow-2xl border border-slate-100 dark:border-slate-800 flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200'>
 				{/* Header */}
 				<div className='flex justify-between items-center p-6 md:p-8 border-b border-slate-100 dark:border-slate-800 shrink-0'>
 					<div>

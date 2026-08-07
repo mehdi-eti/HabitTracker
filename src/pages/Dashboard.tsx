@@ -30,6 +30,7 @@ import CSSConfetti from "../components/CSSConfetti";
 import { Link, useNavigate } from "react-router-dom";
 import DailyTrackingModal from "../components/DailyTrackingModal";
 import { useLiveQuery } from "dexie-react-hooks";
+import { getDaysLeft } from "../lib/habitUtils";
 
 const MOTIVATION_QUOTES = [
 	"Small daily improvements over time lead to stunning results.",
@@ -305,7 +306,7 @@ export default function Dashboard() {
 			</div>
 
 			{/* Achievements Section */}
-			<div className='bg-white dark:bg-slate-900 rounded-[2rem] p-6 md:p-8 shadow-sm border border-slate-100 dark:border-slate-800 lg:col-span-12 mt-6'>
+			<div className='bg-white dark:bg-slate-900 rounded-4xl p-6 md:p-8 shadow-sm border border-slate-100 dark:border-slate-800 lg:col-span-12 mt-6'>
 				<div className='flex items-center justify-between mb-6'>
 					<div>
 						<h3 className='font-bold text-slate-800 dark:text-slate-100 text-lg flex items-center gap-2'>
@@ -390,7 +391,7 @@ export default function Dashboard() {
 
 				{/* Center Column (5) - Today's Todos */}
 				<div className='lg:col-span-4 space-y-6'>
-					<div className='bg-white dark:bg-slate-900 rounded-[2rem] p-6 md:p-8 shadow-sm border border-slate-100 dark:border-slate-800 h-full flex flex-col'>
+					<div className='bg-white dark:bg-slate-900 rounded-4xl p-6 md:p-8 shadow-sm border border-slate-100 dark:border-slate-800 h-full flex flex-col'>
 						<div className='flex justify-between items-center mb-6'>
 							<div>
 								<h2 className='text-xl font-bold text-slate-800 dark:text-slate-100'>Today's Todos</h2>
@@ -471,7 +472,7 @@ export default function Dashboard() {
 					<MiniCalendarWidget habits={habits || []} dayRecords={allRecords || []} />
 				</div>
 			</div>
-			<div className='bg-white dark:bg-slate-900 rounded-[2rem] p-6 shadow-sm border border-slate-100 dark:border-slate-800'>
+			<div className='bg-white dark:bg-slate-900 rounded-4xl p-6 shadow-sm border border-slate-100 dark:border-slate-800'>
 				<div className='flex items-center justify-between mb-4'>
 					<h3 className='font-bold text-slate-800 dark:text-slate-100'>Activity Trend</h3>
 					<span className='text-[10px] font-extrabold bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 px-2 py-1 rounded-md uppercase tracking-wider'>
@@ -547,6 +548,9 @@ function TodoItem({
 	const { t } = useI18n();
 	const catDef = CATEGORIES.find((c) => c.id === habit.category) || CATEGORIES[CATEGORIES.length - 1];
 	const baseColor = habit.color || "#6366f1";
+	const allRecords = useLiveQuery(() => db.dayRecords.toArray(), []) || [];
+
+	const daysLeft = useMemo(() => getDaysLeft(habit, allRecords), [habit, allRecords]);
 
 	return (
 		<div
@@ -571,6 +575,7 @@ function TodoItem({
 								: "text-slate-800 dark:text-slate-100",
 						)}>
 						{habit.title}
+						<span className='ml-1 text-[10px] text-gray-500'>({daysLeft} days left)</span>
 					</h4>
 					<div className='flex items-center gap-2 mt-1 opacity-80'>
 						<span className='text-xs font-bold text-slate-500 dark:text-slate-400 flex items-center gap-1'>

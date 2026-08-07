@@ -2,6 +2,8 @@
 
 import { addDays, parseISO, format, getDay } from "date-fns";
 
+import { DayRecord, Habit } from "../types";
+
 export function getHabitTargetDates(
 	startDateStr: string,
 	mode: "consecutive" | "selected_days",
@@ -52,3 +54,10 @@ export function checkAndResetHabit(
 	}
 	return { requiresReset: false };
 }
+
+export const getDaysLeft = (habit: Habit, allRecords: DayRecord[]) => {
+	const duration = habit.durationDays || 21;
+	const targetDates = getHabitTargetDates(habit.currentStartDate, habit.mode, habit.selectedDays, duration);
+	const completedCount = targetDates.filter((d) => allRecords.find((r) => r.habitId === habit.id && r.date === d)?.completed).length;
+	return Math.max(0, duration - completedCount);
+};
