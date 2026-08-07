@@ -11,10 +11,10 @@ import "react-quill-new/dist/quill.snow.css";
 
 interface DailyTrackingModalProps {
 	habit: Habit;
-	date: string; // YYYY-MM-DD
+	date: string;
 	initialRecord?: DayRecord;
 	onClose: () => void;
-	onSave: (completed: boolean, note: string) => Promise<void>;
+	onSave: (completed: boolean, note: string, taskCompletions: Record<string, boolean>) => Promise<void>;
 	isEditable: boolean;
 }
 
@@ -22,6 +22,7 @@ export default function DailyTrackingModal({ habit, date, initialRecord, onClose
 	const { t, dir } = useI18n();
 	const [completed, setCompleted] = useState(initialRecord?.completed || false);
 	const [note, setNote] = useState(initialRecord?.note || "");
+	const [taskCompletions, setTaskCompletions] = useState<Record<string, boolean>>(initialRecord?.taskCompletions || {});
 
 	useEffect(() => {
 		setCompleted(initialRecord?.completed || false);
@@ -29,7 +30,7 @@ export default function DailyTrackingModal({ habit, date, initialRecord, onClose
 	}, [initialRecord]);
 
 	const handleSave = async () => {
-		await onSave(completed, note);
+		await onSave(completed, note, taskCompletions);
 		onClose();
 	};
 
@@ -63,12 +64,75 @@ export default function DailyTrackingModal({ habit, date, initialRecord, onClose
 					<div className='flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800'>
 						<span className='font-bold text-slate-700 dark:text-slate-300'>{t("completed")}</span>
 						<button
-							onClick={() => isEditable && setCompleted(!completed)}
+							onClick={() => {
+								if (isEditable) {
+									const newCompleted = !completed;
+									setCompleted(newCompleted);
+
+									if (habit.tasks && habit.tasks.length > 0) {
+										const newCompletions = { ...taskCompletions };
+										habit.tasks.forEach((t) => {
+											newCompletions[t.id] = newCompleted;
+										});
+										setTaskCompletions(newCompletions);
+									}
+								}
+							}}
 							disabled={!isEditable}
 							className={`w-14 h-8 rounded-full transition-colors relative ${completed ? "bg-indigo-600" : "bg-slate-200 dark:bg-slate-700"} ${!isEditable ? "opacity-50 cursor-not-allowed" : ""}`}>
 							<div className={`absolute top-1 w-6 h-6 rounded-full bg-white transition-all ${completed ? "right-1" : "left-1"}`} />
 						</button>
 					</div>
+
+					{habit.tasks && habit.tasks.length > 0 && (
+						<div className='space-y-3 mt-4'>
+							<label className='text-sm font-bold text-slate-500 dark:text-slate-400'>Sub-Tasks</label>
+							<div className='space-y-2'>
+								{habit.tasks.map((task) => (
+									<div
+										key={task.id}
+										className='flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-100 dark:border-slate-800'>
+										<button
+											onClick={() => {
+												if (isEditable) {
+													setTaskCompletions((prev) => {
+														const newCompletions = {
+															...prev,
+															[task.id]: !prev[task.id],
+														};
+
+														if (habit.tasks && habit.tasks.length > 0) {
+															const allCompleted = habit.tasks.every((t) => newCompletions[t.id]);
+															setCompleted(allCompleted);
+														}
+
+														return newCompletions;
+													});
+												}
+											}}
+											className={`w-6 h-6 rounded-lg flex items-center justify-center border-2 transition-all ${taskCompletions[task.id] ? "bg-indigo-500 border-indigo-500 text-white" : "border-slate-300 dark:border-slate-600"}`}>
+											{taskCompletions[task.id] && (
+												<svg
+													viewBox='0 0 24 24'
+													fill='none'
+													className='w-4 h-4'
+													stroke='currentColor'
+													strokeWidth='3'
+													strokeLinecap='round'
+													strokeLinejoin='round'>
+													<polyline points='20 6 9 17 4 12'></polyline>
+												</svg>
+											)}
+										</button>
+										<span
+											className={`text-sm font-medium ${taskCompletions[task.id] ? "line-through text-slate-400 dark:text-slate-500" : "text-slate-700 dark:text-slate-300"}`}>
+											{task.title}
+										</span>
+									</div>
+								))}
+							</div>
+						</div>
+					)}
 
 					<div className='space-y-3'>
 						<label className='text-sm font-bold text-slate-500 dark:text-slate-400'>{t("note_reflection")}</label>

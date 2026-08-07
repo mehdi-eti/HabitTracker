@@ -1,7 +1,7 @@
 /** @format */
 
 import { useState } from "react";
-import { X, AlertTriangle, Calendar, Settings, Bell, Type, Tag, Target } from "lucide-react";
+import { X, AlertTriangle, Calendar, Settings, Bell, Type, Tag, Target, Trash2, Plus, ListTodo } from "lucide-react";
 
 import { db } from "@/src/lib/db";
 import { getTodayStr, cn } from "@/src/lib/utils";
@@ -37,6 +37,7 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 
 	const [useCustomReminder, setUseCustomReminder] = useState(!!habit?.reminderTime);
 	const [reminderTime, setReminderTime] = useState(habit?.reminderTime || "20:00");
+	const [tasks, setTasks] = useState<{ id: string; title: string }[]>(habit?.tasks || []);
 
 	const [showConfirm, setShowConfirm] = useState(false);
 	const [isAttemptingSave, setIsAttemptingSave] = useState(false);
@@ -86,6 +87,7 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 			durationDays,
 			category,
 			color,
+			tasks,
 		};
 
 		if (isEditing) {
@@ -119,7 +121,7 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 							{t("confirm_reset_desc")}
 							<br />
 							<br />
-							Changing the schedule or start date requires restarting the habit tracking from the beginning.
+							{t("schedule_change_notice")}
 						</p>
 						<div className='flex w-full gap-3 mt-6'>
 							<button
@@ -151,7 +153,7 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 							{isEditing ? t("edit_habit") : t("create_habit")}
 						</h2>
 						<p className='text-slate-500 dark:text-slate-400 mt-1 font-medium text-sm'>
-							{isEditing ? "Update your habit details and schedule" : "Define your new habit and how you want to track it"}
+							{isEditing ? t("edit_habit_subtitle") : t("create_habit_subtitle")}
 						</p>
 					</div>
 					<button
@@ -166,7 +168,7 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 					{/* Section: Basic Info */}
 					<div className='space-y-6'>
 						<h3 className='text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2'>
-							<Type size={14} /> Basic Information
+							<Type size={14} /> {t("basic_information")}
 						</h3>
 
 						<div className='space-y-4'>
@@ -184,14 +186,12 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 									)}
 								/>
 								{isAttemptingSave && !title.trim() && (
-									<p className='text-xs font-bold text-red-500 mt-1'>A habit name is required</p>
+									<p className='text-xs font-bold text-red-500 mt-1'>{t("habit_name_required")}</p>
 								)}
 							</div>
 
 							<div className='space-y-2'>
-								<label className='text-sm font-bold text-slate-700 dark:text-slate-300'>
-									{t("description")} <span className='text-slate-400 font-normal'>(Optional)</span>
-								</label>
+								<label className='text-sm font-bold text-slate-700 dark:text-slate-300'>{t("description")}</label>
 								<textarea
 									value={description}
 									onChange={(e) => setDescription(e.target.value)}
@@ -246,7 +246,7 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 					{/* Section: Schedule */}
 					<div className='space-y-6'>
 						<h3 className='text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2'>
-							<Calendar size={14} /> Schedule & Mode
+							<Calendar size={14} /> {t("schedule_mode")}
 						</h3>
 
 						<div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
@@ -286,22 +286,22 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 									<button
 										onClick={() => setMode("consecutive")}
 										className={cn(
-											"flex-1 py-2.5 px-3 rounded-lg text-sm font-bold transition-all",
+											"flex-1 py-2.5 rounded-lg text-xs font-bold transition-all",
 											mode === "consecutive"
 												? "bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm"
 												: "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300",
 										)}>
-										Every Day
+										{t("every_day")}
 									</button>
 									<button
 										onClick={() => setMode("selected_days")}
 										className={cn(
-											"flex-1 py-2.5 px-3 rounded-lg text-sm font-bold transition-all",
+											"flex-1 py-2.5 rounded-lg text-xs font-bold transition-all",
 											mode === "selected_days"
 												? "bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm"
 												: "text-slate-500 hover:text-slate-700 dark:hover:text-slate-300",
 										)}>
-										Specific Days
+										{t("specific_days")}
 									</button>
 								</div>
 							</div>
@@ -312,7 +312,7 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 								<label className='text-sm font-bold text-indigo-900 dark:text-indigo-300 flex items-center justify-between'>
 									<span>{t("days_of_week")} *</span>
 									{isAttemptingSave && selectedDays.length === 0 && (
-										<span className='text-xs text-red-500'>Select at least one day</span>
+										<span className='text-xs text-red-500'>{t("select_one_day")}</span>
 									)}
 								</label>
 								<div className='flex flex-wrap gap-2'>
@@ -338,19 +338,50 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 
 					<div className='h-px bg-slate-100 dark:bg-slate-800 w-full' />
 
+					<div className='space-y-6'>
+						<h3 className='text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2'>
+							<ListTodo size={14} /> {t("sub_tasks")}
+						</h3>
+						<div className='space-y-3'>
+							{tasks.map((task, index) => (
+								<div key={task.id} className='flex gap-2 items-center'>
+									<input
+										value={task.title}
+										onChange={(e) => {
+											const newTasks = [...tasks];
+											newTasks[index].title = e.target.value;
+											setTasks(newTasks);
+										}}
+										placeholder={t("task_placeholder")}
+										className='flex-1 px-4 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 outline-none focus:border-indigo-500 transition-all dark:text-white font-medium'
+									/>
+									<button
+										onClick={() => setTasks(tasks.filter((t) => t.id !== task.id))}
+										className='p-2.5 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors shrink-0'>
+										<Trash2 size={18} />
+									</button>
+								</div>
+							))}
+							<button
+								onClick={() => setTasks([...tasks, { id: Date.now().toString(), title: "" }])}
+								className='w-full py-3 border-2 border-dashed border-slate-200 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-bold rounded-xl hover:bg-slate-50 dark:hover:bg-slate-900/50 hover:border-indigo-300 dark:hover:border-indigo-700 transition-colors flex items-center justify-center gap-2'>
+								<Plus size={18} /> {t("add_task")}
+							</button>
+						</div>
+					</div>
+					<div className='h-px bg-slate-100 dark:bg-slate-800 w-full' />
+
 					{/* Section: Reminders */}
 					<div className='space-y-6'>
 						<h3 className='text-xs font-bold text-slate-400 uppercase tracking-wider flex items-center gap-2'>
-							<Bell size={14} /> Notifications
+							<Bell size={14} /> {t("notifications")}
 						</h3>
 
 						<div className='flex items-start justify-between bg-slate-50 dark:bg-slate-900/50 p-5 rounded-2xl border border-slate-200 dark:border-slate-800'>
 							<div className='pr-4'>
 								<label className='text-sm font-bold text-slate-700 dark:text-slate-200'>{t("reminder_time")}</label>
 								<p className='text-xs font-medium text-slate-500 dark:text-slate-400 mt-1'>
-									{useCustomReminder
-										? "This habit will use its own specific reminder time instead of the global default."
-										: "Using the global default reminder time set in Settings."}
+									{useCustomReminder ? t("habit_reminder_custom") : t("habit_reminder_global")}
 								</p>
 							</div>
 							<button
@@ -384,7 +415,7 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 				</div>
 
 				{/* Footer Actions */}
-				<div className='p-6 md:p-8 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row justify-end gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50 rounded-b-[2rem]'>
+				<div className='p-6 md:p-8 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row justify-end gap-3 shrink-0 bg-slate-50/50 dark:bg-slate-900/50 rounded-b-4xl'>
 					<button
 						onClick={onClose}
 						className='px-6 py-3.5 rounded-xl font-bold bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 transition-colors w-full sm:w-auto'>
@@ -395,7 +426,7 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 						className='flex items-center justify-center gap-2 px-8 py-3.5 rounded-xl font-bold bg-indigo-600 hover:bg-indigo-700 text-white transition-colors shadow-lg shadow-indigo-500/20 w-full sm:w-auto active:scale-[0.98]'>
 						{isEditing ? (
 							<>
-								<Settings size={18} /> Update Habit
+								<Settings size={18} /> {t("edit_habit")}
 							</>
 						) : (
 							<>
