@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { X, CalendarDays, History as HistoryIcon, CheckCircle2, XCircle, Check, FileText } from "lucide-react";
 import { Habit } from "../types";
-import { useI18n } from "../contexts/I18nContext";
 import { cn, getTodayStr } from "../lib/utils";
 import { format, parseISO, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, addMonths, subMonths } from "date-fns";
 import { useLiveQuery } from "dexie-react-hooks";
@@ -27,7 +26,6 @@ export default function HabitDetailModal({ habit, onClose }: HabitDetailModalPro
 				</div>
 			</div>
 		);
-	const { t, dir } = useI18n();
 	const [currentMonth, setCurrentMonth] = useState(new Date());
 
 	const records = useLiveQuery(() => db.dayRecords.where("habitId").equals(habit.id).toArray(), [habit.id]) || [];

@@ -7,6 +7,7 @@ import { useTheme, AVAILABLE_THEMES } from "../contexts/ThemeContext";
 import { useNotifications } from "../hooks/useNotifications";
 import { LayoutDashboard, ListTodo, BarChart2, Calendar as CalendarIcon, Settings as SettingsIcon, LogOut, Moon, Sun, Languages } from "lucide-react";
 import { cn } from "../lib/utils";
+import { useMemo } from "react";
 
 export default function Layout() {
 	useNotifications();
@@ -21,13 +22,16 @@ export default function Layout() {
 		navigate("/login");
 	};
 
-	const navItems = [
-		{ to: "/", icon: LayoutDashboard, label: t("dashboard") },
-		{ to: "/habits", icon: ListTodo, label: t("habits") },
-		{ to: "/calendar", icon: CalendarIcon, label: t("calendar" as any) || "Calendar" },
-		{ to: "/stats", icon: BarChart2, label: t("stats") },
-		{ to: "/settings", icon: SettingsIcon, label: t("settings") },
-	];
+	const navItems = useMemo(
+		() => [
+			{ to: "/", icon: LayoutDashboard, label: t("dashboard") },
+			{ to: "/habits", icon: ListTodo, label: t("habits") },
+			{ to: "/calendar", icon: CalendarIcon, label: t("calendar" as any) || "Calendar" },
+			{ to: "/stats", icon: BarChart2, label: t("stats") },
+			{ to: "/settings", icon: SettingsIcon, label: t("settings") },
+		],
+		[],
+	);
 
 	return (
 		<div
@@ -41,10 +45,9 @@ export default function Layout() {
 				<div className='p-4 flex md:flex-col items-center md:items-stretch justify-between h-full'>
 					<div className='flex md:flex-col gap-2 md:gap-4 flex-1 md:flex-none overflow-x-auto md:overflow-x-visible items-center md:items-stretch px-2 md:px-0'>
 						<div className='hidden md:flex items-center gap-3 mb-6 px-2 md:mt-2'>
-							<div className='w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white font-bold text-xl'>
-								21
+							<div className='w-full h-15 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl'>
+								Daily Tracker
 							</div>
-							<h1 className='text-xl font-bold tracking-tight'>Habit21</h1>
 						</div>
 
 						{navItems.map((item) => (
@@ -98,7 +101,7 @@ export default function Layout() {
 				</header>
 
 				<main className='flex-1 overflow-y-auto p-4 md:p-8'>
-					<div className='max-w-6xl mx-auto pb-24 md:pb-8'>
+					<div className='max-w-7xl mx-auto pb-24 md:pb-8'>
 						<Outlet />
 					</div>
 				</main>

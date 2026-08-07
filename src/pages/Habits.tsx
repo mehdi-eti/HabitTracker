@@ -104,13 +104,13 @@ export default function Habits() {
 	const getEmptyStateText = () => {
 		switch (activeTab) {
 			case "active":
-				return "You don't have any active habits.";
+				return t("no_active_habits");
 			case "completed":
-				return "No completed habits yet. Keep up your streaks!";
+				return t("no_completed_habits");
 			case "archived":
-				return "No archived habits.";
+				return t("no_archived_habits");
 			case "deleted":
-				return "Trash is empty.";
+				return t("trash_is_empty");
 		}
 	};
 
@@ -119,7 +119,7 @@ export default function Habits() {
 			{/* Page Header */}
 			<div className='mb-8'>
 				<h2 className='text-3xl font-extrabold text-slate-800 dark:text-slate-100'>{t("habits")}</h2>
-				<p className='text-slate-500 dark:text-slate-400 mt-2 font-medium'>Manage and organize all your habits</p>
+				<p className='text-slate-500 dark:text-slate-400 mt-2 font-medium'>{t("manage_habits")}</p>
 			</div>
 
 			{/* Tabs */}
@@ -285,7 +285,7 @@ export default function Habits() {
 						<div className='w-20 h-20 bg-slate-50 dark:bg-slate-800/50 rounded-full flex items-center justify-center mb-6'>
 							{getEmptyStateIcon()}
 						</div>
-						<h3 className='text-xl font-bold text-slate-800 dark:text-slate-100 mb-2'>It's pretty quiet here</h3>
+						<h3 className='text-xl font-bold text-slate-800 dark:text-slate-100 mb-2'>{t("quiet_here")}</h3>
 						<p className='text-slate-500 dark:text-slate-400 font-medium max-w-sm'>{getEmptyStateText()}</p>
 					</div>
 				)}

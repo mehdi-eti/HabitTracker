@@ -1,6 +1,6 @@
 /** @format */
 
-import { useMemo, useState } from "react";
+import { useMemo } from "react";
 import { useI18n } from "../contexts/I18nContext";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../lib/db";
@@ -14,7 +14,6 @@ export default function Stats() {
 	const { t } = useI18n();
 	const allHabits = useLiveQuery(() => db.habits.toArray());
 	const allRecords = useLiveQuery(() => db.dayRecords.toArray());
-	const [timeRange, setTimeRange] = useState("all"); // 'all', '30days', '7days'
 
 	const stats = useMemo(() => {
 		if (!allHabits || !allRecords) return null;
@@ -61,9 +60,9 @@ export default function Stats() {
 		const successRate = 78; // Mocked for visual richness since calculating true targets is complex with selectedDays
 
 		const statusData = [
-			{ name: "Active", value: activeHabits.length, color: "#3b82f6" },
-			{ name: "Completed", value: completedHabits.length, color: "#10b981" },
-			{ name: "Archived", value: archivedHabits.length, color: "#f59e0b" },
+			{ name: t("active"), value: activeHabits.length, color: "#3b82f6" },
+			{ name: t("completed"), value: completedHabits.length, color: "#10b981" },
+			{ name: t("archived"), value: archivedHabits.length, color: "#f59e0b" },
 		].filter((d) => d.value > 0);
 
 		// Mock trend data for the last 7 days
@@ -100,90 +99,57 @@ export default function Stats() {
 	}
 
 	return (
-		<div className='max-w-5xl mx-auto space-y-8 pb-12'>
+		<div className='max-w-8xl mx-auto space-y-8 pb-12'>
 			{/* Page Header */}
 			<div className='flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8'>
 				<div>
-					<h2 className='text-3xl font-extrabold text-slate-800 dark:text-slate-100'>History & Stats</h2>
-					<p className='text-slate-500 dark:text-slate-400 dark:text-slate-400 mt-2 font-medium'>Your progress and analytics over time</p>
-				</div>
-
-				<div className='flex items-center gap-2 bg-white dark:bg-slate-900 p-1.5 rounded-xl border border-slate-100 dark:border-slate-800 shadow-sm self-start'>
-					<button
-						onClick={() => setTimeRange("7days")}
-						className={cn(
-							"px-4 py-2 text-sm font-bold rounded-lg transition-colors",
-							timeRange === "7days"
-								? "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100"
-								: "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300",
-						)}>
-						7 Days
-					</button>
-					<button
-						onClick={() => setTimeRange("30days")}
-						className={cn(
-							"px-4 py-2 text-sm font-bold rounded-lg transition-colors",
-							timeRange === "30days"
-								? "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100"
-								: "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300",
-						)}>
-						30 Days
-					</button>
-					<button
-						onClick={() => setTimeRange("all")}
-						className={cn(
-							"px-4 py-2 text-sm font-bold rounded-lg transition-colors",
-							timeRange === "all"
-								? "bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-100"
-								: "text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300",
-						)}>
-						All Time
-					</button>
+					<h2 className='text-3xl font-extrabold text-slate-800 dark:text-slate-100'>{t("history_stats")}</h2>
+					<p className='text-slate-500 dark:text-slate-400 mt-2 font-medium'>{t("progress_analytics")}</p>
 				</div>
 			</div>
 
 			<div className='grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6'>
 				{/* KPI Cards */}
-				<div className='bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between'>
+				<div className='bg-white dark:bg-slate-900 rounded-4xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between'>
 					<div className='w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 rounded-xl flex items-center justify-center mb-4'>
 						<ListTodo size={20} />
 					</div>
 					<div>
-						<p className='text-sm font-bold text-slate-400 mb-1'>Total Habits</p>
+						<p className='text-sm font-bold text-slate-400 mb-1'>{t("total_habits")}</p>
 						<h3 className='text-3xl font-extrabold text-slate-800 dark:text-slate-100'>{stats.total}</h3>
 					</div>
 				</div>
 
-				<div className='bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between'>
+				<div className='bg-white dark:bg-slate-900 rounded-4xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between'>
 					<div className='w-10 h-10 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 rounded-xl flex items-center justify-center mb-4'>
 						<CheckCircle2 size={20} />
 					</div>
 					<div>
-						<p className='text-sm font-bold text-slate-400 mb-1'>Completed</p>
+						<p className='text-sm font-bold text-slate-400 mb-1'>{t("completed")}</p>
 						<h3 className='text-3xl font-extrabold text-slate-800 dark:text-slate-100'>{stats.completed.length}</h3>
 					</div>
 				</div>
 
-				<div className='bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between'>
+				<div className='bg-white dark:bg-slate-900 rounded-4xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between'>
 					<div className='w-10 h-10 bg-orange-50 dark:bg-orange-900/30 text-orange-500 rounded-xl flex items-center justify-center mb-4'>
 						<Flame size={20} />
 					</div>
 					<div>
-						<p className='text-sm font-bold text-slate-400 mb-1'>Avg. Streak</p>
+						<p className='text-sm font-bold text-slate-400 mb-1'>{t("avg_streak")}</p>
 						<div className='flex items-end gap-1'>
 							<h3 className='text-3xl font-extrabold text-slate-800 dark:text-slate-100'>{stats.averageStreak}</h3>
-							<span className='text-sm font-bold text-slate-400 mb-1'>days</span>
+							<span className='text-sm font-bold text-slate-400 mb-1'>{t("days")}</span>
 						</div>
 					</div>
 				</div>
 
-				<div className='bg-white dark:bg-slate-900 rounded-[2rem] p-6 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between relative overflow-hidden'>
-					<div className='absolute inset-0 bg-gradient-to-br from-[#5B7B61] to-[#3a503e] opacity-100'></div>
+				<div className='bg-white dark:bg-slate-900 rounded-4xl p-6 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between relative overflow-hidden'>
+					<div className='absolute inset-0 bg-linear-to-br from-[#5B7B61] to-[#3a503e] opacity-100'></div>
 					<div className='relative z-10 w-10 h-10 bg-white/20 text-white rounded-xl flex items-center justify-center mb-4 backdrop-blur-sm'>
 						<TrendingUp size={20} />
 					</div>
 					<div className='relative z-10'>
-						<p className='text-sm font-bold text-white/80 mb-1'>Success Rate</p>
+						<p className='text-sm font-bold text-white/80 mb-1'>{t("success_rate")}</p>
 						<h3 className='text-3xl font-extrabold text-white'>{stats.successRate}%</h3>
 					</div>
 				</div>
@@ -191,14 +157,14 @@ export default function Stats() {
 
 			<div className='grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8'>
 				{/* Trend Chart */}
-				<div className='lg:col-span-2 bg-white dark:bg-slate-900 rounded-[2rem] p-6 md:p-8 border border-slate-100 dark:border-slate-800 shadow-sm'>
+				<div className='lg:col-span-2 bg-white dark:bg-slate-900 rounded-4xl p-6 md:p-8 border border-slate-100 dark:border-slate-800 shadow-sm'>
 					<div className='flex items-center justify-between mb-8'>
 						<div>
-							<h3 className='text-xl font-bold text-slate-800 dark:text-slate-100'>Completion Trend</h3>
-							<p className='text-sm font-medium text-slate-400 mt-1'>Daily completions over the last 7 days</p>
+							<h3 className='text-xl font-bold text-slate-800 dark:text-slate-100'>{t("completion_trend")}</h3>
+							<p className='text-sm font-medium text-slate-400 mt-1'>{t("daily_completions")}</p>
 						</div>
 					</div>
-					<div className='h-[250px] w-full'>
+					<div className='h-62.5 w-full'>
 						<ResponsiveContainer width='100%' height='100%'>
 							<BarChart data={stats.trendData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
 								<CartesianGrid strokeDasharray='3 3' vertical={false} stroke='var(--color-border-grid, #e2e8f0)' opacity={0.5} />
@@ -227,12 +193,12 @@ export default function Stats() {
 				</div>
 
 				{/* Status Distribution */}
-				<div className='bg-white dark:bg-slate-900 rounded-[2rem] p-6 md:p-8 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col'>
-					<h3 className='text-xl font-bold text-slate-800 dark:text-slate-100 mb-8'>Habit Status</h3>
+				<div className='bg-white dark:bg-slate-900 rounded-4xl p-6 md:p-8 border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col'>
+					<h3 className='text-xl font-bold text-slate-800 dark:text-slate-100 mb-8'>{t("habit_status")}</h3>
 
 					{stats.statusData.length > 0 ? (
 						<>
-							<div className='h-[180px] w-full relative mb-6'>
+							<div className='h-45 w-full relative mb-6'>
 								<ResponsiveContainer width='100%' height='100%'>
 									<PieChart>
 										<Pie
@@ -260,7 +226,7 @@ export default function Stats() {
 								</ResponsiveContainer>
 								<div className='absolute inset-0 flex items-center justify-center flex-col pointer-events-none'>
 									<span className='text-3xl font-extrabold text-slate-800 dark:text-slate-100'>{stats.total}</span>
-									<span className='text-xs font-bold text-slate-400'>Total</span>
+									<span className='text-xs font-bold text-slate-400'>{t("total_label")}</span>
 								</div>
 							</div>
 
@@ -281,21 +247,21 @@ export default function Stats() {
 							<div className='w-16 h-16 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4'>
 								<Activity className='text-slate-300' size={32} />
 							</div>
-							<p className='text-sm font-medium text-slate-500 dark:text-slate-400'>No data to display yet.</p>
+							<p className='text-sm font-medium text-slate-500 dark:text-slate-400'>{t("no_data")}</p>
 						</div>
 					)}
 				</div>
 			</div>
 
 			{/* Completed Habits List */}
-			<div className='bg-white dark:bg-slate-900 rounded-[2rem] p-6 md:p-8 border border-slate-100 dark:border-slate-800 shadow-sm'>
+			<div className='bg-white dark:bg-slate-900 rounded-4xl p-6 md:p-8 border border-slate-100 dark:border-slate-800 shadow-sm'>
 				<div className='flex items-center gap-3 mb-8'>
 					<div className='w-10 h-10 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-500 rounded-xl flex items-center justify-center'>
 						<Trophy size={20} />
 					</div>
 					<div>
-						<h3 className='text-xl font-bold text-slate-800 dark:text-slate-100'>Completed Habits</h3>
-						<p className='text-sm font-medium text-slate-400'>Your successfully finished challenges</p>
+						<h3 className='text-xl font-bold text-slate-800 dark:text-slate-100'>{t("completed_habits")}</h3>
+						<p className='text-sm font-medium text-slate-400'>{t("successfully_finished")}</p>
 					</div>
 				</div>
 
@@ -304,8 +270,8 @@ export default function Stats() {
 						<div className='w-16 h-16 mx-auto bg-white dark:bg-slate-900 rounded-full flex items-center justify-center mb-4 shadow-sm border border-slate-100 dark:border-slate-800'>
 							<Trophy className='text-slate-300' size={32} />
 						</div>
-						<h4 className='text-lg font-bold text-slate-700 dark:text-slate-200 mb-1'>No completed habits yet</h4>
-						<p className='text-slate-500 dark:text-slate-400 font-medium'>Keep up your daily streaks to finish a challenge!</p>
+						<h4 className='text-lg font-bold text-slate-700 dark:text-slate-200 mb-1'>{t("no_completed_habits")}</h4>
+						<p className='text-slate-500 dark:text-slate-400 font-medium'>{t("keep_up")}</p>
 					</div>
 				) : (
 					<div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
@@ -326,7 +292,8 @@ export default function Stats() {
 									<div className='flex-1'>
 										<h4 className='font-bold text-slate-800 dark:text-slate-100 line-clamp-1'>{habit.title}</h4>
 										<p className='text-xs font-medium text-slate-500 dark:text-slate-400 flex items-center gap-1 mt-1'>
-											<Check size={12} className='text-emerald-500' /> Finished {habit.durationDays || 21} days
+											<Check size={12} className='text-emerald-500' /> {t("finished")} {habit.durationDays || 21}{" "}
+											{t("days")}
 										</p>
 									</div>
 									<div className='text-right'>

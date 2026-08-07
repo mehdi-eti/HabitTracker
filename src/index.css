@@ -1,149 +1,432 @@
-@import url('https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;300;400;700&display=swap');
+/** @format */
+
+@import url("https://fonts.googleapis.com/css2?family=Vazirmatn:wght@100;300;400;500;600;700&display=swap");
 @import "tailwindcss";
 @plugin "@tailwindcss/typography";
 
+/* ============================================
+   DARK MODE DETECTION
+   Add/remove .dark class on <html> via JS
+   when switching between light/dark themes
+   ============================================ */
 @custom-variant dark (&:is(.dark *));
+
 @theme {
-  --font-sans: 'Vazirmatn', ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+	--font-sans: "Vazirmatn", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 }
 
-/* Base custom styles */
+/* ============================================
+   BASE & SCROLLBAR
+   ============================================ */
+body {
+	@apply bg-slate-50 text-slate-900;
+	transition:
+		background-color 0.3s ease,
+		color 0.3s ease;
+}
+
 .custom-scrollbar::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+	width: 6px;
+	height: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  background: transparent;
+	background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  background-color: var(--color-slate-300);
-  border-radius: 10px;
+	background-color: var(--color-slate-300);
+	border-radius: 10px;
 }
-:is(.dark .custom-scrollbar)::-webkit-scrollbar-thumb {
-  background-color: var(--color-slate-700);
-}
-
-/* Soft Pastel (Light mode base) */
-:root[data-theme="soft-pastel"] {
-  --color-slate-50: var(--color-rose-50);
-  --color-slate-100: var(--color-rose-100);
-  --color-slate-200: var(--color-rose-200);
-  --color-slate-300: var(--color-rose-300);
-  --color-slate-400: var(--color-rose-400);
-  --color-slate-500: var(--color-rose-500);
-  --color-slate-600: var(--color-rose-600);
-  --color-slate-700: var(--color-rose-700);
-  --color-slate-800: var(--color-rose-800);
-  --color-slate-900: var(--color-rose-900);
-  --color-slate-950: var(--color-rose-950);
-
-  --color-indigo-50: var(--color-pink-50);
-  --color-indigo-100: var(--color-pink-100);
-  --color-indigo-400: var(--color-pink-400);
-  --color-indigo-500: var(--color-pink-500);
-  --color-indigo-600: var(--color-pink-600);
-  --color-indigo-700: var(--color-pink-700);
-  --color-indigo-800: var(--color-pink-800);
-  --color-indigo-900: var(--color-pink-900);
+@variant dark {
+	.custom-scrollbar::-webkit-scrollbar-thumb {
+		background-color: var(--color-slate-700);
+	}
 }
 
-/* Midnight Blue (Dark mode base) */
-:root[data-theme="midnight-blue"] {
-  --color-slate-50: var(--color-blue-50);
-  --color-slate-100: var(--color-blue-100);
-  --color-slate-200: var(--color-blue-200);
-  --color-slate-300: var(--color-blue-300);
-  --color-slate-400: var(--color-blue-400);
-  --color-slate-500: var(--color-blue-500);
-  --color-slate-600: var(--color-blue-600);
-  --color-slate-700: var(--color-blue-700);
-  --color-slate-800: #0a192f;
-  --color-slate-900: #020c1b;
-  --color-slate-950: #010813;
+/* ============================================
+   LIGHT (Default)
+   ============================================ */
+:root[data-theme="light"] {
+	--color-slate-50: #f8fafc;
+	--color-slate-100: #f1f5f9;
+	--color-slate-200: #e2e8f0;
+	--color-slate-300: #cbd5e1;
+	--color-slate-400: #94a3b8;
+	--color-slate-500: #64748b;
+	--color-slate-600: #475569;
+	--color-slate-700: #334155;
+	--color-slate-800: #1e293b;
+	--color-slate-900: #0f172a;
+	--color-slate-950: #020617;
 
-  --color-indigo-50: var(--color-cyan-50);
-  --color-indigo-100: var(--color-cyan-100);
-  --color-indigo-400: var(--color-cyan-400);
-  --color-indigo-500: var(--color-cyan-500);
-  --color-indigo-600: var(--color-cyan-600);
-  --color-indigo-700: var(--color-cyan-700);
-  --color-indigo-800: var(--color-cyan-800);
-  --color-indigo-900: var(--color-cyan-900);
+	--color-indigo-50: #eef2ff;
+	--color-indigo-100: #e0e7ff;
+	--color-indigo-200: #c7d2fe;
+	--color-indigo-300: #a5b4fc;
+	--color-indigo-400: #818cf8;
+	--color-indigo-500: #6366f1;
+	--color-indigo-600: #4f46e5;
+	--color-indigo-700: #4338ca;
+	--color-indigo-800: #3730a3;
+	--color-indigo-900: #312e81;
+	--color-indigo-950: #1e1b4b;
 }
 
-/* Warm Beige (Light mode base) */
+/* ============================================
+   DARK
+   ============================================ */
+:root[data-theme="dark"] {
+	--color-slate-50: #f8fafc;
+	--color-slate-100: #f1f5f9;
+	--color-slate-200: #e2e8f0;
+	--color-slate-300: #cbd5e1;
+	--color-slate-400: #94a3b8;
+	--color-slate-500: #64748b;
+	--color-slate-600: #475569;
+	--color-slate-700: #334155;
+	--color-slate-800: #1e293b;
+	--color-slate-900: #0f172a;
+	--color-slate-950: #020617;
+
+	--color-indigo-50: #f5f3ff;
+	--color-indigo-100: #ede9fe;
+	--color-indigo-200: #ddd6fe;
+	--color-indigo-300: #c4b5fd;
+	--color-indigo-400: #a78bfa;
+	--color-indigo-500: #8b5cf6;
+	--color-indigo-600: #7c3aed;
+	--color-indigo-700: #6d28d9;
+	--color-indigo-800: #5b21b6;
+	--color-indigo-900: #4c1d95;
+	--color-indigo-950: #2e1065;
+}
+
+/* ============================================
+   WARM BEIGE (Stone & Amber)
+   ============================================ */
 :root[data-theme="warm-beige"] {
-  --color-slate-50: var(--color-stone-50);
-  --color-slate-100: var(--color-stone-100);
-  --color-slate-200: var(--color-stone-200);
-  --color-slate-300: var(--color-stone-300);
-  --color-slate-400: var(--color-stone-400);
-  --color-slate-500: var(--color-stone-500);
-  --color-slate-600: var(--color-stone-600);
-  --color-slate-700: var(--color-stone-700);
-  --color-slate-800: var(--color-stone-800);
-  --color-slate-900: var(--color-stone-900);
-  --color-slate-950: var(--color-stone-950);
+	--color-slate-50: #fafaf9;
+	--color-slate-100: #f5f5f4;
+	--color-slate-200: #e7e5e4;
+	--color-slate-300: #d6d3d1;
+	--color-slate-400: #a8a29e;
+	--color-slate-500: #78716c;
+	--color-slate-600: #57534e;
+	--color-slate-700: #44403c;
+	--color-slate-800: #292524;
+	--color-slate-900: #1c1917;
+	--color-slate-950: #0c0a09;
 
-  --color-indigo-50: var(--color-amber-50);
-  --color-indigo-100: var(--color-amber-100);
-  --color-indigo-400: var(--color-amber-400);
-  --color-indigo-500: var(--color-amber-500);
-  --color-indigo-600: var(--color-amber-600);
-  --color-indigo-700: var(--color-amber-700);
-  --color-indigo-800: var(--color-amber-800);
-  --color-indigo-900: var(--color-amber-900);
+	--color-indigo-50: #fffbeb;
+	--color-indigo-100: #fef3c7;
+	--color-indigo-200: #fde68a;
+	--color-indigo-300: #fcd34d;
+	--color-indigo-400: #fbbf24;
+	--color-indigo-500: #f59e0b;
+	--color-indigo-600: #d97706;
+	--color-indigo-700: #b45309;
+	--color-indigo-800: #92400e;
+	--color-indigo-900: #78350f;
+	--color-indigo-950: #451a03;
 }
 
-/* Forest (Dark mode base) */
-:root[data-theme="forest"] {
-  --color-slate-50: var(--color-green-50);
-  --color-slate-100: var(--color-green-100);
-  --color-slate-200: var(--color-green-200);
-  --color-slate-300: var(--color-green-300);
-  --color-slate-400: var(--color-green-400);
-  --color-slate-500: var(--color-green-500);
-  --color-slate-600: var(--color-green-600);
-  --color-slate-700: var(--color-green-700);
-  --color-slate-800: var(--color-green-900);
-  --color-slate-900: #064e3b; /* green-900 is 14532d, slate 900 will be darker */
-  --color-slate-950: #022c22; 
-
-  --color-indigo-50: var(--color-emerald-50);
-  --color-indigo-100: var(--color-emerald-100);
-  --color-indigo-400: var(--color-emerald-400);
-  --color-indigo-500: var(--color-emerald-500);
-  --color-indigo-600: var(--color-emerald-600);
-  --color-indigo-700: var(--color-emerald-700);
-  --color-indigo-800: var(--color-emerald-800);
-  --color-indigo-900: var(--color-emerald-900);
-}
-
-/* Monochrome (Light mode base) */
+/* ============================================
+   MONOCHROME (Zinc & Neutral)
+   ============================================ */
 :root[data-theme="monochrome"] {
-  --color-slate-50: var(--color-zinc-50);
-  --color-slate-100: var(--color-zinc-100);
-  --color-slate-200: var(--color-zinc-200);
-  --color-slate-300: var(--color-zinc-300);
-  --color-slate-400: var(--color-zinc-400);
-  --color-slate-500: var(--color-zinc-500);
-  --color-slate-600: var(--color-zinc-600);
-  --color-slate-700: var(--color-zinc-700);
-  --color-slate-800: var(--color-zinc-800);
-  --color-slate-900: var(--color-zinc-900);
-  --color-slate-950: var(--color-zinc-950);
+	--color-slate-50: #fafafa;
+	--color-slate-100: #f5f5f5;
+	--color-slate-200: #e5e5e5;
+	--color-slate-300: #d4d4d4;
+	--color-slate-400: #a3a3a3;
+	--color-slate-500: #737373;
+	--color-slate-600: #525252;
+	--color-slate-700: #404040;
+	--color-slate-800: #262626;
+	--color-slate-900: #171717;
+	--color-slate-950: #0a0a0a;
 
-  --color-indigo-50: var(--color-neutral-100);
-  --color-indigo-100: var(--color-neutral-200);
-  --color-indigo-400: var(--color-neutral-500);
-  --color-indigo-500: var(--color-neutral-600);
-  --color-indigo-600: var(--color-neutral-700);
-  --color-indigo-700: var(--color-neutral-800);
-  --color-indigo-800: var(--color-neutral-900);
-  --color-indigo-900: #171717;
+	--color-indigo-50: #f5f5f5;
+	--color-indigo-100: #e5e5e5;
+	--color-indigo-200: #d4d4d4;
+	--color-indigo-300: #a3a3a3;
+	--color-indigo-400: #737373;
+	--color-indigo-500: #525252;
+	--color-indigo-600: #404040;
+	--color-indigo-700: #262626;
+	--color-indigo-800: #171717;
+	--color-indigo-900: #0a0a0a;
+	--color-indigo-950: #000000;
 }
 
-body {
-  @apply bg-slate-50 text-slate-900 dark:bg-slate-950 dark:text-slate-50;
-  transition: background-color 0.3s ease, color 0.3s ease;
+/* ============================================
+   MIDNIGHT BLUE — REDESIGNED
+   Deep navy backgrounds + Soft blue-white text
+   + Teal accents (professional & crisp)
+   ============================================ */
+:root[data-theme="midnight-blue"] {
+	--color-slate-50: #f8fafc;
+	--color-slate-100: #f1f5f9;
+	--color-slate-200: #e2e8f0;
+	--color-slate-300: #cbd5e1;
+	--color-slate-400: #94a3b8;
+	--color-slate-500: #64748b;
+	--color-slate-600: #475569;
+	--color-slate-700: #334155;
+	--color-slate-800: #1e293b;
+	--color-slate-900: #0f172a;
+	--color-slate-950: #020617;
+
+	--color-indigo-50: #f0fdfa;
+	--color-indigo-100: #ccfbf1;
+	--color-indigo-200: #99f6e4;
+	--color-indigo-300: #5eead4;
+	--color-indigo-400: #2dd4bf;
+	--color-indigo-500: #14b8a6;
+	--color-indigo-600: #0d9488;
+	--color-indigo-700: #0f766e;
+	--color-indigo-800: #115e59;
+	--color-indigo-900: #134e4a;
+	--color-indigo-950: #042f2e;
+}
+
+/* ============================================
+   EMERALD FOREST (NEW)
+   Sage slate tones + Lush Emerald accents
+   Calming, modern, and high contrast
+   ============================================ */
+:root[data-theme="emerald-forest"] {
+	--color-slate-50: #f4f7f5;
+	--color-slate-100: #e7eee9;
+	--color-slate-200: #d0ded4;
+	--color-slate-300: #acc5b4;
+	--color-slate-400: #81a48c;
+	--color-slate-500: #5f836c;
+	--color-slate-600: #486854;
+	--color-slate-700: #395243;
+	--color-slate-800: #2d3f35;
+	--color-slate-900: #1d2b23;
+	--color-slate-950: #0f1813;
+
+	--color-indigo-50: #ecfdf5;
+	--color-indigo-100: #d1fae5;
+	--color-indigo-200: #a7f3d0;
+	--color-indigo-300: #6ee7b7;
+	--color-indigo-400: #34d399;
+	--color-indigo-500: #10b981;
+	--color-indigo-600: #059669;
+	--color-indigo-700: #047857;
+	--color-indigo-800: #065f46;
+	--color-indigo-900: #064e3b;
+	--color-indigo-950: #022c22;
+}
+
+/* ============================================
+   NORDIC FROST (NEW)
+   Cool arctic slate + Electric Cyan accents
+   Crisp, tech-focused, and ultra-readable
+   ============================================ */
+:root[data-theme="nordic-frost"] {
+	--color-slate-50: #f0f9ff;
+	--color-slate-100: #e0f2fe;
+	--color-slate-200: #bae6fd;
+	--color-slate-300: #7dd3fc;
+	--color-slate-400: #38bdf8;
+	--color-slate-500: #0284c7;
+	--color-slate-600: #0369a1;
+	--color-slate-700: #075985;
+	--color-slate-800: #0c4a6e;
+	--color-slate-900: #082f49;
+	--color-slate-950: #031828;
+
+	--color-indigo-50: #ecfeff;
+	--color-indigo-100: #cffafe;
+	--color-indigo-200: #a5f3fc;
+	--color-indigo-300: #67e8f9;
+	--color-indigo-400: #22d3ee;
+	--color-indigo-500: #06b6d4;
+	--color-indigo-600: #0891b2;
+	--color-indigo-700: #0e7490;
+	--color-indigo-800: #155e75;
+	--color-indigo-900: #164e63;
+	--color-indigo-950: #083344;
+}
+
+/* ============================================
+   ROSE GOLD / SUNSET (NEW)
+   Warm rose-gray slate + Vibrant Pink/Rose accents
+   Elegant, soft, and premium reading experience
+   ============================================ */
+:root[data-theme="rose-gold"] {
+	/* Neutral Slate Scale (Backgrounds & Legible Text) */
+	--color-slate-50: #faf7f7;
+	--color-slate-100: #f4ecee;
+	--color-slate-200: #e8dbdf;
+	--color-slate-300: #d4c3c8;
+	--color-slate-400: #b39b00;
+	--color-slate-500: #8c7379;
+	--color-slate-600: #6e585d;
+	--color-slate-700: #544146;
+	--color-slate-800: #38292d;
+	--color-slate-900: #211619;
+	--color-slate-950: #120b0d;
+
+	/* Brand Accent Scale (Rose Gold & Warm Sunset) */
+	--color-indigo-50: #fff1f3;
+	--color-indigo-100: #ffe4e8;
+	--color-indigo-200: #fecdd6;
+	--color-indigo-300: #fda4af;
+	--color-indigo-400: #fb7185;
+	--color-indigo-500: #e11d48;
+	--color-indigo-600: #be123c;
+	--color-indigo-700: #9f1239;
+	--color-indigo-800: #881337;
+	--color-indigo-900: #4c0519;
+	--color-indigo-950: #2b020d;
+}
+
+/* ============================================
+   REACT QUILL RTL / LTR SUPPORT
+   ============================================ */
+
+/* Base LTR (English) */
+.quill-ltr .ql-editor {
+	direction: ltr;
+	text-align: left;
+	font-family:
+		ui-sans-serif,
+		system-ui,
+		-apple-system,
+		sans-serif;
+}
+
+.quill-ltr .ql-editor.ql-blank::before {
+	left: 15px;
+	right: auto;
+}
+
+/* RTL (Farsi/Persian) */
+.quill-rtl .ql-editor {
+	direction: rtl;
+	text-align: right;
+	font-family: "Vazirmatn", "Tahoma", "Arial", sans-serif;
+	font-size: 1rem;
+	line-height: 1.8;
+}
+
+/* Placeholder alignment for RTL */
+.quill-rtl .ql-editor.ql-blank::before {
+	right: 15px;
+	left: auto;
+	direction: rtl;
+	text-align: right;
+	font-family: "Vazirmatn", sans-serif;
+}
+
+/* Toolbar RTL flip */
+.quill-rtl .ql-toolbar {
+	direction: rtl;
+}
+
+.quill-rtl .ql-toolbar .ql-formats {
+	float: right;
+	margin-right: 0;
+	margin-left: 8px;
+}
+
+/* Dropdowns and pickers in RTL */
+.quill-rtl .ql-snow .ql-picker-label {
+	direction: rtl;
+	text-align: right;
+	padding-left: 2px;
+	padding-right: 8px;
+}
+
+.quill-rtl .ql-snow .ql-picker-options {
+	direction: rtl;
+	text-align: right;
+}
+
+/* Ensure lists align correctly in RTL */
+.quill-rtl .ql-editor ul,
+.quill-rtl .ql-editor ol {
+	padding-left: 0;
+	padding-right: 1.5em;
+}
+
+.quill-rtl .ql-editor li {
+	text-align: right;
+}
+
+/* Dark mode support for Quill */
+.dark .ql-toolbar {
+	border-color: var(--color-slate-700);
+	background-color: var(--color-slate-900);
+}
+
+.dark .ql-container {
+	border-color: var(--color-slate-700);
+}
+
+.dark .ql-editor {
+	color: var(--color-slate-100);
+	background-color: var(--color-slate-900);
+}
+
+.dark .ql-snow .ql-stroke {
+	stroke: var(--color-slate-400);
+}
+
+.dark .ql-snow .ql-fill {
+	fill: var(--color-slate-400);
+}
+
+.dark .ql-snow .ql-picker {
+	color: var(--color-slate-300);
+}
+
+.dark .ql-snow .ql-picker-options {
+	background-color: var(--color-slate-800);
+	border-color: var(--color-slate-700);
+}
+
+.dark .ql-snow .ql-tooltip {
+	background-color: var(--color-slate-800);
+	border-color: var(--color-slate-700);
+	color: var(--color-slate-100);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.dark .ql-snow .ql-tooltip input[type="text"] {
+	background-color: var(--color-slate-900);
+	border-color: var(--color-slate-700);
+	color: var(--color-slate-100);
+}
+
+/* Editor border radius fix */
+.react-quill-wrapper .ql-toolbar {
+	border-top-left-radius: 0.75rem;
+	border-top-right-radius: 0.75rem;
+	border-bottom: 1px solid #e2e8f0;
+}
+
+.dark .react-quill-wrapper .ql-toolbar {
+	border-bottom-color: var(--color-slate-700);
+}
+
+.react-quill-wrapper .ql-container {
+	border-bottom-left-radius: 0.75rem;
+	border-bottom-right-radius: 0.75rem;
+	border: none;
+}
+
+.react-quill-wrapper .ql-editor {
+	min-height: 150px;
+	padding: 1rem 1.25rem;
+}
+.ql-editor p,
+.ql-editor li,
+.ql-editor h1,
+.ql-editor h2,
+.ql-editor h3 {
+	unicode-bidi: plaintext;
 }

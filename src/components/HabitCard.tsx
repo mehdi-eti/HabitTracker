@@ -4,7 +4,7 @@ import { useI18n } from '../contexts/I18nContext';
 import { getHabitTargetDates } from '../lib/habitUtils';
 import { getTodayStr, getYesterdayStr, cn } from '../lib/utils';
 import { toggleDay } from '../hooks/useHabits';
-import { Check, Edit2, AlertCircle, RotateCcw } from 'lucide-react';
+import { Check, Edit2, RotateCcw } from 'lucide-react';
 import { format, parseISO } from 'date-fns';
 import HabitModal, { CATEGORIES } from './HabitModal';
 import DailyTrackingModal from './DailyTrackingModal';
@@ -18,7 +18,7 @@ interface HabitCardProps {
 }
 
 export default function HabitCard({ habit, dayRecords }: HabitCardProps) {
-  const { t, dir } = useI18n();
+  const { t } = useI18n();
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [showConfetti, setShowConfetti] = useState(false);
   const [trackingDate, setTrackingDate] = useState<string | null>(null);

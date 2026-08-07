@@ -131,8 +131,8 @@ export default function Dashboard() {
 			achievements: [
 				{
 					id: "first_step",
-					title: "First Step",
-					description: "Complete 1 habit",
+					title: t("first_step"),
+					description: t("complete_1_habit"),
 					icon: <CheckCircle2 size={24} className={totalCompletions >= 1 ? "text-emerald-500" : "text-slate-300"} />,
 					achieved: totalCompletions >= 1,
 					bg: totalCompletions >= 1 ? "bg-emerald-50 dark:bg-emerald-900/30" : "bg-slate-50 dark:bg-slate-800",
@@ -143,8 +143,8 @@ export default function Dashboard() {
 				},
 				{
 					id: "streak_3",
-					title: "Momentum",
-					description: "3-day global streak",
+					title: t("streak_3"),
+					description: t("complete_3_day_streak"),
 					icon: <Flame size={24} className={globalMaxStreak >= 3 ? "text-orange-500" : "text-slate-300"} />,
 					achieved: globalMaxStreak >= 3,
 					bg: globalMaxStreak >= 3 ? "bg-orange-50 dark:bg-orange-900/30" : "bg-slate-50 dark:bg-slate-800",
@@ -155,8 +155,8 @@ export default function Dashboard() {
 				},
 				{
 					id: "streak_7",
-					title: "Unstoppable",
-					description: "7-day global streak",
+					title: t("streak_7"),
+					description: t("complete_7_day_streak"),
 					icon: <Trophy size={24} className={globalMaxStreak >= 7 ? "text-amber-500" : "text-slate-300"} />,
 					achieved: globalMaxStreak >= 7,
 					bg: globalMaxStreak >= 7 ? "bg-amber-50 dark:bg-amber-900/30" : "bg-slate-50 dark:bg-slate-800",
@@ -167,8 +167,8 @@ export default function Dashboard() {
 				},
 				{
 					id: "perfect_day",
-					title: "Perfect Day",
-					description: "Complete 3+ habits",
+					title: t("perfect_day"),
+					description: t("complete_3_habits"),
 					icon: <Target size={24} className={perfectDayAchieved ? "text-indigo-500" : "text-slate-300"} />,
 					achieved: perfectDayAchieved,
 					bg: perfectDayAchieved ? "bg-indigo-50 dark:bg-indigo-900/30" : "bg-slate-50 dark:bg-slate-800",
@@ -178,8 +178,8 @@ export default function Dashboard() {
 				},
 				{
 					id: "century",
-					title: "Habit Master",
-					description: "100 total done",
+					title: t("century"),
+					description: t("complete_100_habits"),
 					icon: <Star size={24} className={totalCompletions >= 100 ? "text-purple-500" : "text-slate-300"} />,
 					achieved: totalCompletions >= 100,
 					bg: totalCompletions >= 100 ? "bg-purple-50 dark:bg-purple-900/30" : "bg-slate-50 dark:bg-slate-800",
@@ -259,7 +259,7 @@ export default function Dashboard() {
 						Happy {format(currentTime, "EEEE")} <span className='text-2xl'>👋</span>
 					</h1>
 					<p className='text-sm font-medium text-slate-500 dark:text-slate-400 mt-1'>
-						{format(currentTime, "dd MMMM yyyy")} • What's your focus today?
+						{format(currentTime, "dd MMMM yyyy")} • {t("what_is_your_focus_today")}
 					</p>
 				</div>
 				<div className='flex items-center gap-3 w-full md:w-auto'>
@@ -275,31 +275,31 @@ export default function Dashboard() {
 			<div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4'>
 				<StatCard
 					icon={<Target size={18} className='text-indigo-500' />}
-					label='Active Habits'
+					label={t("active_habits")}
 					value={activeHabitsCount}
 					bg='bg-indigo-50 dark:bg-indigo-900/20'
 				/>
 				<StatCard
 					icon={<CheckCircle2 size={18} className='text-emerald-500' />}
-					label='Completed'
+					label={t("completed_habits")}
 					value={completedHabitsAll.length}
 					bg='bg-emerald-50 dark:bg-emerald-900/20'
 				/>
 				<StatCard
 					icon={<TrendingUp size={18} className='text-blue-500' />}
-					label="Today's Rate"
+					label={t("today_label")}
 					value={`${successRate}%`}
 					bg='bg-blue-50 dark:bg-blue-900/20'
 				/>
 				<StatCard
 					icon={<Flame size={18} className='text-orange-500' />}
-					label='Best Streak'
+					label={t("best_streak")}
 					value={`${bestStreak}d`}
 					bg='bg-orange-50 dark:bg-orange-900/20'
 				/>
 				<StatCard
 					icon={<Zap size={18} className='text-amber-500' />}
-					label='Remaining Today'
+					label={t("remaining_today")}
 					value={todayRemaining}
 					bg='bg-amber-50 dark:bg-amber-900/20'
 				/>
@@ -311,12 +311,12 @@ export default function Dashboard() {
 					<div>
 						<h3 className='font-bold text-slate-800 dark:text-slate-100 text-lg flex items-center gap-2'>
 							<Trophy size={20} className='text-amber-500' />
-							Achievements
+							{t("achievements")}
 						</h3>
-						<p className='text-sm text-slate-500 dark:text-slate-400 mt-1'>Unlock badges by staying consistent.</p>
+						<p className='text-sm text-slate-500 dark:text-slate-400 mt-1'>{t("unlock_badges")}</p>
 					</div>
 					<div className='bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full text-xs font-bold text-slate-500 dark:text-slate-400'>
-						{achievements.filter((a) => a.achieved).length} / {achievements.length} Unlocked
+						{achievements.filter((a) => a.achieved).length} / {achievements.length} {t("unlocked")}
 					</div>
 				</div>
 
@@ -340,11 +340,11 @@ export default function Dashboard() {
 			<div className='grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8'>
 				{/* Left Column (3) - Quick Actions, Motivation, Recent Activity */}
 				<div className='lg:col-span-3 space-y-6'>
-					<div className='bg-gradient-to-br from-indigo-500 to-purple-600 rounded-3xl p-6 text-white shadow-md shadow-indigo-500/20 relative overflow-hidden'>
+					<div className='bg-linear-to-br from-indigo-500 to-purple-600 rounded-3xl p-6 text-white shadow-md shadow-indigo-500/20 relative overflow-hidden'>
 						<div className='absolute -right-4 -top-4 opacity-10'>
 							<Star size={100} />
 						</div>
-						<h3 className='font-bold text-lg mb-2 relative z-10'>Quote of the Day</h3>
+						<h3 className='font-bold text-lg mb-2 relative z-10'>{t("quote_of_the_day")}</h3>
 						<p className='text-indigo-100 text-sm font-medium relative z-10 leading-relaxed italic'>
 							"{MOTIVATION_QUOTES[Math.floor(new Date().getTime() / (1000 * 60 * 60 * 24)) % MOTIVATION_QUOTES.length]}"
 						</p>
@@ -352,22 +352,26 @@ export default function Dashboard() {
 
 					<div className='bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800'>
 						<h3 className='font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2'>
-							<Zap size={18} className='text-amber-500' /> Quick Actions
+							<Zap size={18} className='text-amber-500' /> {t("quick_actions")}
 						</h3>
 						<div className='space-y-2'>
-							<QuickActionButton icon={<CalendarIcon size={16} />} label='View Calendar' onClick={() => navigate("/calendar")} />
-							<QuickActionButton icon={<BarChart2 size={16} />} label='Analytics & Stats' onClick={() => navigate("/stats")} />
-							<QuickActionButton icon={<LayoutDashboard size={16} />} label='Browse All Habits' onClick={() => navigate("/habits")} />
+							<QuickActionButton icon={<CalendarIcon size={16} />} label={t("view_calendar")} onClick={() => navigate("/calendar")} />
+							<QuickActionButton icon={<BarChart2 size={16} />} label={t("analytics_stats")} onClick={() => navigate("/stats")} />
+							<QuickActionButton
+								icon={<LayoutDashboard size={16} />}
+								label={t("browse_all_habits")}
+								onClick={() => navigate("/habits")}
+							/>
 						</div>
 					</div>
 
 					<div className='bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800'>
 						<h3 className='font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2'>
-							<Activity size={18} className='text-blue-500' /> Recent Activity
+							<Activity size={18} className='text-blue-500' /> {t("recent_activity")}
 						</h3>
 						<div className='space-y-4'>
 							{recentRecords.length === 0 ? (
-								<p className='text-sm font-medium text-slate-500 dark:text-slate-400'>No recent activity.</p>
+								<p className='text-sm font-medium text-slate-500 dark:text-slate-400'>{t("no_recent_activity")}</p>
 							) : (
 								recentRecords.map((r) => {
 									const h = allHabits.find((h) => h.id === r.habitId);
@@ -379,7 +383,9 @@ export default function Dashboard() {
 											</div>
 											<div>
 												<p className='text-sm font-bold text-slate-700 dark:text-slate-200 line-clamp-1'>{h.title}</p>
-												<p className='text-xs font-medium text-slate-400'>{r.date === todayStr ? "Today" : r.date}</p>
+												<p className='text-xs font-medium text-slate-400'>
+													{r.date === todayStr ? t("today") : r.date}
+												</p>
 											</div>
 										</div>
 									);
@@ -394,8 +400,10 @@ export default function Dashboard() {
 					<div className='bg-white dark:bg-slate-900 rounded-4xl p-6 md:p-8 shadow-sm border border-slate-100 dark:border-slate-800 h-full flex flex-col'>
 						<div className='flex justify-between items-center mb-6'>
 							<div>
-								<h2 className='text-xl font-bold text-slate-800 dark:text-slate-100'>Today's Todos</h2>
-								<p className='text-sm text-slate-500 font-medium mt-1'>{todayTasks} tasks scheduled</p>
+								<h2 className='text-xl font-bold text-slate-800 dark:text-slate-100'>{t("todays_todos")}</h2>
+								<p className='text-sm text-slate-500 font-medium mt-1'>
+									{todayTasks} {t("tasks_scheduled")}
+								</p>
 							</div>
 							<div className='w-12 h-12 rounded-full border-4 border-indigo-50 dark:border-indigo-900/30 flex items-center justify-center relative'>
 								<svg className='w-full h-full absolute inset-0 -rotate-90' viewBox='0 0 36 36'>
@@ -418,14 +426,14 @@ export default function Dashboard() {
 									<div className='w-16 h-16 mx-auto bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4'>
 										<CheckCircle2 className='text-slate-300 dark:text-slate-600' size={32} />
 									</div>
-									<p className='text-slate-500 dark:text-slate-400 font-medium'>You have a clear day today.</p>
+									<p className='text-slate-500 dark:text-slate-400 font-medium'>{t("clear_day")}</p>
 								</div>
 							) : (
 								<>
 									{pendingTodayHabits.length > 0 && (
 										<div className='space-y-3'>
 											<h4 className='text-[11px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2'>
-												Pending ({pendingTodayHabits.length})
+												{t("pending")} ({pendingTodayHabits.length})
 											</h4>
 											{pendingTodayHabits.map((habit) => (
 												<TodoItem
@@ -445,7 +453,7 @@ export default function Dashboard() {
 									{completedTodayHabits.length > 0 && (
 										<div className='space-y-3 mt-6'>
 											<h4 className='text-[11px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2'>
-												Completed ({completedTodayHabits.length})
+												{t("completed")} ({completedTodayHabits.length})
 											</h4>
 											{completedTodayHabits.map((habit) => (
 												<TodoItem
@@ -474,9 +482,9 @@ export default function Dashboard() {
 			</div>
 			<div className='bg-white dark:bg-slate-900 rounded-4xl p-6 shadow-sm border border-slate-100 dark:border-slate-800'>
 				<div className='flex items-center justify-between mb-4'>
-					<h3 className='font-bold text-slate-800 dark:text-slate-100'>Activity Trend</h3>
+					<h3 className='font-bold text-slate-800 dark:text-slate-100'>{t("activity_trend")}</h3>
 					<span className='text-[10px] font-extrabold bg-indigo-50 text-indigo-600 dark:bg-indigo-900/30 dark:text-indigo-400 px-2 py-1 rounded-md uppercase tracking-wider'>
-						Last 7 Days
+						{t("last_7_days")}
 					</span>
 				</div>
 				<div className='-mx-2'>
@@ -606,6 +614,7 @@ function TodoItem({
 
 function MiniCalendarWidget({ habits, dayRecords }: { habits: Habit[]; dayRecords: DayRecord[] }) {
 	const today = new Date();
+	const { t } = useI18n();
 	const currentMonth = startOfMonth(today);
 	const daysInMonth = eachDayOfInterval({ start: currentMonth, end: endOfMonth(currentMonth) });
 	const todayStr = getTodayStr();
@@ -619,7 +628,7 @@ function MiniCalendarWidget({ habits, dayRecords }: { habits: Habit[]; dayRecord
 				<div>
 					<h3 className='font-bold text-lg text-slate-800 dark:text-slate-100'>{format(today, "MMMM yyyy")}</h3>
 					<p className='text-[11px] font-extrabold text-emerald-500 flex items-center gap-1 mt-0.5 uppercase tracking-wider'>
-						<TrendingUp size={12} strokeWidth={3} /> On track
+						<TrendingUp size={12} strokeWidth={3} /> {t("on_track")}
 					</p>
 				</div>
 				<Link

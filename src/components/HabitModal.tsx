@@ -1,11 +1,12 @@
 /** @format */
 
 import { useState } from "react";
-import { useI18n } from "../contexts/I18nContext";
-import { db } from "../lib/db";
-import { Habit, DayOfWeek, HabitMode, HabitCategory } from "../types";
 import { X, AlertTriangle, Calendar, Settings, Bell, Type, Tag, Target } from "lucide-react";
-import { getTodayStr, cn } from "../lib/utils";
+
+import { db } from "@/src/lib/db";
+import { getTodayStr, cn } from "@/src/lib/utils";
+import { useI18n } from "@/src/contexts/I18nContext";
+import { Habit, DayOfWeek, HabitMode, HabitCategory } from "../types";
 
 interface HabitModalProps {
 	habit?: Habit;

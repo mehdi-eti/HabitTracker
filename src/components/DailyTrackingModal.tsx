@@ -1,12 +1,13 @@
 /** @format */
 
-import { useState, useEffect } from "react";
-import { useI18n } from "../contexts/I18nContext";
-import { Habit, DayRecord } from "../types";
 import { X } from "lucide-react";
+import ReactQuill from "react-quill-new";
+import { useState, useEffect } from "react";
 import { format, parseISO } from "date-fns";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
+
+import { useI18n } from "@/src/contexts/I18nContext";
+import { Habit, DayRecord } from "@/src/types";
+import "react-quill-new/dist/quill.snow.css";
 
 interface DailyTrackingModalProps {
 	habit: Habit;
@@ -18,7 +19,7 @@ interface DailyTrackingModalProps {
 }
 
 export default function DailyTrackingModal({ habit, date, initialRecord, onClose, onSave, isEditable }: DailyTrackingModalProps) {
-	const { t } = useI18n();
+	const { t, dir } = useI18n();
 	const [completed, setCompleted] = useState(initialRecord?.completed || false);
 	const [note, setNote] = useState(initialRecord?.note || "");
 
@@ -34,9 +35,12 @@ export default function DailyTrackingModal({ habit, date, initialRecord, onClose
 
 	const modules = {
 		toolbar: [
-			["bold", "italic", "underline", "strike"], // toggled buttons
+			[{ header: [1, 2, 3, false] }],
+			["bold", "italic", "underline", "strike"],
 			[{ list: "ordered" }, { list: "bullet" }],
-			["clean"], // remove formatting button
+			[{ direction: dir === "rtl" ? "rtl" : "ltr" }],
+			["link"],
+			["clean"],
 		],
 	};
 
@@ -57,7 +61,7 @@ export default function DailyTrackingModal({ habit, date, initialRecord, onClose
 
 				<div className='p-6 overflow-y-auto space-y-6 flex-1'>
 					<div className='flex items-center justify-between p-4 bg-slate-50 dark:bg-slate-800/50 rounded-2xl border border-slate-100 dark:border-slate-800'>
-						<span className='font-bold text-slate-700 dark:text-slate-300'>Completed</span>
+						<span className='font-bold text-slate-700 dark:text-slate-300'>{t("completed")}</span>
 						<button
 							onClick={() => isEditable && setCompleted(!completed)}
 							disabled={!isEditable}
@@ -67,66 +71,68 @@ export default function DailyTrackingModal({ habit, date, initialRecord, onClose
 					</div>
 
 					<div className='space-y-3'>
-						<label className='text-sm font-bold text-slate-500 dark:text-slate-400'>Note / Reflection</label>
+						<label className='text-sm font-bold text-slate-500 dark:text-slate-400'>{t("note_reflection")}</label>
 						<div className='react-quill-wrapper relative'>
-							<ReactQuill
-								theme='snow'
-								value={note}
-								onChange={setNote}
-								modules={modules}
-								placeholder="How did it go today? What's on your mind?"
-								readOnly={!isEditable}
-								className='bg-white dark:bg-slate-900 rounded-xl overflow-hidden'
-							/>
+							<div className={`react-quill-wrapper relative ${dir === "rtl" ? "quill-rtl" : "quill-ltr"}`}>
+								<ReactQuill
+									theme='snow'
+									value={note}
+									onChange={setNote}
+									modules={modules}
+									placeholder={t("note_placeholder")}
+									readOnly={!isEditable}
+									className='bg-white dark:bg-slate-900 rounded-xl overflow-hidden'
+								/>
+							</div>
 						</div>
 
 						<style>{`
-              .react-quill-wrapper .quill {
-                border-radius: 0.75rem;
-                overflow: hidden;
-                border: 1px solid #f1f5f9;
-              }
-              .dark .react-quill-wrapper .quill {
-                border: 1px solid #1e293b;
-              }
-              .react-quill-wrapper .ql-toolbar {
-                border: none;
-                border-bottom: 1px solid #f1f5f9;
-                background-color: #f8fafc;
-                border-top-left-radius: 0.75rem;
-                border-top-right-radius: 0.75rem;
-                padding: 0.5rem;
-              }
-              .dark .react-quill-wrapper .ql-toolbar {
-                border-bottom: 1px solid #1e293b;
-                background-color: #0f172a;
-              }
-              .react-quill-wrapper .ql-container {
-                border: none;
-                font-family: inherit;
-                font-size: 1rem;
-                border-bottom-left-radius: 0.75rem;
-                border-bottom-right-radius: 0.75rem;
-                background: white;
-                min-height: 200px;
-              }
-              .dark .react-quill-wrapper .ql-container {
-                background: #0f172a;
-                color: #f8fafc;
-              }
-              .react-quill-wrapper .ql-editor {
-                min-height: 200px;
-                padding: 1rem;
-              }
-              .dark .react-quill-wrapper .ql-snow .ql-stroke {
-                stroke: #94a3b8;
-              }
-              .dark .react-quill-wrapper .ql-snow .ql-fill {
-                fill: #94a3b8;
-              }
-              .dark .react-quill-wrapper .ql-snow .ql-picker {
-                color: #94a3b8;
-              }
+				.react-quill-wrapper .quill {
+					border-radius: 0.75rem;
+					overflow: hidden;
+					border: 1px solid #f1f5f9;
+				}
+				.dark .react-quill-wrapper .quill {
+					border: 1px solid #1e293b;
+				}
+				.react-quill-wrapper .ql-toolbar {
+					border: none;
+					border-bottom: 1px solid #f1f5f9;
+					background-color: #f8fafc;
+					border-top-left-radius: 0.75rem;
+					border-top-right-radius: 0.75rem;
+					padding: 0.5rem;
+				}
+				.dark .react-quill-wrapper .ql-toolbar {
+					border-bottom: 1px solid #1e293b;
+					background-color: #0f172a;
+				}
+				.react-quill-wrapper .ql-container {
+					border: none;
+					font-family: inherit;
+					font-size: 1rem;
+					border-bottom-left-radius: 0.75rem;
+					border-bottom-right-radius: 0.75rem;
+					background: white;
+					min-height: 200px;
+				}
+				.dark .react-quill-wrapper .ql-container {
+					background: #0f172a;
+					color: #f8fafc;
+				}
+				.react-quill-wrapper .ql-editor {
+					min-height: 200px;
+					padding: 1rem;
+				}
+				.dark .react-quill-wrapper .ql-snow .ql-stroke {
+					stroke: #94a3b8;
+				}
+				.dark .react-quill-wrapper .ql-snow .ql-fill {
+					fill: #94a3b8;
+				}
+				.dark .react-quill-wrapper .ql-snow .ql-picker {
+					color: #94a3b8;
+				}
             `}</style>
 					</div>
 				</div>
@@ -135,12 +141,12 @@ export default function DailyTrackingModal({ habit, date, initialRecord, onClose
 					<button
 						onClick={onClose}
 						className='px-6 py-2.5 rounded-xl font-bold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors'>
-						Cancel
+						{t("cancel")}
 					</button>
 					<button
 						onClick={handleSave}
 						className='px-6 py-2.5 rounded-xl font-bold bg-indigo-600 text-white hover:bg-indigo-700 transition-colors'>
-						Save Entry
+						{t("save_entry")}
 					</button>
 				</div>
 			</div>

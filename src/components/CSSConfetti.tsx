@@ -34,7 +34,7 @@ export default function CSSConfetti({ active, onComplete }: CSSConfettiProps) {
 	if (!active && particles.length === 0) return null;
 
 	return (
-		<div className='fixed inset-0 pointer-events-none z-[100] overflow-hidden'>
+		<div className='fixed inset-0 pointer-events-none z-100 overflow-hidden'>
 			{particles.map((p) => (
 				<div
 					key={p.id}
