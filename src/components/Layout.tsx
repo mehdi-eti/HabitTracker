@@ -5,7 +5,7 @@ import { useAuth } from "../contexts/AuthContext";
 import { useI18n } from "../contexts/I18nContext";
 import { useTheme, AVAILABLE_THEMES } from "../contexts/ThemeContext";
 import { useNotifications } from "../hooks/useNotifications";
-import { LayoutDashboard, ListTodo, BarChart2, Calendar as CalendarIcon, Settings as SettingsIcon, LogOut, Moon, Sun, Languages } from "lucide-react";
+import { LayoutDashboard, ListTodo, BarChart2, Calendar as CalendarIcon, Settings as SettingsIcon, LogOut, Moon, Sun, Languages, Dumbbell } from "lucide-react";
 import { cn } from "../lib/utils";
 import { useMemo } from "react";
 
@@ -26,11 +26,12 @@ export default function Layout() {
 		() => [
 			{ to: "/", icon: LayoutDashboard, label: t("dashboard") },
 			{ to: "/habits", icon: ListTodo, label: t("habits") },
+			{ to: "/workout", icon: Dumbbell, label: t("workout_nutrition" as any) || "Workout & Nutrition" },
 			{ to: "/calendar", icon: CalendarIcon, label: t("calendar" as any) || "Calendar" },
 			{ to: "/stats", icon: BarChart2, label: t("stats") },
 			{ to: "/settings", icon: SettingsIcon, label: t("settings") },
 		],
-		[],
+		[t],
 	);
 
 	return (

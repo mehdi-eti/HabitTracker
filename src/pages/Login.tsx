@@ -6,8 +6,8 @@ import { useAuth } from "../contexts/AuthContext";
 import { useI18n } from "../contexts/I18nContext";
 
 export default function Login() {
-	const [username, setUsername] = useState("");
-	const [password, setPassword] = useState("");
+	const [username, setUsername] = useState("admin");
+	const [password, setPassword] = useState("admin");
 	const [error, setError] = useState("");
 	const { login } = useAuth();
 	const { t, dir } = useI18n();

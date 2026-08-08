@@ -12,6 +12,7 @@ import Layout from './components/Layout';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Habits from './pages/Habits';
+import WorkoutNutrition from './pages/WorkoutNutrition';
 import Calendar from './pages/Calendar';
 import Stats from './pages/Stats';
 import Settings from './pages/Settings';
@@ -40,6 +41,7 @@ export default function App() {
               >
                 <Route index element={<Dashboard />} />
                 <Route path="habits" element={<Habits />} />
+                <Route path="workout" element={<WorkoutNutrition />} />
                 <Route path="calendar" element={<Calendar />} />
                 <Route path="stats" element={<Stats />} />
                 <Route path="settings" element={<Settings />} />
