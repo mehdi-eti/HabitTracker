@@ -209,6 +209,11 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 										foodId: food.id,
 										plannedQuantity: food.plannedQuantity ?? food.amount ?? 0,
 										consumed: false,
+										planId: activePlan.id,
+										planWeek: dayData.planWeek,
+										nutritionCycle: dayData.nutritionCycle,
+										date: today,
+										mealId: meal.id || meal.name
 									});
 								}
 							}
@@ -405,7 +410,12 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 
 				<div className='text-right'>
 					<div className='text-sm font-medium text-indigo-600 dark:text-indigo-400'>{activePlan.name}</div>
-
+					{dayData.planWeek && (
+						<div className='text-xs text-slate-500 dark:text-slate-400 mt-0.5'>
+							Week {dayData.planWeek} of {Math.ceil(activePlan.durationDays / 7)}
+							{dayData.nutritionCycle ? ` (Nutrition Cycle ${dayData.nutritionCycle === 1 ? "A" : "B"})` : ""}
+						</div>
+					)}
 					{dayData.restDay && (
 						<div className='text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md mt-1 inline-block'>
 							{t("rest_day" as any) || "Rest Day"}
@@ -506,7 +516,9 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 							<Utensils size={24} />
 						</div>
 
-						<h3 className='text-xl font-bold text-slate-800 dark:text-white'>{t("nutrition" as any) || "Nutrition"}</h3>
+						<h3 className='text-xl font-bold text-slate-800 dark:text-white'>
+							{dayData.nutritionPlanName || dayData.nutrition?.name || t("nutrition" as any) || "Nutrition"}
+						</h3>
 					</div>
 
 					{!dayData.nutrition?.meals?.length ? (

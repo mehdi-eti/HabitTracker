@@ -200,7 +200,9 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 										{dayData?.nutrition && (
 											<div className='flex items-center gap-1 text-[10px] text-slate-600 dark:text-slate-400'>
 												<Utensils size={10} className={nRecord ? "text-green-500" : ""} />
-												<span>{dayData.nutrition.meals?.length || 0} meals</span>
+												<span className='truncate' title={dayData.nutritionPlanName || `${dayData.nutrition.meals?.length || 0} meals`}>
+													{dayData.nutritionPlanName || `${dayData.nutrition.meals?.length || 0} meals`}
+												</span>
 											</div>
 										)}
 									</div>

@@ -49,6 +49,11 @@ export interface NutritionFoodRecord {
   foodId: string;
   plannedQuantity: string;
   consumed: boolean;
+  planId?: string;
+  planWeek?: number;
+  nutritionCycle?: number;
+  date?: string;
+  mealId?: string;
 }
 
 export interface ExtraFoodRecord {

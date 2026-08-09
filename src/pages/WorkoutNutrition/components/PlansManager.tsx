@@ -1,17 +1,19 @@
 /** @format */
 
-import React from "react";
+import React, { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Upload, Play, Archive, Trash2, Dumbbell } from "lucide-react";
+import { Upload, Play, Archive, Trash2, Dumbbell, Edit } from "lucide-react";
 
 import { db } from "@/src/lib/db";
 import { WorkoutPlan } from "@/src/types/workout";
 import { useI18n } from "@/src/contexts/I18nContext";
 import { importPlanFromJson } from "@/src/utils/planImport";
+import EditPlanModal from "./EditPlanModal";
 
 export default function PlansManager() {
 	const plans = useLiveQuery(() => db.workoutPlans.toArray()) || [];
 	const { t } = useI18n();
+	const [editingPlan, setEditingPlan] = useState<WorkoutPlan | null>(null);
 
 	const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
@@ -83,6 +85,12 @@ export default function PlansManager() {
 						</div>
 						<div className='flex gap-2'>
 							<button
+								onClick={() => setEditingPlan(activePlan)}
+								className='p-2 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-800 rounded-lg transition-colors'
+								title='Edit Nutrition Plans'>
+								<Edit size={18} />
+							</button>
+							<button
 								onClick={() => archivePlan(activePlan.id)}
 								className='p-2 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-800 rounded-lg transition-colors'
 								title='Archive Plan'>
@@ -107,6 +115,12 @@ export default function PlansManager() {
 								<div className='flex justify-between items-center mt-auto border-t border-slate-100 dark:border-slate-800 pt-3'>
 									<span className='text-xs font-medium text-slate-500 capitalize'>{plan.status}</span>
 									<div className='flex gap-1'>
+										<button
+											onClick={() => setEditingPlan(plan)}
+											className='p-1.5 text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 rounded-md'
+											title='Edit Plan'>
+											<Edit size={16} />
+										</button>
 										<button
 											onClick={() => activatePlan(plan)}
 											className='p-1.5 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-md'
@@ -138,6 +152,8 @@ export default function PlansManager() {
 					</p>
 				</div>
 			)}
+			
+			{editingPlan && <EditPlanModal plan={editingPlan} onClose={() => setEditingPlan(null)} />}
 		</div>
 	);
 }

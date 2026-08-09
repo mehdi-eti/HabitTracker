@@ -25,7 +25,7 @@ export async function importPlanFromJson(jsonString: string, makeActive: boolean
 
 	let days = json.days || planData.days;
 
-	if (!days && json.workout?.schedule) {
+	if (!days && (json.workout?.schedule || json.nutrition?.schedule || json.nutrition?.weeklyPlans)) {
 		days = [];
 		const durationDays = Number(planData.durationDays);
 		const start = new Date(`${startDateStr}T00:00:00`);
@@ -38,18 +38,38 @@ export async function importPlanFromJson(jsonString: string, makeActive: boolean
 			const dayOfWeek = weekDays[date.getDay()];
 
 			const workoutForDay = json.workout?.schedule?.[dayOfWeek];
-			const nutritionForDay = json.nutrition?.schedule?.[dayOfWeek];
+			
+			const planWeek = Math.floor((i - 1) / 7) + 1;
+			const nutritionCycle = ((planWeek - 1) % 2) + 1;
+			
+			let nutritionForDay = [];
+			let nutritionPlanName = "";
+			
+			if (json.nutrition?.weeklyPlans) {
+				const weekKey = nutritionCycle === 1 ? "week1" : "week2";
+				const weeklyPlan = json.nutrition.weeklyPlans[weekKey];
+				if (weeklyPlan) {
+					nutritionForDay = weeklyPlan.schedule?.[dayOfWeek];
+					nutritionPlanName = weeklyPlan.name;
+				}
+			} else if (json.nutrition?.schedule) {
+				nutritionForDay = json.nutrition.schedule[dayOfWeek];
+			}
 
 			const restDay = !workoutForDay || workoutForDay.length === 0;
 
 			days.push({
 				dayIndex: i,
+				planWeek: planWeek,
+				nutritionCycle: nutritionCycle,
+				nutritionPlanName: nutritionPlanName,
 				restDay: restDay,
 				workout: {
 					title: workoutForDay?.length > 0 ? `Workout` : "Rest Day",
 					exercises: workoutForDay || [],
 				},
 				nutrition: {
+					name: nutritionPlanName,
 					meals: nutritionForDay || [],
 				},
 			});
