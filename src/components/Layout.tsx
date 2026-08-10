@@ -5,7 +5,18 @@ import { useAuth } from "../contexts/AuthContext";
 import { useI18n } from "../contexts/I18nContext";
 import { useTheme, AVAILABLE_THEMES } from "../contexts/ThemeContext";
 import { useNotifications } from "../hooks/useNotifications";
-import { LayoutDashboard, ListTodo, BarChart2, Calendar as CalendarIcon, Settings as SettingsIcon, LogOut, Moon, Sun, Languages, Dumbbell } from "lucide-react";
+import {
+	LayoutDashboard,
+	ListTodo,
+	BarChart2,
+	Calendar as CalendarIcon,
+	Settings as SettingsIcon,
+	LogOut,
+	Moon,
+	Sun,
+	Languages,
+	Dumbbell,
+} from "lucide-react";
 import { cn } from "../lib/utils";
 import { useMemo } from "react";
 
@@ -46,8 +57,8 @@ export default function Layout() {
 				<div className='p-4 flex md:flex-col items-center md:items-stretch justify-between h-full'>
 					<div className='flex md:flex-col gap-2 md:gap-4 flex-1 md:flex-none overflow-x-auto md:overflow-x-visible items-center md:items-stretch px-2 md:px-0'>
 						<div className='hidden md:flex items-center gap-3 mb-6 px-2 md:mt-2'>
-							<div className='w-full h-15 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-xl'>
-								Daily Tracker
+							<div className='w-full flex items-center justify-center'>
+								<img src='/logo.png' alt='Reboot Reset' className='max-h-24 object-contain rounded-xl' />
 							</div>
 						</div>
 

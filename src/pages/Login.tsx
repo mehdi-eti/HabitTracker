@@ -30,8 +30,8 @@ export default function Login() {
 				<div className='absolute top-0 left-0 w-full h-2 bg-indigo-600' />
 
 				<div className='text-center space-y-2'>
-					<div className='mx-auto p-5 w-fit bg-indigo-50 dark:bg-indigo-900/30 rounded-2xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-bold text-3xl'>
-						Habit Tracker
+					<div className='mx-auto p-5 w-fit rounded-2xl flex items-center justify-center'>
+						<img src='/logo.png' alt='Reboot Reset' className='max-h-32 object-contain' />
 					</div>
 				</div>
 

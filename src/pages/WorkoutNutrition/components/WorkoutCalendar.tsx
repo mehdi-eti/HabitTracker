@@ -7,6 +7,8 @@ import { CalendarDays, Dumbbell, Utensils, ChevronLeft, ChevronRight, Upload, Pl
 import { db } from "@/src/lib/db";
 import { useI18n } from "@/src/contexts/I18nContext";
 import { importPlanFromJson } from "@/src/utils/planImport";
+import DailyProgressModal from "./DailyProgressModal";
+import { getDayDataFromPlan } from "@/src/utils/planData";
 
 export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPlans?: () => void }) {
 	const activePlan = useLiveQuery(() => db.workoutPlans.where("status").equals("active").first());
@@ -20,6 +22,7 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 	const { t } = useI18n();
 
 	const [currentDate, setCurrentDate] = useState(new Date());
+	const [selectedReportDate, setSelectedReportDate] = useState<string | null>(null);
 
 	const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
 	const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
@@ -156,22 +159,28 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 					date.setDate(date.getDate() + dayIndex - 1);
 					const dateStr = date.toISOString().split("T")[0];
 
-					const dayData = planVersion.data?.days?.find((d: any) => d.dayIndex === dayIndex);
+					const dayData = getDayDataFromPlan(dateStr, dayIndex, planVersion);
 					const wRecord = workoutRecords?.find((r) => r.date === dateStr);
 					const nRecord = nutritionRecords?.find((r) => r.date === dateStr);
 
 					const isToday = dateStr === new Date().toISOString().split("T")[0];
 					const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+					const isFuture = !isToday && !isPast;
 
 					return (
 						<div
 							key={dayIndex}
+							onClick={() => {
+								if (!isFuture) setSelectedReportDate(dateStr);
+							}}
 							className={`border rounded-xl p-3 flex flex-col h-32 transition-colors ${
+								isFuture ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:border-indigo-400 dark:hover:border-indigo-600"
+							} ${
 								isToday
-									? "border-indigo-500 bg-indigo-50/30 dark:bg-indigo-900/10"
+									? "border-indigo-500 bg-indigo-50/30 dark:bg-indigo-900/10 shadow-sm"
 									: isPast
-										? "border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 opacity-70"
-										: "border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900"
+										? "border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50"
+										: "border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900"
 							}`}>
 							<div className='flex justify-between items-start mb-2'>
 								<span className={`text-xs font-bold ${isToday ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500"}`}>
@@ -200,7 +209,9 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 										{dayData?.nutrition && (
 											<div className='flex items-center gap-1 text-[10px] text-slate-600 dark:text-slate-400'>
 												<Utensils size={10} className={nRecord ? "text-green-500" : ""} />
-												<span className='truncate' title={dayData.nutritionPlanName || `${dayData.nutrition.meals?.length || 0} meals`}>
+												<span
+													className='truncate'
+													title={dayData.nutritionPlanName || `${dayData.nutrition.meals?.length || 0} meals`}>
 													{dayData.nutritionPlanName || `${dayData.nutrition.meals?.length || 0} meals`}
 												</span>
 											</div>
@@ -212,6 +223,15 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 					);
 				})}
 			</div>
+			{selectedReportDate && (
+				<DailyProgressModal
+					plan={activePlan}
+					planVersion={planVersion}
+					selectedDate={selectedReportDate}
+					onClose={() => setSelectedReportDate(null)}
+					onSelectDate={(dateStr) => setSelectedReportDate(dateStr)}
+				/>
+			)}
 		</div>
 	);
 }

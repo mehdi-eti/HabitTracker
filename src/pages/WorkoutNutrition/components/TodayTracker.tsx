@@ -8,6 +8,7 @@ import { db } from "@/src/lib/db";
 import { useI18n } from "@/src/contexts/I18nContext";
 import { importPlanFromJson } from "@/src/utils/planImport";
 import { Dumbbell, Utensils, CheckCircle, Circle, Plus, X, Upload, AlertCircle } from "lucide-react";
+import { getDayDataFromPlan } from "@/src/utils/planData";
 
 interface TodayTrackerProps {
 	onNavigateToPlans?: () => void;
@@ -115,7 +116,7 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 
 	const dayIndex = startDate && activePlan ? Math.floor((currentDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 0;
 
-	const dayData = planVersion?.data?.days?.find((day: any) => day.dayIndex === dayIndex) ?? null;
+	const dayData = planVersion ? getDayDataFromPlan(today, dayIndex, planVersion) : null;
 
 	/*
     Create today's records only after all required data is available.
@@ -181,9 +182,9 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 										exerciseId: exercise.id,
 										setIndex,
 										plannedReps: set.plannedReps ?? set.targetReps ?? 0,
-										actualReps: set.plannedReps ?? set.targetReps ?? 0,
+										actualReps: 0,
 										plannedWeight: set.plannedWeight ?? set.targetWeightKg ?? set.targetWeight ?? 0,
-										actualWeight: set.plannedWeight ?? set.targetWeightKg ?? set.targetWeight ?? 0,
+										actualWeight: 0,
 									});
 								}
 							}
@@ -209,11 +210,12 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 										foodId: food.id,
 										plannedQuantity: food.plannedQuantity ?? food.amount ?? 0,
 										consumed: false,
+										consumedMoreThanPlanned: false,
 										planId: activePlan.id,
 										planWeek: dayData.planWeek,
 										nutritionCycle: dayData.nutritionCycle,
 										date: today,
-										mealId: meal.id || meal.name
+										mealId: meal.id || meal.name,
 									});
 								}
 							}
