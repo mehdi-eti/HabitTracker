@@ -226,17 +226,17 @@ body {
    Crisp, tech-focused, and ultra-readable
    ============================================ */
 :root[data-theme="nordic-frost"] {
-	--color-slate-50: #f0f9ff;
-	--color-slate-100: #e0f2fe;
-	--color-slate-200: #bae6fd;
-	--color-slate-300: #7dd3fc;
-	--color-slate-400: #38bdf8;
-	--color-slate-500: #0284c7;
-	--color-slate-600: #0369a1;
-	--color-slate-700: #075985;
-	--color-slate-800: #0c4a6e;
-	--color-slate-900: #082f49;
-	--color-slate-950: #031828;
+	--color-slate-50: #f8fafc;
+	--color-slate-100: #f1f5f9;
+	--color-slate-200: #e2e8f0;
+	--color-slate-300: #cbd5e1;
+	--color-slate-400: #94a3b8;
+	--color-slate-500: #64748b;
+	--color-slate-600: #475569;
+	--color-slate-700: #334155;
+	--color-slate-800: #1e293b;
+	--color-slate-900: #0f172a;
+	--color-slate-950: #020617;
 
 	--color-indigo-50: #ecfeff;
 	--color-indigo-100: #cffafe;
