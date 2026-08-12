@@ -1,18 +1,20 @@
 /** @format */
 
-import React, { useState, useRef } from "react";
-import { useI18n } from "../contexts/I18nContext";
-import { useTheme, AVAILABLE_THEMES } from "../contexts/ThemeContext";
-import { useAuth } from "../contexts/AuthContext";
-import { db } from "../lib/db";
-import { useLiveQuery } from "dexie-react-hooks";
-import { Download, Upload, Globe, Bell, Database, LogOut, AlertTriangle, ChevronDown } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import { cn } from "../lib/utils";
+import React, { useState, useRef } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
+
+import { db } from "@/src/lib/db";
+import { cn } from "@/src/lib/utils";
+import { useI18n } from "@/src/contexts/I18nContext";
+import { useAuth } from "@/src/contexts/AuthContext";
+import { useTheme, AVAILABLE_THEMES } from "@/src/contexts/ThemeContext";
+import { createFullBackup, restoreFullBackup, clearAllData } from "@/src/lib/backup";
+import { Download, Upload, Globe, Bell, Database, LogOut, AlertTriangle, ChevronDown } from "lucide-react";
 
 export default function Settings() {
 	const { t, lang, setLang } = useI18n();
-	const { theme, toggleTheme, setTheme } = useTheme();
+	const { theme, setTheme } = useTheme();
 	const { logout } = useAuth();
 	const navigate = useNavigate();
 	const settings = useLiveQuery(() => db.settings.get("global"));
@@ -20,17 +22,18 @@ export default function Settings() {
 	const [showAdvancedExport, setShowAdvancedExport] = useState(false);
 
 	const handleExportFull = async () => {
-		const habits = await db.habits.toArray();
-		const records = await db.dayRecords.toArray();
-		const sets = await db.settings.toArray();
+		const backup = await createFullBackup();
+		const blob = new Blob([JSON.stringify(backup, null, 2)], {
+			type: "application/json",
+		});
 
-		const data = { habits, records, settings: sets };
-		const blob = new Blob([JSON.stringify(data)], { type: "application/json" });
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement("a");
+
 		a.href = url;
-		a.download = `habit21-export-${`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(new Date().getDate()).padStart(2, "0")}`}.json`;
+		a.download = `habit21-backup-${backup.exportedAt.slice(0, 10)}.json`;
 		a.click();
+
 		URL.revokeObjectURL(url);
 	};
 
@@ -57,11 +60,18 @@ export default function Settings() {
 		reader.onload = async (event) => {
 			try {
 				const data = JSON.parse(event.target?.result as string);
-				if (data.habits) await db.habits.bulkPut(data.habits);
-				if (data.records) await db.dayRecords.bulkPut(data.records);
-				if (data.settings) await db.settings.bulkPut(data.settings);
+				if (data.backupVersion) {
+					// It's a full backup
+					await restoreFullBackup(data);
+				} else {
+					// Legacy backup
+					if (data.habits) await db.habits.bulkPut(data.habits);
+					if (data.records) await db.dayRecords.bulkPut(data.records);
+					if (data.settings) await db.settings.bulkPut(data.settings);
+				}
 				alert(t("import_success"));
 			} catch (err) {
+				console.error(err);
 				alert(t("import_error"));
 			}
 		};
@@ -81,9 +91,12 @@ export default function Settings() {
 	};
 
 	const handleResetData = async () => {
-		if (confirm("WARNING: This will permanently delete all your habits and records. Are you absolutely sure?")) {
-			await db.habits.clear();
-			await db.dayRecords.clear();
+		if (
+			confirm(
+				"WARNING: This will permanently delete all your data including habits, records, workout plans, and nutrition logs. Are you absolutely sure?",
+			)
+		) {
+			await clearAllData();
 			alert("All data has been erased.");
 		}
 	};

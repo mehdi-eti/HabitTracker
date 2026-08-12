@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Upload, Play, Archive, Trash2, Dumbbell, Edit, Download } from "lucide-react";
 import { db } from "@/src/lib/db";
-import { WorkoutPlan } from "@/src/types/workout";
+import { WorkoutPlan, PlanJsonExport } from "@/src/types/workout";
 import { useI18n } from "@/src/contexts/I18nContext";
 import { importPlanFromJson } from "@/src/utils/planImport";
 import EditPlanModal from "./EditPlanModal";
@@ -31,7 +31,7 @@ export default function PlansManager() {
 	};
 
 	const downloadExampleJson = () => {
-		const exampleData = {
+		const exampleData: PlanJsonExport = {
 			plan: {
 				name: "Sample 4-Week Plan",
 				description: "A comprehensive sample plan showcasing all features including weekly alternating routines.",

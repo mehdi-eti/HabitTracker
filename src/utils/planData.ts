@@ -1,15 +1,8 @@
 /** @format */
 
-type TExercise = {
-	targetSets: number;
-	targetReps: number;
-	targetWeight: number;
-	targetWeightKg: number;
-	sets: number;
-	durationMinutes: number;
-};
+import { PlanJsonExercise, PlanJsonDay } from "../types/workout";
 
-const normalizeExercises = (exercises: TExercise[]) => {
+const normalizeExercises = (exercises: PlanJsonExercise[] | any[]): PlanJsonExercise[] => {
 	if (!Array.isArray(exercises)) return [];
 	return exercises.map((ex) => {
 		if (!ex.sets && ex.targetSets) {
@@ -49,10 +42,14 @@ export const getDayDataFromPlan = (dateString: string, dIndex: number, pVersion:
 	if (pVersion.data.days && pVersion.data.days.length > 0) {
 		const found = pVersion.data.days.find((d: any) => d.dayIndex === dIndex);
 		if (found) {
-			if (found.workout && found.workout.exercises) {
-				found.workout.exercises = normalizeExercises(found.workout.exercises);
+			const result = { ...found };
+			if (result.workout) {
+				result.workout = {
+					...result.workout,
+					exercises: result.workout.exercises ? normalizeExercises(result.workout.exercises) : [],
+				};
 			}
-			return found;
+			return result;
 		}
 	}
 

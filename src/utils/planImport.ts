@@ -3,11 +3,11 @@
 import { v4 as uuidv4 } from "uuid";
 
 import { db } from "@/src/lib/db";
-import { WorkoutPlan } from "@/src/types/workout";
+import { WorkoutPlan, PlanJsonExport, PlanJsonData, PlanJsonDay, PlanJsonFood } from "@/src/types/workout";
 
 export async function importPlanFromJson(jsonString: string, makeActive: boolean = false, fallbackStartDate: string = "") {
-	const json = JSON.parse(jsonString);
-	const planData = json.plan ?? json;
+	const json: PlanJsonExport = JSON.parse(jsonString);
+	const planData: PlanJsonData = json.plan ?? (json as any as PlanJsonData);
 
 	if (!planData.name) {
 		throw new Error("Plan name is required.");
@@ -24,7 +24,7 @@ export async function importPlanFromJson(jsonString: string, makeActive: boolean
 	const today = fallbackStartDate || `${_t.getFullYear()}-${String(_t.getMonth() + 1).padStart(2, "0")}-${String(_t.getDate()).padStart(2, "0")}`;
 	const startDateStr = planData.startDate || today;
 
-	let days = json.days || planData.days;
+	let days: PlanJsonDay[] = json.days || planData.days || [];
 
 	if (!days && (json.workout?.schedule || json.workout?.weeklyPlans || json.nutrition?.schedule || json.nutrition?.weeklyPlans)) {
 		days = [];
@@ -49,19 +49,19 @@ export async function importPlanFromJson(jsonString: string, makeActive: boolean
 					workoutForDay = weeklyPlan.schedule?.[dayOfWeek];
 				}
 			}
-			
+
 			const planWeek = Math.floor((i - 1) / 7) + 1;
 			const nutritionCycle = ((planWeek - 1) % 2) + 1;
-			
-			let nutritionForDay = [];
-			let nutritionPlanName = "";
-			
+
+			let nutritionForDay: PlanJsonFood[] | undefined = [];
+			let nutritionPlanName: string = "";
+
 			if (json.nutrition?.weeklyPlans) {
 				const weekKey = nutritionCycle === 1 ? "week1" : "week2";
 				const weeklyPlan = json.nutrition.weeklyPlans[weekKey];
 				if (weeklyPlan) {
 					nutritionForDay = weeklyPlan.schedule?.[dayOfWeek];
-					nutritionPlanName = weeklyPlan.name;
+					nutritionPlanName = weeklyPlan.name ?? "";
 				}
 			} else if (json.nutrition?.schedule) {
 				nutritionForDay = json.nutrition.schedule[dayOfWeek];
@@ -76,11 +76,11 @@ export async function importPlanFromJson(jsonString: string, makeActive: boolean
 				nutritionPlanName: nutritionPlanName,
 				restDay: restDay,
 				workout: {
-					title: workoutForDay?.length > 0 ? `Workout` : "Rest Day",
+					title: workoutForDay && workoutForDay?.length > 0 ? `Workout` : "Rest Day",
 					exercises: workoutForDay || [],
 				},
 				nutrition: {
-					name: nutritionPlanName,
+					name: nutritionPlanName ?? "",
 					meals: nutritionForDay || [],
 				},
 			});
@@ -105,7 +105,7 @@ export async function importPlanFromJson(jsonString: string, makeActive: boolean
 
 		const plan: WorkoutPlan = {
 			id: planId,
-			name: planData.name,
+			name: planData.name ?? "Unnamed Plan",
 			description: planData.description ?? "",
 			createdAt: now,
 			status: makeActive ? "active" : "archived",

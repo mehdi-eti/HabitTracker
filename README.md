@@ -1,143 +1,72 @@
 <!-- @format -->
 
-# Habit Tracker App
+# Reboot Reset (Habit & Fitness Tracker)
 
-A modern, client-side habit tracking web application built with React. The app helps users track habits with streaks, calendars, analytics, notes, reminders, import/export, and multilingual theme support.
+A modern, offline-first web application built with React to track habits, workouts, and nutrition. Engineered for a seamless, local-first experience with robust data privacy.
 
 ## Features
 
-- Login with fixed credentials (`admin` / `admin`).
-- Dashboard with overview cards and habit progress.
-- Habit management: create, edit, delete, archive, restore, and re-start completed habits.
-- 21-day tracking with support for selected-days mode.
-- Streak tracking and completion statistics.
-- Daily calendar and history views.
-- Monthly calendar page with habit events and detail modal.
-- Rich text habit notes.
-- Reminder settings with global and per-habit times.
-- Theme support, including dark mode and multiple themes.
-- Language switching between English and Persian.
-- JSON import and export.
-- Client-side persistence using IndexedDB.
+- **Comprehensive Habit Tracking**: Create, edit, and track habits (consecutive or selected days). Monitor streaks, history, and analytics.
+- **Workout & Nutrition Programs**: Complete management of fitness plans. Import complex JSON workout schedules, track sets, reps, weights, and daily nutrition targets with a dynamic weekly/monthly cycle system.
+- **Local-First Architecture**: All data lives on the device using IndexedDB, guaranteeing privacy, offline availability, and instantaneous load times.
+- **Internationalization (i18n)**: Full multi-language support (English, Persian, Turkish).
+- **Advanced Theming**: Multiple aesthetic themes including Light, Dark, Midnight Blue, Warm Beige, Monochrome, Emerald Forest, Nordic Frost, and Rose Gold.
+- **Data Portability**: Unified, atomic backup and restore system. Export your entire database to a JSON file and restore it on any device.
 
-## Tech Stack
+## Architecture & Tech Stack
 
-- React
-- IndexedDB
-- Context API / React Hooks
-- CSS Modules or Tailwind CSS
-- Notification API
-- Vite or Create React App
+- **Core**: React 19, Vite, TypeScript
+- **Styling & UI**: Tailwind CSS, Lucide React (Icons), Recharts (Data Visualization)
+- **Local Database**: [Dexie.js](https://dexie.org/) (Reactive wrapper around IndexedDB)
+- **State Management**: React Context (`ThemeContext`, `I18nContext`, `AuthContext`) and `dexie-react-hooks` for reactive database subscriptions.
+- **Routing**: React Router DOM
 
-## Pages
+## Database Schema (Dexie)
 
-### Login
+The application maintains a robust relational schema entirely in the browser:
 
-Users log in with the fixed credentials:
+- `habits`, `dayRecords` (Habit tracking)
+- `workoutPlans`, `workoutPlanVersions` (Versioning and configuration of fitness plans)
+- `workoutDailyRecords`, `workoutSetRecords` (Daily progress, reps, weights)
+- `nutritionDailyRecords`, `nutritionFoodRecords`, `extraFoodRecords` (Dietary tracking)
+- `weeklyProgressRecords`, `workoutNutritionNotes` (Analytics and notes)
+- `settings` (User preferences)
 
-- Username: `admin`
-- Password: `admin`
+## Project Structure
 
-### Dashboard
+```text
+/src
+├── components/         # Shared UI components (Layout, Modals, Forms)
+├── contexts/           # React Context providers (Auth, I18n, Theme)
+├── hooks/              # Custom React hooks
+├── lib/                # Core utilities (db.ts, backup.ts, utils.ts)
+├── pages/              # Main route views (Dashboard, Settings, WorkoutNutrition)
+├── types/              # TypeScript interfaces (workout.ts, index.ts)
+└── utils/              # Helper functions (planData.ts, planImport.ts)
+```
 
-Shows:
+## Security & Authentication
 
-- Active habits
-- Today’s todos
-- Progress cards
-- Calendar preview
-- Analytics widgets
-- Quick actions
+- The app utilizes a lightweight local authentication layer (default: `admin`/`admin`) to protect the dashboard.
+- No data is sent to external servers.
 
-### Habits
+## Development
 
-A dedicated habit management page with tabs for:
-
-- Active Habits
-- Completed Habits
-- Archived Habits
-- Deleted Habits
-
-### History & Stats
-
-Shows:
-
-- Completion trends
-- Streak statistics
-- Habit history
-- Summary analytics
-
-### Calendar
-
-A Google Calendar-like page that displays habits on a monthly calendar with:
-
-- Colored habit bars
-- Day highlighting
-- Filters by status and habit type
-- Detail modal on click
-- Weekly and monthly completion stats
-
-### Settings
-
-Includes:
-
-- Theme switching
-- Language switching
-- Reminder configuration
-- Import / export options
-
-## Habit Modes
-
-### Consecutive
-
-Tracks a habit as a daily consecutive streak.
-
-### Selected Days
-
-Tracks a habit only on selected weekdays. Non-selected days are ignored in streak calculations and reminders.
-
-## Data Storage
-
-All user data is stored locally in the browser using IndexedDB, including:
-
-- Habits
-- Daily records
-- Settings
-- Theme and language preferences
-- Reminder settings
-
-## Import and Export
-
-The app supports JSON export and import to allow:
-
-- Backup and restore
-- Transfer between devices
-- Test data loading
-
-## Reminder Behavior
-
-- Global reminder time can be set for all habits.
-- Each habit can override the global reminder time.
-- Selected-days habits only trigger reminders on selected days.
-- Reminders should only be sent for the current day after refresh or reopening the app.
-
-## Development Notes
-
-This app is designed to run fully on the client side and does not require a backend.
-
-## Setup
+### Setup
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Build
+### Build
+
+Produces an optimized production build in the `dist` directory.
 
 ```bash
 npm run build
 ```
 
-## License
+## Data Management & JSON Schemas
 
-This project is for personal or internal use unless a license is added.
+Workout and Nutrition plans can be imported dynamically via strict JSON interfaces (`PlanJsonExport`, `PlanJsonData`, `PlanJsonExercise`, etc.). Check `src/types/workout.ts` for the exact schema required to load custom fitness plans into the application.

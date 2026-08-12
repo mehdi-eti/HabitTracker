@@ -1,13 +1,15 @@
 /** @format */
 
 import { useState } from "react";
-import { X, CalendarDays, History as HistoryIcon, CheckCircle2, XCircle, Check, FileText } from "lucide-react";
-import { Habit } from "../types";
-import { cn, getTodayStr } from "../lib/utils";
-import { format, parseISO, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, addMonths, subMonths } from "date-fns";
+import DOMPurify from "dompurify";
 import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "../lib/db";
+import { X, CalendarDays, History as HistoryIcon, CheckCircle2, XCircle, Check, FileText } from "lucide-react";
+import { format, parseISO, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, addMonths, subMonths } from "date-fns";
+
+import { db } from "@/src/lib/db";
+import { Habit } from "@/src/types";
 import { CATEGORIES } from "./HabitModal";
+import { cn, getTodayStr } from "@/src/lib/utils";
 
 interface HabitDetailModalProps {
 	habit: Habit;
@@ -263,7 +265,9 @@ export default function HabitDetailModal({ habit, onClose }: HabitDetailModalPro
 																	<FileText size={14} className='mt-0.5 shrink-0' />
 																	<div
 																		className='prose prose-sm dark:prose-invert max-w-none'
-																		dangerouslySetInnerHTML={{ __html: record.note || "" }}
+																		dangerouslySetInnerHTML={{
+																			__html: DOMPurify.sanitize(record.note || ""),
+																		}}
 																	/>
 																</div>
 															</div>
