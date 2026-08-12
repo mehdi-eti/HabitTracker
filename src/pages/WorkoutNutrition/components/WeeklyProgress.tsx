@@ -12,7 +12,7 @@ export default function WeeklyProgress() {
 	const records = useLiveQuery(() => db.weeklyProgressRecords.orderBy("date").toArray()) || [];
 	const { t } = useI18n();
 
-	const [date, setDate] = useState(new Date().toISOString().split("T")[0]);
+	const [date, setDate] = useState(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(new Date().getDate()).padStart(2, "0")}`);
 	const [weight, setWeight] = useState("");
 	const [chest, setChest] = useState("");
 	const [waist, setWaist] = useState("");

@@ -1,11 +1,59 @@
 /** @format */
 
+type TExercise = {
+	targetSets: number;
+	targetReps: number;
+	targetWeight: number;
+	targetWeightKg: number;
+	sets: number;
+	durationMinutes: number;
+};
+
+const normalizeExercises = (exercises: TExercise[]) => {
+	if (!Array.isArray(exercises)) return [];
+	return exercises.map((ex) => {
+		if (!ex.sets && ex.targetSets) {
+			return {
+				...ex,
+				sets: Array.from({ length: ex.targetSets }).map(() => ({
+					plannedReps: ex.targetReps || 0,
+					plannedWeight: ex.targetWeight || ex.targetWeightKg || 0,
+					targetReps: ex.targetReps || 0,
+					targetWeight: ex.targetWeight || ex.targetWeightKg || 0,
+				})),
+			};
+		}
+		if (!ex.sets && !ex.targetSets && ex.durationMinutes) {
+			return {
+				...ex,
+				sets: [
+					{
+						plannedReps: 1,
+						targetReps: 1,
+						plannedWeight: 0,
+						targetWeight: 0,
+						durationMinutes: ex.durationMinutes,
+					},
+				],
+			};
+		}
+		return {
+			...ex,
+			sets: ex.sets || [],
+		};
+	});
+};
 export const getDayDataFromPlan = (dateString: string, dIndex: number, pVersion: any) => {
 	if (!pVersion || !pVersion.data) return null;
 
 	if (pVersion.data.days && pVersion.data.days.length > 0) {
 		const found = pVersion.data.days.find((d: any) => d.dayIndex === dIndex);
-		if (found) return found;
+		if (found) {
+			if (found.workout && found.workout.exercises) {
+				found.workout.exercises = normalizeExercises(found.workout.exercises);
+			}
+			return found;
+		}
 	}
 
 	const [yy, mm, dd] = dateString.split("-");
@@ -20,7 +68,18 @@ export const getDayDataFromPlan = (dateString: string, dIndex: number, pVersion:
 	const satFirstIndex = (jsDay + 1) % 7;
 	const weekdayKey = weekdayKeys[satFirstIndex];
 
-	const workoutExercises = pVersion.data.workout?.schedule?.[weekdayKey] || [];
+	let workoutExercises = pVersion.data.workout?.schedule?.[weekdayKey] || [];
+	let workoutPlanName = "";
+	if (pVersion.data.workout?.weeklyPlans) {
+		const numWeeks = Object.keys(pVersion.data.workout.weeklyPlans).length;
+		const workoutCycle = ((planWeek - 1) % numWeeks) + 1;
+		const weekKey = "week" + workoutCycle;
+		const weeklyPlan = pVersion.data.workout.weeklyPlans[weekKey];
+		if (weeklyPlan) {
+			workoutExercises = weeklyPlan.schedule?.[weekdayKey] || [];
+			workoutPlanName = weeklyPlan.name || "";
+		}
+	}
 
 	let nutritionMeals = [];
 	let nutritionPlanName = "";
@@ -38,9 +97,10 @@ export const getDayDataFromPlan = (dateString: string, dIndex: number, pVersion:
 		nutritionCycle,
 		nutritionPlanName,
 		restDay: workoutExercises.length === 0,
+		workoutPlanName,
 		workout: {
 			title: workoutExercises.length > 0 ? "Workout" : "Rest Day",
-			exercises: workoutExercises,
+			exercises: normalizeExercises(workoutExercises),
 		},
 		nutrition: {
 			name: nutritionPlanName,

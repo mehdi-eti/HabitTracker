@@ -140,7 +140,18 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 	}
 
 	const days = Array.from({ length: activePlan.durationDays }, (_, i) => i + 1);
-	const startDate = new Date(activePlan.startDate || new Date());
+
+	let startDate;
+	if (activePlan.startDate) {
+		const [y, m, d] = activePlan.startDate.split("-");
+		startDate = new Date(Number(y), Number(m) - 1, Number(d));
+	} else {
+		startDate = new Date();
+	}
+	startDate.setHours(0, 0, 0, 0);
+
+	const firstDayOfWeek = startDate.getDay();
+	const blanks = Array.from({ length: firstDayOfWeek }, (_, i) => i);
 
 	return (
 		<div className='space-y-6'>
@@ -153,76 +164,120 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 				</div>
 			</div>
 
-			<div className='grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-7 gap-3'>
-				{days.map((dayIndex) => {
-					const date = new Date(startDate);
-					date.setDate(date.getDate() + dayIndex - 1);
-					const dateStr = date.toISOString().split("T")[0];
-
-					const dayData = getDayDataFromPlan(dateStr, dayIndex, planVersion);
-					const wRecord = workoutRecords?.find((r) => r.date === dateStr);
-					const nRecord = nutritionRecords?.find((r) => r.date === dateStr);
-
-					const isToday = dateStr === new Date().toISOString().split("T")[0];
-					const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
-					const isFuture = !isToday && !isPast;
-
-					return (
-						<div
-							key={dayIndex}
-							onClick={() => {
-								if (!isFuture) setSelectedReportDate(dateStr);
-							}}
-							className={`border rounded-xl p-3 flex flex-col h-32 transition-colors ${
-								isFuture ? "opacity-50 cursor-not-allowed" : "cursor-pointer hover:border-indigo-400 dark:hover:border-indigo-600"
-							} ${
-								isToday
-									? "border-indigo-500 bg-indigo-50/30 dark:bg-indigo-900/10 shadow-sm"
-									: isPast
-										? "border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50"
-										: "border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900"
-							}`}>
-							<div className='flex justify-between items-start mb-2'>
-								<span className={`text-xs font-bold ${isToday ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500"}`}>
-									{t("day" as any)} {dayIndex}
-								</span>
-								<span className='text-[10px] text-slate-400'>
-									{date.toLocaleDateString([], { month: "short", day: "numeric" })}
-								</span>
+			<div className='w-full overflow-x-auto pb-4'>
+				<div className='min-w-200'>
+					<div className='grid grid-cols-7 gap-3'>
+						{["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
+							<div key={day} className='text-center text-xs font-bold text-slate-400 uppercase py-2'>
+								{day}
 							</div>
+						))}
 
-							<div className='flex-1'>
-								{dayData?.restDay ? (
-									<div className='text-xs text-slate-400 font-medium h-full flex items-center justify-center bg-slate-50 dark:bg-slate-800/50 rounded-lg'>
-										{t("rest_day" as any) || "Rest"}
+						{blanks.map((blank) => (
+							<div key={`blank-${blank}`} className='h-32 rounded-xl opacity-0'></div>
+						))}
+
+						{days.map((dayIndex) => {
+							const date = new Date(startDate);
+							date.setDate(date.getDate() + dayIndex - 1);
+							const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+							const dayData = getDayDataFromPlan(dateStr, dayIndex, planVersion);
+							const wRecord = workoutRecords?.find((r) => r.date === dateStr);
+							const nRecord = nutritionRecords?.find((r) => r.date === dateStr);
+
+							const todayObj = new Date();
+							const todayStr = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, "0")}-${String(todayObj.getDate()).padStart(2, "0")}`;
+							const isToday = dateStr === todayStr;
+							const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+							const isFuture = !isToday && !isPast;
+
+							return (
+								<div
+									key={dayIndex}
+									onClick={() => {
+										if (!isFuture) setSelectedReportDate(dateStr);
+									}}
+									className={`border rounded-xl p-3 flex flex-col h-32 transition-colors ${
+										isFuture
+											? "opacity-50 cursor-not-allowed"
+											: "cursor-pointer hover:border-indigo-400 dark:hover:border-indigo-600"
+									} ${
+										isToday
+											? "border-indigo-500 bg-indigo-50/30 dark:bg-indigo-900/10 shadow-sm"
+											: isPast
+												? "border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50"
+												: "border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-900"
+									}`}>
+									<div className='flex justify-between items-start mb-2'>
+										<span
+											className={`text-xs font-bold ${isToday ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500"}`}>
+											{t("day" as any)} {dayIndex}
+										</span>
+										<span className='text-[10px] text-slate-400'>
+											{date.toLocaleDateString([], { month: "short", day: "numeric" })}
+										</span>
 									</div>
-								) : (
-									<div className='space-y-1 mt-1'>
-										{dayData?.workout && (
-											<div className='flex items-center gap-1 text-[10px] text-slate-600 dark:text-slate-400'>
-												<Dumbbell size={10} className={wRecord ? "text-green-500" : ""} />
-												<span className='truncate' title={dayData.workout.title}>
-													{dayData.workout.title}
-												</span>
+
+									<div className='flex-1 overflow-hidden'>
+										{dayData?.restDay ? (
+											<div className='text-xs text-slate-400 font-medium h-full flex items-center justify-center bg-slate-50 dark:bg-slate-800/50 rounded-lg'>
+												{t("rest_day" as any) || "Rest"}
+											</div>
+										) : (
+											<div className='space-y-1.5 mt-1'>
+												{dayData?.workout && (
+													<div
+														className={
+															"flex items-center gap-1.5 text-[10px] sm:text-xs " +
+															(wRecord
+																? "text-green-600 dark:text-green-500"
+																: isPast
+																	? "text-red-500 dark:text-red-400 opacity-70 line-through"
+																	: "text-slate-600 dark:text-slate-400")
+														}>
+														<Dumbbell
+															size={12}
+															className={`shrink-0 ${wRecord ? "text-green-500" : isPast ? "text-red-500" : ""}`}
+														/>
+														<span className='truncate font-medium' title={dayData.workout.title}>
+															{dayData.workout.title}
+														</span>
+													</div>
+												)}
+												{dayData?.nutrition && (
+													<div
+														className={
+															"flex items-center gap-1.5 text-[10px] sm:text-xs " +
+															(nRecord
+																? "text-green-600 dark:text-green-500"
+																: isPast
+																	? "text-red-500 dark:text-red-400 opacity-70 line-through"
+																	: "text-slate-600 dark:text-slate-400")
+														}>
+														<Utensils
+															size={12}
+															className={`shrink-0 ${nRecord ? "text-green-500" : isPast ? "text-red-500" : ""}`}
+														/>
+														<span
+															className='truncate font-medium'
+															title={
+																dayData.nutritionPlanName ||
+																`${dayData.nutrition.meals?.length || 0} meals`
+															}>
+															{dayData.nutritionPlanName || `${dayData.nutrition.meals?.length || 0} meals`}
+														</span>
+													</div>
+												)}
 											</div>
 										)}
-										{dayData?.nutrition && (
-											<div className='flex items-center gap-1 text-[10px] text-slate-600 dark:text-slate-400'>
-												<Utensils size={10} className={nRecord ? "text-green-500" : ""} />
-												<span
-													className='truncate'
-													title={dayData.nutritionPlanName || `${dayData.nutrition.meals?.length || 0} meals`}>
-													{dayData.nutritionPlanName || `${dayData.nutrition.meals?.length || 0} meals`}
-												</span>
-											</div>
-										)}
 									</div>
-								)}
-							</div>
-						</div>
-					);
-				})}
+								</div>
+							);
+						})}
+					</div>
+				</div>
 			</div>
+
 			{selectedReportDate && (
 				<DailyProgressModal
 					plan={activePlan}

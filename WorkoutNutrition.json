@@ -3,768 +3,2552 @@
 		"id": "my-fitness-plan",
 		"name": "30-Day Fat Loss and Muscle Retention Plan",
 		"description": "Three weekly full-body resistance sessions with two cardio and abs sessions, combined with two alternating nutrition plans. Goal: reduce body fat while preserving strength and muscle mass.",
-		"startDate": "2026-08-09",
+		"startDate": "2026-08-12",
 		"durationDays": 30
 	},
 	"workout": {
-		"schedule": {
-			"saturday": [
-				{
-					"id": "fb-a-chest-press",
-					"name": "Bench Press / Chest Press Machine",
-					"muscleGroup": "Chest",
-					"notes": "3 sets. RIR 2. Rest 2-3 minutes. Use the machine if barbell pressing is uncomfortable.",
-					"sets": [
+		"programName": "8-Week Recomp & Strength Program",
+		"weeklyPlans": {
+			"week1": {
+				"name": "Week 1 - Base Building",
+				"schedule": {
+					"saturday": [
 						{
-							"setNumber": 1,
+							"id": "w1_sat_01",
+							"name": "Barbell Bench Press",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 180,
+							"tempo": "2-1-X-1",
+							"rir": 2,
+							"substitutions": ["Smith Machine Bench Press", "Machine Chest Press"]
+						},
+						{
+							"id": "w1_sat_02",
+							"name": "Back Squat",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 180,
+							"tempo": "3-1-X-1",
+							"rir": 2,
+							"substitutions": ["Hack Squat", "Belt Squat"]
+						},
+						{
+							"id": "w1_sat_03",
+							"name": "Chest Supported Row",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": "8-10",
+							"restSeconds": 120,
+							"tempo": "2-1-2-1",
+							"rir": 2,
+							"substitutions": ["Seated Cable Row", "Machine Row"]
+						},
+						{
+							"id": "w1_sat_04",
+							"name": "Standing Dumbbell Shoulder Press",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": "8-10",
+							"restSeconds": 120,
+							"tempo": "2-1-X-1",
+							"rir": 2,
+							"substitutions": ["Machine Shoulder Press", "Seated Dumbbell Press"]
+						},
+						{
+							"id": "w1_sat_05",
+							"name": "Cable Lateral Raise",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 2,
+							"substitutions": ["Dumbbell Lateral Raise", "Machine Lateral Raise"]
+						},
+						{
+							"id": "w1_sat_06",
+							"name": "EZ-Bar Curl",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 2,
+							"substitutions": ["Cable Curl", "Dumbbell Curl"]
+						},
+						{
+							"id": "w1_sat_07",
+							"name": "Rope Pressdown",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 2,
+							"substitutions": ["Straight-Bar Pressdown", "Machine Dip"]
+						},
+						{
+							"id": "w1_sat_08",
+							"name": "Hanging Leg Raise",
+							"type": "core",
+							"targetSets": 3,
+							"targetReps": "10-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 2,
+							"substitutions": ["Captain's Chair Knee Raise", "Reverse Crunch"]
+						}
+					],
+					"sunday": [],
+					"monday": [
+						{
+							"id": "w1_mon_01",
+							"name": "Romanian Deadlift",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": "8-10",
+							"restSeconds": 150,
+							"tempo": "3-1-X-1",
+							"rir": 2,
+							"substitutions": ["45-Degree Back Extension", "Smith Machine Romanian Deadlift"]
+						},
+						{
+							"id": "w1_mon_02",
+							"name": "Incline Dumbbell Press",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "8-10",
+							"restSeconds": 120,
+							"tempo": "2-1-X-1",
+							"rir": 2,
+							"substitutions": ["Incline Barbell Press", "Incline Machine Press"]
+						},
+						{
+							"id": "w1_mon_03",
+							"name": "Weighted Pull-Up",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 150,
+							"tempo": "2-1-2-1",
+							"rir": 2,
+							"substitutions": ["Neutral-Grip Lat Pulldown", "Assisted Pull-Up"]
+						},
+						{
+							"id": "w1_mon_04",
+							"name": "Bulgarian Split Squat",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": "8-10",
+							"restSeconds": 120,
+							"tempo": "3-1-1-1",
+							"rir": 2,
+							"substitutions": ["Reverse Lunge", "Leg Press"]
+						},
+						{
+							"id": "w1_mon_05",
+							"name": "Seated Lateral Raise",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 2,
+							"substitutions": ["Dumbbell Lateral Raise", "Cable Lateral Raise"]
+						},
+						{
+							"id": "w1_mon_06",
+							"name": "Reverse Pec Deck",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 2,
+							"substitutions": ["Cable Rear Delt Fly", "Incline Rear Delt Raise"]
+						},
+						{
+							"id": "w1_mon_07",
+							"name": "Incline Dumbbell Curl",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 2,
+							"substitutions": ["Bayesian Cable Curl", "Preacher Curl"]
+						},
+						{
+							"id": "w1_mon_08",
+							"name": "Rope Overhead Triceps Extension",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 2,
+							"substitutions": ["EZ-Bar Overhead Extension", "Machine Triceps Extension"]
+						},
+						{
+							"id": "w1_mon_09",
+							"name": "Cable Crunch",
+							"type": "core",
+							"targetSets": 3,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 2,
+							"substitutions": ["Weighted Reverse Crunch", "Machine Crunch"]
+						}
+					],
+					"tuesday": [],
+					"wednesday": [
+						{
+							"id": "w1_wed_01",
+							"name": "Conventional Deadlift",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": "4-6",
+							"restSeconds": 240,
+							"tempo": "2-1-X-1",
+							"rir": 2,
+							"substitutions": ["Trap-Bar Deadlift", "Block Pull"]
+						},
+						{
+							"id": "w1_wed_02",
+							"name": "Standing Barbell Overhead Press",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 180,
+							"tempo": "2-1-X-1",
+							"rir": 2,
+							"substitutions": ["Seated Dumbbell Press", "Machine Shoulder Press"]
+						},
+						{
+							"id": "w1_wed_03",
+							"name": "Front Squat",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": "6-8",
+							"restSeconds": 180,
+							"tempo": "3-1-X-1",
+							"rir": 2,
+							"substitutions": ["Hack Squat", "Belt Squat"]
+						},
+						{
+							"id": "w1_wed_04",
+							"name": "Wide-Grip Lat Pulldown",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "8-10",
+							"restSeconds": 120,
+							"tempo": "2-1-2-1",
+							"rir": 2,
+							"substitutions": ["Pull-Up", "Neutral-Grip Pulldown"]
+						},
+						{
+							"id": "w1_wed_05",
+							"name": "Incline Rear Delt Raise",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 2,
+							"substitutions": ["Reverse Pec Deck", "Cable Rear Delt Fly"]
+						},
+						{
+							"id": "w1_wed_06",
+							"name": "Dumbbell Shrug",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "10-12",
+							"restSeconds": 90,
+							"tempo": "2-2-2-1",
+							"rir": 2,
+							"substitutions": ["Barbell Shrug", "Machine Shrug"]
+						},
+						{
+							"id": "w1_wed_07",
+							"name": "Bayesian Cable Curl",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 2,
+							"substitutions": ["Incline Dumbbell Curl", "Cable Curl"]
+						},
+						{
+							"id": "w1_wed_08",
+							"name": "Close-Grip Bench Press",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": "6-8",
+							"restSeconds": 150,
+							"tempo": "2-1-X-1",
+							"rir": 2,
+							"substitutions": ["Weighted Dip", "Smith Close-Grip Press"]
+						},
+						{
+							"id": "w1_wed_09",
+							"name": "Ab Wheel Rollout",
+							"type": "core",
+							"targetSets": 3,
+							"targetReps": "8-12",
+							"restSeconds": 90,
+							"tempo": "3-1-2-1",
+							"rir": 2,
+							"substitutions": ["Stability Ball Rollout", "Body Saw"]
+						}
+					],
+					"thursday": [],
+					"friday": []
+				}
+			},
+			"week2": {
+				"name": "Week 2 - Progressive Overload",
+				"schedule": {
+					"saturday": [
+						{
+							"id": "w2_sat_01",
+							"name": "Barbell Bench Press",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 180,
+							"tempo": "2-1-X-1",
+							"rir": 2,
+							"substitutions": ["Smith Machine Bench Press", "Machine Chest Press"]
+						},
+						{
+							"id": "w2_sat_02",
+							"name": "Back Squat",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 180,
+							"tempo": "3-1-X-1",
+							"rir": 2,
+							"substitutions": ["Hack Squat", "Belt Squat"]
+						},
+						{
+							"id": "w2_sat_03",
+							"name": "Chest Supported Row",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": "8-10",
+							"restSeconds": 120,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Seated Cable Row", "Machine Row"]
+						},
+						{
+							"id": "w2_sat_04",
+							"name": "Standing Dumbbell Shoulder Press",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": "8-10",
+							"restSeconds": 120,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Machine Shoulder Press", "Seated Dumbbell Press"]
+						},
+						{
+							"id": "w2_sat_05",
+							"name": "Cable Lateral Raise",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Dumbbell Lateral Raise", "Machine Lateral Raise"]
+						},
+						{
+							"id": "w2_sat_06",
+							"name": "EZ-Bar Curl",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Cable Curl", "Dumbbell Curl"]
+						},
+						{
+							"id": "w2_sat_07",
+							"name": "Rope Pressdown",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Straight-Bar Pressdown", "Machine Dip"]
+						},
+						{
+							"id": "w2_sat_08",
+							"name": "Hanging Leg Raise",
+							"type": "core",
+							"targetSets": 3,
+							"targetReps": "10-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Captain's Chair Knee Raise", "Reverse Crunch"]
+						}
+					],
+					"sunday": [],
+					"monday": [
+						{
+							"id": "w2_mon_01",
+							"name": "Romanian Deadlift",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "8",
+							"restSeconds": 150,
+							"tempo": "3-1-X-1",
+							"rir": 2,
+							"substitutions": ["45-Degree Back Extension", "Smith Machine Romanian Deadlift"]
+						},
+						{
+							"id": "w2_mon_02",
+							"name": "Incline Dumbbell Press",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "8-10",
+							"restSeconds": 120,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Incline Barbell Press", "Incline Machine Press"]
+						},
+						{
+							"id": "w2_mon_03",
+							"name": "Weighted Pull-Up",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 150,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Neutral-Grip Lat Pulldown", "Assisted Pull-Up"]
+						},
+						{
+							"id": "w2_mon_04",
+							"name": "Bulgarian Split Squat",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": "8-10",
+							"restSeconds": 120,
+							"tempo": "3-1-1-1",
+							"rir": 1,
+							"substitutions": ["Reverse Lunge", "Leg Press"]
+						},
+						{
+							"id": "w2_mon_05",
+							"name": "Seated Lateral Raise",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Dumbbell Lateral Raise", "Cable Lateral Raise"]
+						},
+						{
+							"id": "w2_mon_06",
+							"name": "Reverse Pec Deck",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Cable Rear Delt Fly", "Incline Rear Delt Raise"]
+						},
+						{
+							"id": "w2_mon_07",
+							"name": "Incline Dumbbell Curl",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Bayesian Cable Curl", "Preacher Curl"]
+						},
+						{
+							"id": "w2_mon_08",
+							"name": "Rope Overhead Triceps Extension",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["EZ-Bar Overhead Extension", "Machine Triceps Extension"]
+						},
+						{
+							"id": "w2_mon_09",
+							"name": "Cable Crunch",
+							"type": "core",
+							"targetSets": 3,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Weighted Reverse Crunch", "Machine Crunch"]
+						}
+					],
+					"tuesday": [],
+					"wednesday": [
+						{
+							"id": "w2_wed_01",
+							"name": "Conventional Deadlift",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "4-5",
+							"restSeconds": 240,
+							"tempo": "2-1-X-1",
+							"rir": 2,
+							"substitutions": ["Trap-Bar Deadlift", "Block Pull"]
+						},
+						{
+							"id": "w2_wed_02",
+							"name": "Standing Barbell Overhead Press",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6",
+							"restSeconds": 180,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Seated Dumbbell Press", "Machine Shoulder Press"]
+						},
+						{
+							"id": "w2_wed_03",
+							"name": "Front Squat",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": "6-8",
+							"restSeconds": 180,
+							"tempo": "3-1-X-1",
+							"rir": 1,
+							"substitutions": ["Hack Squat", "Belt Squat"]
+						},
+						{
+							"id": "w2_wed_04",
+							"name": "Wide-Grip Lat Pulldown",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "8-10",
+							"restSeconds": 120,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Pull-Up", "Neutral-Grip Pulldown"]
+						},
+						{
+							"id": "w2_wed_05",
+							"name": "Incline Rear Delt Raise",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Reverse Pec Deck", "Cable Rear Delt Fly"]
+						},
+						{
+							"id": "w2_wed_06",
+							"name": "Dumbbell Shrug",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 90,
+							"tempo": "2-2-2-1",
+							"rir": 1,
+							"substitutions": ["Barbell Shrug", "Machine Shrug"]
+						},
+						{
+							"id": "w2_wed_07",
+							"name": "Bayesian Cable Curl",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Incline Dumbbell Curl", "Cable Curl"]
+						},
+						{
+							"id": "w2_wed_08",
+							"name": "Close-Grip Bench Press",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": "6-8",
+							"restSeconds": 150,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Weighted Dip", "Smith Close-Grip Press"]
+						},
+						{
+							"id": "w2_wed_09",
+							"name": "Ab Wheel Rollout",
+							"type": "core",
+							"targetSets": 3,
+							"targetReps": "8-12",
+							"restSeconds": 90,
+							"tempo": "3-1-2-1",
+							"rir": 1,
+							"substitutions": ["Stability Ball Rollout", "Body Saw"]
+						}
+					],
+					"thursday": [],
+					"friday": []
+				}
+			},
+			"week3": {
+				"name": "Week 3 - Accumulation",
+				"schedule": {
+					"saturday": [
+						{
+							"id": "w3_sat_01",
+							"name": "Barbell Bench Press",
+							"type": "strength",
+							"targetSets": 5,
+							"targetReps": "6",
+							"restSeconds": 210,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Smith Machine Bench Press", "Machine Chest Press"]
+						},
+						{
+							"id": "w3_sat_02",
+							"name": "Back Squat",
+							"type": "strength",
+							"targetSets": 5,
+							"targetReps": "6",
+							"restSeconds": 210,
+							"tempo": "3-1-X-1",
+							"rir": 1,
+							"substitutions": ["Hack Squat", "Belt Squat"]
+						},
+						{
+							"id": "w3_sat_03",
+							"name": "Chest Supported Row",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "8-10",
+							"restSeconds": 120,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Seated Cable Row", "Machine Row"]
+						},
+						{
+							"id": "w3_sat_04",
+							"name": "Standing Dumbbell Shoulder Press",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "8",
+							"restSeconds": 120,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Machine Shoulder Press", "Seated Dumbbell Press"]
+						},
+						{
+							"id": "w3_sat_05",
+							"name": "Cable Lateral Raise",
+							"type": "hypertrophy",
+							"targetSets": 5,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Dumbbell Lateral Raise", "Machine Lateral Raise"]
+						},
+						{
+							"id": "w3_sat_06",
+							"name": "EZ-Bar Curl",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Cable Curl", "Dumbbell Curl"]
+						},
+						{
+							"id": "w3_sat_07",
+							"name": "Rope Pressdown",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Straight-Bar Pressdown", "Machine Dip"]
+						},
+						{
+							"id": "w3_sat_08",
+							"name": "Hanging Leg Raise",
+							"type": "core",
+							"targetSets": 3,
+							"targetReps": "10-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Captain's Chair Knee Raise", "Reverse Crunch"]
+						}
+					],
+					"sunday": [],
+					"monday": [
+						{
+							"id": "w3_mon_01",
+							"name": "Romanian Deadlift",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "8",
+							"restSeconds": 180,
+							"tempo": "3-1-X-1",
+							"rir": 1,
+							"substitutions": ["45-Degree Back Extension", "Smith Machine Romanian Deadlift"]
+						},
+						{
+							"id": "w3_mon_02",
+							"name": "Incline Dumbbell Press",
+							"type": "hypertrophy",
+							"targetSets": 5,
+							"targetReps": "8-10",
+							"restSeconds": 120,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Incline Barbell Press", "Incline Machine Press"]
+						},
+						{
+							"id": "w3_mon_03",
+							"name": "Weighted Pull-Up",
+							"type": "strength",
+							"targetSets": 5,
+							"targetReps": "6-8",
+							"restSeconds": 180,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Neutral-Grip Lat Pulldown", "Assisted Pull-Up"]
+						},
+						{
+							"id": "w3_mon_04",
+							"name": "Bulgarian Split Squat",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "8-10",
+							"restSeconds": 120,
+							"tempo": "3-1-1-1",
+							"rir": 1,
+							"substitutions": ["Reverse Lunge", "Leg Press"]
+						},
+						{
+							"id": "w3_mon_05",
+							"name": "Seated Lateral Raise",
+							"type": "hypertrophy",
+							"targetSets": 5,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Dumbbell Lateral Raise", "Cable Lateral Raise"]
+						},
+						{
+							"id": "w3_mon_06",
+							"name": "Reverse Pec Deck",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Cable Rear Delt Fly", "Incline Rear Delt Raise"]
+						},
+						{
+							"id": "w3_mon_07",
+							"name": "Incline Dumbbell Curl",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Bayesian Cable Curl", "Preacher Curl"]
+						},
+						{
+							"id": "w3_mon_08",
+							"name": "Rope Overhead Triceps Extension",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["EZ-Bar Overhead Extension", "Machine Triceps Extension"]
+						},
+						{
+							"id": "w3_mon_09",
+							"name": "Cable Crunch",
+							"type": "core",
+							"targetSets": 3,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Weighted Reverse Crunch", "Machine Crunch"]
+						}
+					],
+					"tuesday": [],
+					"wednesday": [
+						{
+							"id": "w3_wed_01",
+							"name": "Conventional Deadlift",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "4-5",
+							"restSeconds": 240,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Trap-Bar Deadlift", "Block Pull"]
+						},
+						{
+							"id": "w3_wed_02",
+							"name": "Standing Barbell Overhead Press",
+							"type": "strength",
+							"targetSets": 5,
+							"targetReps": "6",
+							"restSeconds": 180,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Seated Dumbbell Press", "Machine Shoulder Press"]
+						},
+						{
+							"id": "w3_wed_03",
+							"name": "Front Squat",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 180,
+							"tempo": "3-1-X-1",
+							"rir": 1,
+							"substitutions": ["Hack Squat", "Belt Squat"]
+						},
+						{
+							"id": "w3_wed_04",
+							"name": "Wide-Grip Lat Pulldown",
+							"type": "hypertrophy",
+							"targetSets": 5,
+							"targetReps": "8-10",
+							"restSeconds": 120,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Pull-Up", "Neutral-Grip Pulldown"]
+						},
+						{
+							"id": "w3_wed_05",
+							"name": "Incline Rear Delt Raise",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Reverse Pec Deck", "Cable Rear Delt Fly"]
+						},
+						{
+							"id": "w3_wed_06",
+							"name": "Dumbbell Shrug",
+							"type": "hypertrophy",
+							"targetSets": 5,
+							"targetReps": "10-12",
+							"restSeconds": 90,
+							"tempo": "2-2-2-1",
+							"rir": 1,
+							"substitutions": ["Barbell Shrug", "Machine Shrug"]
+						},
+						{
+							"id": "w3_wed_07",
+							"name": "Bayesian Cable Curl",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Incline Dumbbell Curl", "Cable Curl"]
+						},
+						{
+							"id": "w3_wed_08",
+							"name": "Close-Grip Bench Press",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 150,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Weighted Dip", "Smith Close-Grip Press"]
+						},
+						{
+							"id": "w3_wed_09",
+							"name": "Ab Wheel Rollout",
+							"type": "core",
+							"targetSets": 3,
+							"targetReps": "8-12",
+							"restSeconds": 90,
+							"tempo": "3-1-2-1",
+							"rir": 1,
+							"substitutions": ["Stability Ball Rollout", "Body Saw"]
+						}
+					],
+					"thursday": [],
+					"friday": []
+				}
+			},
+			"week4": {
+				"name": "Week 4 - Peak Overload",
+				"schedule": {
+					"saturday": [
+						{
+							"id": "w4_sat_01",
+							"name": "Barbell Bench Press",
+							"type": "strength",
+							"targetSets": 5,
 							"targetReps": 5,
-							"targetWeightKg": null
+							"restSeconds": 210,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Smith Machine Bench Press", "Machine Chest Press"]
 						},
 						{
-							"setNumber": 2,
+							"id": "w4_sat_02",
+							"name": "Back Squat",
+							"type": "strength",
+							"targetSets": 5,
+							"targetReps": 5,
+							"restSeconds": 210,
+							"tempo": "3-1-X-1",
+							"rir": 1,
+							"substitutions": ["Hack Squat", "Belt Squat"]
+						},
+						{
+							"id": "w4_sat_03",
+							"name": "Chest Supported Row",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Seated Cable Row", "Machine Row"]
+						},
+						{
+							"id": "w4_sat_04",
+							"name": "Standing Dumbbell Shoulder Press",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 120,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Machine Shoulder Press", "Seated Dumbbell Press"]
+						},
+						{
+							"id": "w4_sat_05",
+							"name": "Cable Lateral Raise",
+							"type": "hypertrophy",
+							"targetSets": 5,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 0,
+							"substitutions": ["Dumbbell Lateral Raise", "Machine Lateral Raise"]
+						},
+						{
+							"id": "w4_sat_06",
+							"name": "EZ-Bar Curl",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Cable Curl", "Dumbbell Curl"]
+						},
+						{
+							"id": "w4_sat_07",
+							"name": "Rope Pressdown",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 0,
+							"substitutions": ["Straight-Bar Pressdown", "Machine Dip"]
+						},
+						{
+							"id": "w4_sat_08",
+							"name": "Hanging Leg Raise",
+							"type": "core",
+							"targetSets": 3,
+							"targetReps": "10-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Captain's Chair Knee Raise", "Reverse Crunch"]
+						}
+					],
+					"sunday": [],
+					"monday": [
+						{
+							"id": "w4_mon_01",
+							"name": "Romanian Deadlift",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 180,
+							"tempo": "3-1-X-1",
+							"rir": 1,
+							"substitutions": ["45-Degree Back Extension", "Smith Machine Romanian Deadlift"]
+						},
+						{
+							"id": "w4_mon_02",
+							"name": "Incline Dumbbell Press",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Incline Barbell Press", "Incline Machine Press"]
+						},
+						{
+							"id": "w4_mon_03",
+							"name": "Weighted Pull-Up",
+							"type": "strength",
+							"targetSets": 5,
+							"targetReps": "6-8",
+							"restSeconds": 180,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Neutral-Grip Lat Pulldown", "Assisted Pull-Up"]
+						},
+						{
+							"id": "w4_mon_04",
+							"name": "Bulgarian Split Squat",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "3-1-1-1",
+							"rir": 1,
+							"substitutions": ["Reverse Lunge", "Leg Press"]
+						},
+						{
+							"id": "w4_mon_05",
+							"name": "Seated Lateral Raise",
+							"type": "hypertrophy",
+							"targetSets": 5,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 0,
+							"substitutions": ["Dumbbell Lateral Raise", "Cable Lateral Raise"]
+						},
+						{
+							"id": "w4_mon_06",
+							"name": "Reverse Pec Deck",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Cable Rear Delt Fly", "Incline Rear Delt Raise"]
+						},
+						{
+							"id": "w4_mon_07",
+							"name": "Incline Dumbbell Curl",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Bayesian Cable Curl", "Preacher Curl"]
+						},
+						{
+							"id": "w4_mon_08",
+							"name": "Rope Overhead Triceps Extension",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["EZ-Bar Overhead Extension", "Machine Triceps Extension"]
+						},
+						{
+							"id": "w4_mon_09",
+							"name": "Cable Crunch",
+							"type": "core",
+							"targetSets": 3,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 0,
+							"substitutions": ["Weighted Reverse Crunch", "Machine Crunch"]
+						}
+					],
+					"tuesday": [],
+					"wednesday": [
+						{
+							"id": "w4_wed_01",
+							"name": "Conventional Deadlift",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": 4,
+							"restSeconds": 240,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Trap-Bar Deadlift", "Block Pull"]
+						},
+						{
+							"id": "w4_wed_02",
+							"name": "Standing Barbell Overhead Press",
+							"type": "strength",
+							"targetSets": 5,
+							"targetReps": 5,
+							"restSeconds": 180,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Seated Dumbbell Press", "Machine Shoulder Press"]
+						},
+						{
+							"id": "w4_wed_03",
+							"name": "Front Squat",
+							"type": "strength",
+							"targetSets": 4,
 							"targetReps": 6,
-							"targetWeightKg": null
+							"restSeconds": 180,
+							"tempo": "3-1-X-1",
+							"rir": 1,
+							"substitutions": ["Hack Squat", "Belt Squat"]
 						},
 						{
-							"setNumber": 3,
+							"id": "w4_wed_04",
+							"name": "Wide-Grip Lat Pulldown",
+							"type": "hypertrophy",
+							"targetSets": 5,
 							"targetReps": 8,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-a-lat-pulldown",
-					"name": "Lat Pulldown / Pull Up",
-					"muscleGroup": "Back",
-					"notes": "RIR 1-2. Controlled full range of motion.",
-					"sets": [
+							"restSeconds": 120,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Pull-Up", "Neutral-Grip Pulldown"]
+						},
 						{
-							"setNumber": 1,
+							"id": "w4_wed_05",
+							"name": "Incline Rear Delt Raise",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Reverse Pec Deck", "Cable Rear Delt Fly"]
+						},
+						{
+							"id": "w4_wed_06",
+							"name": "Dumbbell Shrug",
+							"type": "hypertrophy",
+							"targetSets": 5,
+							"targetReps": 10,
+							"restSeconds": 90,
+							"tempo": "2-2-2-1",
+							"rir": 1,
+							"substitutions": ["Barbell Shrug", "Machine Shrug"]
+						},
+						{
+							"id": "w4_wed_07",
+							"name": "Bayesian Cable Curl",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Incline Dumbbell Curl", "Cable Curl"]
+						},
+						{
+							"id": "w4_wed_08",
+							"name": "Close-Grip Bench Press",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 150,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Weighted Dip", "Smith Close-Grip Press"]
+						},
+						{
+							"id": "w4_wed_09",
+							"name": "Ab Wheel Rollout",
+							"type": "core",
+							"targetSets": 3,
+							"targetReps": "8-12",
+							"restSeconds": 90,
+							"tempo": "3-1-2-1",
+							"rir": 1,
+							"substitutions": ["Stability Ball Rollout", "Body Saw"]
+						}
+					],
+					"thursday": [],
+					"friday": []
+				}
+			},
+			"week5": {
+				"name": "Week 5 - Deload",
+				"schedule": {
+					"saturday": [
+						{
+							"id": "w5_sat_01",
+							"name": "Barbell Bench Press",
+							"type": "deload",
+							"targetSets": 3,
+							"targetReps": 5,
+							"restSeconds": 150,
+							"tempo": "3-1-X-1",
+							"rir": 4,
+							"loadPercentage": "80-85% of Week 4 working load",
+							"substitutions": ["Smith Machine Bench Press", "Machine Chest Press"]
+						},
+						{
+							"id": "w5_sat_02",
+							"name": "Back Squat",
+							"type": "deload",
+							"targetSets": 3,
+							"targetReps": 5,
+							"restSeconds": 180,
+							"tempo": "3-1-X-1",
+							"rir": 4,
+							"loadPercentage": "80-85% of Week 4 working load",
+							"substitutions": ["Hack Squat", "Belt Squat"]
+						},
+						{
+							"id": "w5_sat_03",
+							"name": "Chest Supported Row",
+							"type": "deload",
+							"targetSets": 2,
+							"targetReps": 8,
+							"restSeconds": 90,
+							"tempo": "2-1-2-1",
+							"rir": 4,
+							"substitutions": ["Seated Cable Row", "Machine Row"]
+						},
+						{
+							"id": "w5_sat_04",
+							"name": "Dumbbell Shoulder Press",
+							"type": "deload",
+							"targetSets": 2,
+							"targetReps": 8,
+							"restSeconds": 90,
+							"tempo": "2-1-X-1",
+							"rir": 4,
+							"substitutions": ["Machine Shoulder Press", "Seated Dumbbell Press"]
+						},
+						{
+							"id": "w5_sat_05",
+							"name": "Cable Lateral Raise",
+							"type": "deload",
+							"targetSets": 2,
+							"targetReps": 12,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 3,
+							"substitutions": ["Dumbbell Lateral Raise", "Machine Lateral Raise"]
+						},
+						{
+							"id": "w5_sat_06",
+							"name": "EZ-Bar Curl",
+							"type": "deload",
+							"targetSets": 2,
+							"targetReps": 10,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 3,
+							"substitutions": ["Cable Curl", "Dumbbell Curl"]
+						},
+						{
+							"id": "w5_sat_07",
+							"name": "Rope Pressdown",
+							"type": "deload",
+							"targetSets": 2,
+							"targetReps": 10,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 3,
+							"substitutions": ["Straight-Bar Pressdown", "Machine Dip"]
+						},
+						{
+							"id": "w5_sat_08",
+							"name": "Hanging Knee Raise",
+							"type": "deload",
+							"targetSets": 2,
+							"targetReps": 10,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 4,
+							"substitutions": ["Captain's Chair Knee Raise", "Reverse Crunch"]
+						}
+					],
+					"sunday": [],
+					"monday": [
+						{
+							"id": "w5_mon_01",
+							"name": "Romanian Deadlift",
+							"type": "deload",
+							"targetSets": 3,
 							"targetReps": 6,
-							"targetWeightKg": null
+							"restSeconds": 150,
+							"tempo": "3-1-X-1",
+							"rir": 4,
+							"loadPercentage": "80-85% of Week 4 working load",
+							"substitutions": ["45-Degree Back Extension", "Smith Machine Romanian Deadlift"]
 						},
 						{
-							"setNumber": 2,
+							"id": "w5_mon_02",
+							"name": "Incline Dumbbell Press",
+							"type": "deload",
+							"targetSets": 3,
 							"targetReps": 8,
-							"targetWeightKg": null
+							"restSeconds": 90,
+							"tempo": "2-1-X-1",
+							"rir": 3,
+							"substitutions": ["Incline Barbell Press", "Incline Machine Press"]
 						},
 						{
-							"setNumber": 3,
-							"targetReps": 10,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-a-leg-press",
-					"name": "Leg Press",
-					"muscleGroup": "Quads",
-					"notes": "RIR 2. Keep the lower back stable and use a pain-free range of motion.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 8,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 10,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 3,
-							"targetReps": 12,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-a-seated-leg-curl",
-					"name": "Seated Leg Curl",
-					"muscleGroup": "Hamstrings",
-					"notes": "RIR 1-2. Controlled eccentric.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 8,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 10,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 3,
-							"targetReps": 12,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-a-shoulder-press",
-					"name": "Machine Shoulder Press",
-					"muscleGroup": "Shoulders",
-					"notes": "RIR 2. Avoid painful shoulder or lower-back positioning.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 8,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 12,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-a-lateral-raise",
-					"name": "Lateral Raise",
-					"muscleGroup": "Side Delts",
-					"notes": "RIR 1-2. Do not swing the body.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 12,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 15,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 3,
-							"targetReps": 20,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-a-dumbbell-curl",
-					"name": "Dumbbell Curl",
-					"muscleGroup": "Biceps",
-					"notes": "RIR 1.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 8,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 12,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-a-triceps-pushdown",
-					"name": "Cable Triceps Pushdown",
-					"muscleGroup": "Triceps",
-					"notes": "RIR 1. Keep elbows stable.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 8,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 12,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-a-machine-crunch",
-					"name": "Machine Crunch",
-					"muscleGroup": "Abs",
-					"notes": "RIR 1-2. Avoid painful lower-back movement.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 10,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 12,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 3,
-							"targetReps": 15,
-							"targetWeightKg": null
-						}
-					]
-				}
-			],
-			"sunday": [],
-			"monday": [
-				{
-					"id": "fb-b-incline-dumbbell-press",
-					"name": "Incline Dumbbell Press",
-					"muscleGroup": "Upper Chest",
-					"notes": "RIR 2. Rest approximately 2 minutes.",
-					"sets": [
-						{
-							"setNumber": 1,
+							"id": "w5_mon_03",
+							"name": "Bodyweight Pull-Up",
+							"type": "deload",
+							"targetSets": 3,
 							"targetReps": 6,
-							"targetWeightKg": null
+							"restSeconds": 90,
+							"tempo": "2-1-2-1",
+							"rir": 4,
+							"substitutions": ["Neutral-Grip Lat Pulldown", "Assisted Pull-Up"]
 						},
 						{
-							"setNumber": 2,
+							"id": "w5_mon_04",
+							"name": "Bulgarian Split Squat",
+							"type": "deload",
+							"targetSets": 2,
 							"targetReps": 8,
-							"targetWeightKg": null
+							"restSeconds": 90,
+							"tempo": "3-1-1-1",
+							"rir": 4,
+							"substitutions": ["Reverse Lunge", "Leg Press"]
 						},
 						{
-							"setNumber": 3,
-							"targetReps": 10,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-b-chest-supported-row",
-					"name": "Chest-Supported Row",
-					"muscleGroup": "Back",
-					"notes": "Use chest support to reduce lower-back loading. RIR 1-2.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 8,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 10,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 3,
+							"id": "w5_mon_05",
+							"name": "Seated Lateral Raise",
+							"type": "deload",
+							"targetSets": 2,
 							"targetReps": 12,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-b-hack-squat",
-					"name": "Hack Squat",
-					"muscleGroup": "Quads",
-					"notes": "RIR 2-3. Use only a pain-free range of motion and avoid maximal loading.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 8,
-							"targetWeightKg": null
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 3,
+							"substitutions": ["Dumbbell Lateral Raise", "Cable Lateral Raise"]
 						},
 						{
-							"setNumber": 2,
-							"targetReps": 10,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 3,
+							"id": "w5_mon_06",
+							"name": "Reverse Pec Deck",
+							"type": "deload",
+							"targetSets": 2,
 							"targetReps": 12,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-b-single-leg-curl",
-					"name": "Single Leg Curl",
-					"muscleGroup": "Hamstrings",
-					"notes": "Perform each leg separately. RIR 1-2.",
-					"sets": [
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 3,
+							"substitutions": ["Cable Rear Delt Fly", "Incline Rear Delt Raise"]
+						},
 						{
-							"setNumber": 1,
+							"id": "w5_mon_07",
+							"name": "Incline Dumbbell Curl",
+							"type": "deload",
+							"targetSets": 2,
 							"targetReps": 10,
-							"targetWeightKg": null
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 3,
+							"substitutions": ["Bayesian Cable Curl", "Preacher Curl"]
 						},
 						{
-							"setNumber": 2,
-							"targetReps": 12,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 3,
-							"targetReps": 15,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-b-reverse-pec-deck",
-					"name": "Reverse Pec Deck",
-					"muscleGroup": "Rear Delts",
-					"notes": "RIR 1-2. Controlled movement.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 12,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 15,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 3,
-							"targetReps": 20,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-b-lateral-raise",
-					"name": "Lateral Raise",
-					"muscleGroup": "Side Delts",
-					"notes": "RIR 1.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 12,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 15,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-b-cable-curl",
-					"name": "Cable Curl",
-					"muscleGroup": "Biceps",
-					"notes": "RIR 1.",
-					"sets": [
-						{
-							"setNumber": 1,
+							"id": "w5_mon_08",
+							"name": "Rope Overhead Triceps Extension",
+							"type": "deload",
+							"targetSets": 2,
 							"targetReps": 10,
-							"targetWeightKg": null
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 3,
+							"substitutions": ["EZ-Bar Overhead Extension", "Machine Triceps Extension"]
 						},
 						{
-							"setNumber": 2,
-							"targetReps": 15,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-b-overhead-triceps",
-					"name": "Overhead Cable Triceps Extension",
-					"muscleGroup": "Triceps",
-					"notes": "RIR 1. Keep elbows stable.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 10,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 15,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-b-cable-crunch",
-					"name": "Cable Crunch",
-					"muscleGroup": "Abs",
-					"notes": "RIR 1-2. Avoid painful lower-back loading.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 10,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
+							"id": "w5_mon_09",
+							"name": "Cable Crunch",
+							"type": "deload",
+							"targetSets": 2,
 							"targetReps": 12,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 3,
-							"targetReps": 15,
-							"targetWeightKg": null
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 3,
+							"substitutions": ["Weighted Reverse Crunch", "Machine Crunch"]
 						}
-					]
-				}
-			],
-			"tuesday": [],
-			"wednesday": [
-				{
-					"id": "fb-c-chest-press",
-					"name": "Chest Press Machine",
-					"muscleGroup": "Chest",
-					"notes": "RIR 1-2. Controlled range of motion.",
-					"sets": [
+					],
+					"tuesday": [],
+					"wednesday": [
 						{
-							"setNumber": 1,
-							"targetReps": 8,
-							"targetWeightKg": null
+							"id": "w5_wed_01",
+							"name": "Conventional Deadlift",
+							"type": "deload",
+							"targetSets": 2,
+							"targetReps": 4,
+							"restSeconds": 180,
+							"tempo": "2-1-X-1",
+							"rir": 4,
+							"loadPercentage": "80-85% of Week 4 working load",
+							"substitutions": ["Trap-Bar Deadlift", "Block Pull"]
 						},
 						{
-							"setNumber": 2,
-							"targetReps": 10,
-							"targetWeightKg": null
+							"id": "w5_wed_02",
+							"name": "Standing Barbell Overhead Press",
+							"type": "deload",
+							"targetSets": 3,
+							"targetReps": 5,
+							"restSeconds": 150,
+							"tempo": "2-1-X-1",
+							"rir": 3,
+							"substitutions": ["Seated Dumbbell Press", "Machine Shoulder Press"]
 						},
 						{
-							"setNumber": 3,
-							"targetReps": 12,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-c-pull-up",
-					"name": "Pull Up / Lat Pulldown",
-					"muscleGroup": "Back",
-					"notes": "RIR 1-2. Use an assisted machine if necessary.",
-					"sets": [
-						{
-							"setNumber": 1,
+							"id": "w5_wed_03",
+							"name": "Front Squat",
+							"type": "deload",
+							"targetSets": 2,
 							"targetReps": 6,
-							"targetWeightKg": null
+							"restSeconds": 150,
+							"tempo": "3-1-X-1",
+							"rir": 3,
+							"substitutions": ["Hack Squat", "Belt Squat"]
 						},
 						{
-							"setNumber": 2,
+							"id": "w5_wed_04",
+							"name": "Wide-Grip Lat Pulldown",
+							"type": "deload",
+							"targetSets": 2,
 							"targetReps": 8,
-							"targetWeightKg": null
+							"restSeconds": 90,
+							"tempo": "2-1-2-1",
+							"rir": 3,
+							"substitutions": ["Pull-Up", "Neutral-Grip Pulldown"]
 						},
 						{
-							"setNumber": 3,
-							"targetReps": 10,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-c-leg-press",
-					"name": "Leg Press",
-					"muscleGroup": "Quads",
-					"notes": "RIR 2. Keep the lower back stable and use a pain-free range.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 10,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
+							"id": "w5_wed_05",
+							"name": "Incline Rear Delt Raise",
+							"type": "deload",
+							"targetSets": 2,
 							"targetReps": 12,
-							"targetWeightKg": null
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 3,
+							"substitutions": ["Reverse Pec Deck", "Cable Rear Delt Fly"]
 						},
 						{
-							"setNumber": 3,
-							"targetReps": 15,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-c-seated-leg-curl",
-					"name": "Seated Leg Curl",
-					"muscleGroup": "Hamstrings",
-					"notes": "RIR 1-2. Controlled movement.",
-					"sets": [
-						{
-							"setNumber": 1,
+							"id": "w5_wed_06",
+							"name": "Dumbbell Shrug",
+							"type": "deload",
+							"targetSets": 2,
 							"targetReps": 10,
-							"targetWeightKg": null
+							"restSeconds": 75,
+							"tempo": "2-2-2-1",
+							"rir": 3,
+							"substitutions": ["Barbell Shrug", "Machine Shrug"]
 						},
 						{
-							"setNumber": 2,
-							"targetReps": 12,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-c-seated-row",
-					"name": "Seated Cable Row",
-					"muscleGroup": "Back",
-					"notes": "Do not swing or excessively flex the lower back. RIR 1-2.",
-					"sets": [
+							"id": "w5_wed_07",
+							"name": "Bayesian Cable Curl",
+							"type": "deload",
+							"targetSets": 2,
+							"targetReps": 10,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 3,
+							"substitutions": ["Incline Dumbbell Curl", "Cable Curl"]
+						},
 						{
-							"setNumber": 1,
+							"id": "w5_wed_08",
+							"name": "Close-Grip Bench Press",
+							"type": "deload",
+							"targetSets": 2,
+							"targetReps": 6,
+							"restSeconds": 120,
+							"tempo": "2-1-X-1",
+							"rir": 3,
+							"substitutions": ["Weighted Dip", "Smith Close-Grip Press"]
+						},
+						{
+							"id": "w5_wed_09",
+							"name": "Ab Wheel Rollout",
+							"type": "deload",
+							"targetSets": 2,
 							"targetReps": 8,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 10,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 3,
-							"targetReps": 12,
-							"targetWeightKg": null
+							"restSeconds": 75,
+							"tempo": "3-1-2-1",
+							"rir": 4,
+							"substitutions": ["Stability Ball Rollout", "Body Saw"]
 						}
-					]
-				},
-				{
-					"id": "fb-c-shoulder-press",
-					"name": "Machine Shoulder Press",
-					"muscleGroup": "Shoulders",
-					"notes": "RIR 2.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 8,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 12,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-c-lateral-raise",
-					"name": "Lateral Raise",
-					"muscleGroup": "Side Delts",
-					"notes": "RIR 1.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 12,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 15,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-c-hammer-curl",
-					"name": "Hammer Curl",
-					"muscleGroup": "Biceps",
-					"notes": "RIR 1.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 8,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 12,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-c-triceps-pushdown",
-					"name": "Cable Triceps Pushdown",
-					"muscleGroup": "Triceps",
-					"notes": "RIR 1.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 8,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 12,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "fb-c-reverse-crunch",
-					"name": "Reverse Crunch",
-					"muscleGroup": "Abs",
-					"notes": "Controlled pelvic movement.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 10,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 2,
-							"targetReps": 12,
-							"targetWeightKg": null
-						},
-						{
-							"setNumber": 3,
-							"targetReps": 15,
-							"targetWeightKg": null
-						}
-					]
+					],
+					"thursday": [],
+					"friday": []
 				}
-			],
-			"thursday": [
-				{
-					"id": "cardio-thursday",
-					"name": "Zone 2 Cardio",
-					"muscleGroup": "Cardio",
-					"notes": "30-40 minutes. Prefer stationary bike or elliptical if more comfortable for the knee.",
-					"sets": [
+			},
+			"week6": {
+				"name": "Week 6 - Performance Block I",
+				"schedule": {
+					"saturday": [
 						{
-							"setNumber": 1,
-							"targetReps": 35,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "cardio-crunch-thursday",
-					"name": "Machine Crunch",
-					"muscleGroup": "Abs",
-					"notes": "RIR 1-2.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 10,
-							"targetWeightKg": null
+							"id": "w6_sat_01",
+							"name": "Barbell Bench Press",
+							"type": "strength",
+							"targetSets": 5,
+							"targetReps": 5,
+							"restSeconds": 210,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"progression": "Increase 2.5kg if Week 4 was completed successfully",
+							"substitutions": ["Smith Machine Bench Press", "Machine Chest Press"]
 						},
 						{
-							"setNumber": 2,
-							"targetReps": 12,
-							"targetWeightKg": null
+							"id": "w6_sat_02",
+							"name": "Back Squat",
+							"type": "strength",
+							"targetSets": 5,
+							"targetReps": 5,
+							"restSeconds": 210,
+							"tempo": "3-1-X-1",
+							"rir": 1,
+							"progression": "Increase 2.5-5kg if Week 4 was completed successfully",
+							"substitutions": ["Hack Squat", "Belt Squat"]
 						},
 						{
-							"setNumber": 3,
+							"id": "w6_sat_03",
+							"name": "Chest Supported Row",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Seated Cable Row", "Machine Row"]
+						},
+						{
+							"id": "w6_sat_04",
+							"name": "Standing Dumbbell Shoulder Press",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Machine Shoulder Press", "Seated Dumbbell Press"]
+						},
+						{
+							"id": "w6_sat_05",
+							"name": "Cable Lateral Raise",
+							"type": "hypertrophy",
+							"targetSets": 5,
 							"targetReps": 15,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "cardio-reverse-crunch-thursday",
-					"name": "Reverse Crunch",
-					"muscleGroup": "Abs",
-					"notes": "Controlled movement.",
-					"sets": [
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 0,
+							"intensityTechnique": "One drop set on final set",
+							"substitutions": ["Dumbbell Lateral Raise", "Machine Lateral Raise"]
+						},
 						{
-							"setNumber": 1,
+							"id": "w6_sat_06",
+							"name": "EZ-Bar Curl",
+							"type": "hypertrophy",
+							"targetSets": 4,
 							"targetReps": 10,
-							"targetWeightKg": null
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Cable Curl", "Dumbbell Curl"]
 						},
 						{
-							"setNumber": 2,
-							"targetReps": 12,
-							"targetWeightKg": null
+							"id": "w6_sat_07",
+							"name": "Rope Pressdown",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": 10,
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 0,
+							"substitutions": ["Straight-Bar Pressdown", "Machine Dip"]
 						},
 						{
-							"setNumber": 3,
+							"id": "w6_sat_08",
+							"name": "Hanging Leg Raise",
+							"type": "core",
+							"targetSets": 4,
 							"targetReps": 15,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "cardio-plank-thursday",
-					"name": "Plank",
-					"muscleGroup": "Core",
-					"notes": "Keep the body in a straight line and stop if lower-back pain occurs.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 45,
-							"targetWeightKg": null
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Captain's Chair Knee Raise", "Reverse Crunch"]
 						},
 						{
-							"setNumber": 2,
-							"targetReps": 45,
-							"targetWeightKg": null
+							"id": "w6_sat_09",
+							"name": "Standing Calf Raise",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-2",
+							"rir": 1,
+							"substitutions": ["Leg Press Calf Raise", "Seated Calf Raise"]
 						}
-					]
+					],
+					"sunday": [],
+					"monday": [
+						{
+							"id": "w6_mon_01",
+							"name": "Romanian Deadlift",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": 8,
+							"restSeconds": 180,
+							"tempo": "3-1-X-1",
+							"rir": 1,
+							"substitutions": ["45-Degree Back Extension", "Smith Machine Romanian Deadlift"]
+						},
+						{
+							"id": "w6_mon_02",
+							"name": "Incline Dumbbell Press",
+							"type": "hypertrophy",
+							"targetSets": 5,
+							"targetReps": "8-10",
+							"restSeconds": 120,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Incline Barbell Press", "Incline Machine Press"]
+						},
+						{
+							"id": "w6_mon_03",
+							"name": "Weighted Pull-Up",
+							"type": "strength",
+							"targetSets": 5,
+							"targetReps": "6-8",
+							"restSeconds": 180,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Neutral-Grip Lat Pulldown", "Assisted Pull-Up"]
+						},
+						{
+							"id": "w6_mon_04",
+							"name": "Bulgarian Split Squat",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "3-1-1-1",
+							"rir": 1,
+							"substitutions": ["Reverse Lunge", "Leg Press"]
+						},
+						{
+							"id": "w6_mon_05",
+							"name": "Seated Lateral Raise",
+							"type": "hypertrophy",
+							"targetSets": 5,
+							"targetReps": 15,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"intensityTechnique": "Mechanical drop set on final set",
+							"substitutions": ["Dumbbell Lateral Raise", "Cable Lateral Raise"]
+						},
+						{
+							"id": "w6_mon_06",
+							"name": "Reverse Pec Deck",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": 15,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Cable Rear Delt Fly", "Incline Rear Delt Raise"]
+						},
+						{
+							"id": "w6_mon_07",
+							"name": "Incline Dumbbell Curl",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"intensityTechnique": "Rest-pause on final set",
+							"substitutions": ["Bayesian Cable Curl", "Preacher Curl"]
+						},
+						{
+							"id": "w6_mon_08",
+							"name": "Rope Overhead Triceps Extension",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["EZ-Bar Overhead Extension", "Machine Triceps Extension"]
+						},
+						{
+							"id": "w6_mon_09",
+							"name": "Cable Crunch",
+							"type": "core",
+							"targetSets": 4,
+							"targetReps": 15,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Weighted Reverse Crunch", "Machine Crunch"]
+						}
+					],
+					"tuesday": [],
+					"wednesday": [
+						{
+							"id": "w6_wed_01",
+							"name": "Conventional Deadlift",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "4-5",
+							"restSeconds": 240,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"progression": "Increase 2.5-5kg if Week 4 was completed successfully",
+							"substitutions": ["Trap-Bar Deadlift", "Block Pull"]
+						},
+						{
+							"id": "w6_wed_02",
+							"name": "Standing Barbell Overhead Press",
+							"type": "strength",
+							"targetSets": 5,
+							"targetReps": 5,
+							"restSeconds": 180,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Seated Dumbbell Press", "Machine Shoulder Press"]
+						},
+						{
+							"id": "w6_wed_03",
+							"name": "Front Squat",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": 6,
+							"restSeconds": 180,
+							"tempo": "3-1-X-1",
+							"rir": 1,
+							"substitutions": ["Hack Squat", "Belt Squat"]
+						},
+						{
+							"id": "w6_wed_04",
+							"name": "Wide-Grip Lat Pulldown",
+							"type": "hypertrophy",
+							"targetSets": 5,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Pull-Up", "Neutral-Grip Pulldown"]
+						},
+						{
+							"id": "w6_wed_05",
+							"name": "Incline Rear Delt Raise",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": 15,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Reverse Pec Deck", "Cable Rear Delt Fly"]
+						},
+						{
+							"id": "w6_wed_06",
+							"name": "Dumbbell Shrug",
+							"type": "hypertrophy",
+							"targetSets": 5,
+							"targetReps": 10,
+							"restSeconds": 90,
+							"tempo": "2-2-2-1",
+							"rir": 1,
+							"substitutions": ["Barbell Shrug", "Machine Shrug"]
+						},
+						{
+							"id": "w6_wed_07",
+							"name": "Bayesian Cable Curl",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Incline Dumbbell Curl", "Cable Curl"]
+						},
+						{
+							"id": "w6_wed_08",
+							"name": "Close-Grip Bench Press",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 150,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Weighted Dip", "Smith Close-Grip Press"]
+						},
+						{
+							"id": "w6_wed_09",
+							"name": "Ab Wheel Rollout",
+							"type": "core",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 90,
+							"tempo": "3-1-2-1",
+							"rir": 1,
+							"substitutions": ["Stability Ball Rollout", "Body Saw"]
+						},
+						{
+							"id": "w6_wed_10",
+							"name": "Standing Calf Raise",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-2",
+							"rir": 1,
+							"substitutions": ["Leg Press Calf Raise", "Seated Calf Raise"]
+						}
+					],
+					"thursday": [],
+					"friday": []
 				}
-			],
-			"friday": [
-				{
-					"id": "cardio-friday",
-					"name": "Zone 2 Cardio",
-					"muscleGroup": "Cardio",
-					"notes": "25-35 minutes. Reduce toward 25-30 minutes if recovery is poor.",
-					"sets": [
+			},
+			"week7": {
+				"name": "Week 7 - Intensification",
+				"schedule": {
+					"saturday": [
 						{
-							"setNumber": 1,
-							"targetReps": 30,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "cardio-crunch-friday",
-					"name": "Cable Crunch",
-					"muscleGroup": "Abs",
-					"notes": "RIR 1-2. Avoid painful lower-back loading.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 10,
-							"targetWeightKg": null
+							"id": "w7_sat_01",
+							"name": "Barbell Bench Press",
+							"type": "strength",
+							"targetSets": 5,
+							"targetReps": "4-5",
+							"restSeconds": 210,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Smith Machine Bench Press", "Machine Chest Press"]
 						},
 						{
-							"setNumber": 2,
-							"targetReps": 12,
-							"targetWeightKg": null
+							"id": "w7_sat_02",
+							"name": "Back Squat",
+							"type": "strength",
+							"targetSets": 5,
+							"targetReps": "4-5",
+							"restSeconds": 210,
+							"tempo": "3-1-X-1",
+							"rir": 1,
+							"substitutions": ["Hack Squat", "Belt Squat"]
 						},
 						{
-							"setNumber": 3,
+							"id": "w7_sat_03",
+							"name": "Chest Supported Row",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Seated Cable Row", "Machine Row"]
+						},
+						{
+							"id": "w7_sat_04",
+							"name": "Standing Dumbbell Shoulder Press",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 120,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Machine Shoulder Press", "Seated Dumbbell Press"]
+						},
+						{
+							"id": "w7_sat_05",
+							"name": "Cable Lateral Raise",
+							"type": "hypertrophy",
+							"targetSets": 4,
 							"targetReps": 15,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "cardio-reverse-crunch-friday",
-					"name": "Reverse Crunch",
-					"muscleGroup": "Abs",
-					"notes": "Controlled movement.",
-					"sets": [
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Dumbbell Lateral Raise", "Machine Lateral Raise"]
+						},
 						{
-							"setNumber": 1,
+							"id": "w7_sat_06",
+							"name": "EZ-Bar Curl",
+							"type": "hypertrophy",
+							"targetSets": 4,
 							"targetReps": 10,
-							"targetWeightKg": null
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Cable Curl", "Dumbbell Curl"]
 						},
 						{
-							"setNumber": 2,
-							"targetReps": 12,
-							"targetWeightKg": null
+							"id": "w7_sat_07",
+							"name": "Rope Pressdown",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": 10,
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Straight-Bar Pressdown", "Machine Dip"]
 						},
 						{
-							"setNumber": 3,
+							"id": "w7_sat_08",
+							"name": "Hanging Leg Raise",
+							"type": "core",
+							"targetSets": 4,
 							"targetReps": 15,
-							"targetWeightKg": null
-						}
-					]
-				},
-				{
-					"id": "cardio-plank-friday",
-					"name": "Plank",
-					"muscleGroup": "Core",
-					"notes": "Keep the body in a straight line and stop if lower-back pain occurs.",
-					"sets": [
-						{
-							"setNumber": 1,
-							"targetReps": 45,
-							"targetWeightKg": null
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Captain's Chair Knee Raise", "Reverse Crunch"]
 						},
 						{
-							"setNumber": 2,
-							"targetReps": 45,
-							"targetWeightKg": null
+							"id": "w7_sat_09",
+							"name": "Standing Calf Raise",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-2",
+							"rir": 1,
+							"substitutions": ["Leg Press Calf Raise", "Seated Calf Raise"]
 						}
-					]
+					],
+					"sunday": [],
+					"monday": [
+						{
+							"id": "w7_mon_01",
+							"name": "Romanian Deadlift",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 180,
+							"tempo": "3-1-X-1",
+							"rir": 1,
+							"substitutions": ["45-Degree Back Extension", "Smith Machine Romanian Deadlift"]
+						},
+						{
+							"id": "w7_mon_02",
+							"name": "Incline Dumbbell Press",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Incline Barbell Press", "Incline Machine Press"]
+						},
+						{
+							"id": "w7_mon_03",
+							"name": "Weighted Pull-Up",
+							"type": "strength",
+							"targetSets": 5,
+							"targetReps": 6,
+							"restSeconds": 180,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Neutral-Grip Lat Pulldown", "Assisted Pull-Up"]
+						},
+						{
+							"id": "w7_mon_04",
+							"name": "Bulgarian Split Squat",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "3-1-1-1",
+							"rir": 1,
+							"substitutions": ["Reverse Lunge", "Leg Press"]
+						},
+						{
+							"id": "w7_mon_05",
+							"name": "Seated Lateral Raise",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": 15,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Dumbbell Lateral Raise", "Cable Lateral Raise"]
+						},
+						{
+							"id": "w7_mon_06",
+							"name": "Reverse Pec Deck",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Cable Rear Delt Fly", "Incline Rear Delt Raise"]
+						},
+						{
+							"id": "w7_mon_07",
+							"name": "Incline Dumbbell Curl",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Bayesian Cable Curl", "Preacher Curl"]
+						},
+						{
+							"id": "w7_mon_08",
+							"name": "Rope Overhead Triceps Extension",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["EZ-Bar Overhead Extension", "Machine Triceps Extension"]
+						},
+						{
+							"id": "w7_mon_09",
+							"name": "Cable Crunch",
+							"type": "core",
+							"targetSets": 4,
+							"targetReps": 15,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Weighted Reverse Crunch", "Machine Crunch"]
+						}
+					],
+					"tuesday": [],
+					"wednesday": [
+						{
+							"id": "w7_wed_01",
+							"name": "Conventional Deadlift",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "3-4",
+							"restSeconds": 270,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Trap-Bar Deadlift", "Block Pull"]
+						},
+						{
+							"id": "w7_wed_02",
+							"name": "Standing Barbell Overhead Press",
+							"type": "strength",
+							"targetSets": 5,
+							"targetReps": "4-5",
+							"restSeconds": 180,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Seated Dumbbell Press", "Machine Shoulder Press"]
+						},
+						{
+							"id": "w7_wed_03",
+							"name": "Front Squat",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": 6,
+							"restSeconds": 180,
+							"tempo": "3-1-X-1",
+							"rir": 1,
+							"substitutions": ["Hack Squat", "Belt Squat"]
+						},
+						{
+							"id": "w7_wed_04",
+							"name": "Wide-Grip Lat Pulldown",
+							"type": "hypertrophy",
+							"targetSets": 5,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Pull-Up", "Neutral-Grip Pulldown"]
+						},
+						{
+							"id": "w7_wed_05",
+							"name": "Incline Rear Delt Raise",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": 15,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Reverse Pec Deck", "Cable Rear Delt Fly"]
+						},
+						{
+							"id": "w7_wed_06",
+							"name": "Dumbbell Shrug",
+							"type": "hypertrophy",
+							"targetSets": 5,
+							"targetReps": 10,
+							"restSeconds": 90,
+							"tempo": "2-2-2-1",
+							"rir": 1,
+							"substitutions": ["Barbell Shrug", "Machine Shrug"]
+						},
+						{
+							"id": "w7_wed_07",
+							"name": "Bayesian Cable Curl",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Incline Dumbbell Curl", "Cable Curl"]
+						},
+						{
+							"id": "w7_wed_08",
+							"name": "Close-Grip Bench Press",
+							"type": "strength",
+							"targetSets": 4,
+							"targetReps": "6-8",
+							"restSeconds": 150,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Weighted Dip", "Smith Close-Grip Press"]
+						},
+						{
+							"id": "w7_wed_09",
+							"name": "Ab Wheel Rollout",
+							"type": "core",
+							"targetSets": 4,
+							"targetReps": "10-12",
+							"restSeconds": 90,
+							"tempo": "3-1-2-1",
+							"rir": 1,
+							"substitutions": ["Stability Ball Rollout", "Body Saw"]
+						},
+						{
+							"id": "w7_wed_10",
+							"name": "Standing Calf Raise",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-2",
+							"rir": 1,
+							"substitutions": ["Leg Press Calf Raise", "Seated Calf Raise"]
+						}
+					],
+					"thursday": [],
+					"friday": []
 				}
-			]
+			},
+			"week8": {
+				"name": "Week 8 - Peak & PR Week",
+				"schedule": {
+					"saturday": [
+						{
+							"id": "w8_sat_01",
+							"name": "Barbell Bench Press - PR Set",
+							"type": "strength_test",
+							"targetSets": 1,
+							"targetReps": "5-7",
+							"restSeconds": 240,
+							"tempo": "2-1-X-1",
+							"rir": 0,
+							"testingStrategy": "Attempt a rep PR only if warm-up sets are fast and technique is excellent",
+							"substitutions": ["Smith Machine Bench Press"]
+						},
+						{
+							"id": "w8_sat_02",
+							"name": "Barbell Bench Press - Backoff",
+							"type": "strength",
+							"targetSets": 2,
+							"targetReps": 6,
+							"restSeconds": 180,
+							"tempo": "2-1-X-1",
+							"rir": 2,
+							"loadPercentage": "90% of PR-set load",
+							"substitutions": ["Smith Machine Bench Press"]
+						},
+						{
+							"id": "w8_sat_03",
+							"name": "Back Squat - PR Set",
+							"type": "strength_test",
+							"targetSets": 1,
+							"targetReps": "5-6",
+							"restSeconds": 240,
+							"tempo": "3-1-X-1",
+							"rir": 0,
+							"testingStrategy": "Attempt only if knee feels normal and technique remains stable",
+							"substitutions": ["Hack Squat", "Belt Squat"]
+						},
+						{
+							"id": "w8_sat_04",
+							"name": "Back Squat - Backoff",
+							"type": "strength",
+							"targetSets": 2,
+							"targetReps": 6,
+							"restSeconds": 210,
+							"tempo": "3-1-X-1",
+							"rir": 2,
+							"loadPercentage": "90% of PR-set load",
+							"substitutions": ["Hack Squat", "Belt Squat"]
+						},
+						{
+							"id": "w8_sat_05",
+							"name": "Chest Supported Row",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Seated Cable Row", "Machine Row"]
+						},
+						{
+							"id": "w8_sat_06",
+							"name": "Dumbbell Shoulder Press",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Machine Shoulder Press"]
+						},
+						{
+							"id": "w8_sat_07",
+							"name": "Cable Lateral Raise",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": 15,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Dumbbell Lateral Raise", "Machine Lateral Raise"]
+						},
+						{
+							"id": "w8_sat_08",
+							"name": "EZ-Bar Curl",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": 10,
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Cable Curl", "Dumbbell Curl"]
+						},
+						{
+							"id": "w8_sat_09",
+							"name": "Rope Pressdown",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": 10,
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Straight-Bar Pressdown", "Machine Dip"]
+						},
+						{
+							"id": "w8_sat_10",
+							"name": "Hanging Leg Raise",
+							"type": "core",
+							"targetSets": 3,
+							"targetReps": 15,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Captain's Chair Knee Raise", "Reverse Crunch"]
+						}
+					],
+					"sunday": [],
+					"monday": [
+						{
+							"id": "w8_mon_01",
+							"name": "Romanian Deadlift",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": 6,
+							"restSeconds": 180,
+							"tempo": "3-1-X-1",
+							"rir": 2,
+							"substitutions": ["45-Degree Back Extension", "Smith Machine Romanian Deadlift"]
+						},
+						{
+							"id": "w8_mon_02",
+							"name": "Incline Dumbbell Press",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "2-1-X-1",
+							"rir": 1,
+							"substitutions": ["Incline Barbell Press", "Incline Machine Press"]
+						},
+						{
+							"id": "w8_mon_03",
+							"name": "Weighted Pull-Up - Rep PR",
+							"type": "strength_test",
+							"targetSets": 1,
+							"targetReps": "6-8",
+							"restSeconds": 180,
+							"tempo": "2-1-2-1",
+							"rir": 0,
+							"testingStrategy": "Choose either more reps at the same load or more load at the same reps",
+							"substitutions": ["Neutral-Grip Lat Pulldown"]
+						},
+						{
+							"id": "w8_mon_04",
+							"name": "Weighted Pull-Up - Backoff",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": 6,
+							"restSeconds": 150,
+							"tempo": "2-1-2-1",
+							"rir": 2,
+							"substitutions": ["Neutral-Grip Lat Pulldown", "Assisted Pull-Up"]
+						},
+						{
+							"id": "w8_mon_05",
+							"name": "Bulgarian Split Squat",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "3-1-1-1",
+							"rir": 2,
+							"substitutions": ["Reverse Lunge", "Leg Press"]
+						},
+						{
+							"id": "w8_mon_06",
+							"name": "Seated Lateral Raise",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": 15,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Dumbbell Lateral Raise", "Cable Lateral Raise"]
+						},
+						{
+							"id": "w8_mon_07",
+							"name": "Reverse Pec Deck",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": 15,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Cable Rear Delt Fly", "Incline Rear Delt Raise"]
+						},
+						{
+							"id": "w8_mon_08",
+							"name": "Incline Dumbbell Curl",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": 10,
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Bayesian Cable Curl", "Preacher Curl"]
+						},
+						{
+							"id": "w8_mon_09",
+							"name": "Rope Overhead Triceps Extension",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": 10,
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["EZ-Bar Overhead Extension", "Machine Triceps Extension"]
+						},
+						{
+							"id": "w8_mon_10",
+							"name": "Cable Crunch",
+							"type": "core",
+							"targetSets": 3,
+							"targetReps": 15,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Weighted Reverse Crunch", "Machine Crunch"]
+						}
+					],
+					"tuesday": [],
+					"wednesday": [
+						{
+							"id": "w8_wed_01",
+							"name": "Conventional Deadlift - PR Set",
+							"type": "strength_test",
+							"targetSets": 1,
+							"targetReps": "3-5",
+							"restSeconds": 300,
+							"tempo": "2-1-X-1",
+							"rir": 0,
+							"testingStrategy": "Attempt a rep PR only if warm-up sets are fast and technique is excellent",
+							"substitutions": ["Trap-Bar Deadlift"]
+						},
+						{
+							"id": "w8_wed_02",
+							"name": "Conventional Deadlift - Backoff",
+							"type": "strength",
+							"targetSets": 2,
+							"targetReps": 4,
+							"restSeconds": 240,
+							"tempo": "2-1-X-1",
+							"rir": 2,
+							"loadPercentage": "90% of PR-set load",
+							"substitutions": ["Trap-Bar Deadlift", "Block Pull"]
+						},
+						{
+							"id": "w8_wed_03",
+							"name": "Standing Barbell Overhead Press - PR Set",
+							"type": "strength_test",
+							"targetSets": 1,
+							"targetReps": "5-7",
+							"restSeconds": 240,
+							"tempo": "2-1-X-1",
+							"rir": 0,
+							"testingStrategy": "Choose either more reps at the same weight or more weight at the same reps",
+							"substitutions": ["Seated Dumbbell Press", "Machine Shoulder Press"]
+						},
+						{
+							"id": "w8_wed_04",
+							"name": "Standing Barbell Overhead Press - Backoff",
+							"type": "strength",
+							"targetSets": 2,
+							"targetReps": 6,
+							"restSeconds": 180,
+							"tempo": "2-1-X-1",
+							"rir": 2,
+							"loadPercentage": "90% of PR-set load",
+							"substitutions": ["Seated Dumbbell Press", "Machine Shoulder Press"]
+						},
+						{
+							"id": "w8_wed_05",
+							"name": "Front Squat",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": 6,
+							"restSeconds": 180,
+							"tempo": "3-1-X-1",
+							"rir": 2,
+							"substitutions": ["Hack Squat", "Belt Squat"]
+						},
+						{
+							"id": "w8_wed_06",
+							"name": "Wide-Grip Lat Pulldown",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": 8,
+							"restSeconds": 120,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Pull-Up", "Neutral-Grip Pulldown"]
+						},
+						{
+							"id": "w8_wed_07",
+							"name": "Incline Rear Delt Raise",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": 15,
+							"restSeconds": 60,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Reverse Pec Deck", "Cable Rear Delt Fly"]
+						},
+						{
+							"id": "w8_wed_08",
+							"name": "Dumbbell Shrug",
+							"type": "hypertrophy",
+							"targetSets": 4,
+							"targetReps": 10,
+							"restSeconds": 90,
+							"tempo": "2-2-2-1",
+							"rir": 1,
+							"substitutions": ["Barbell Shrug", "Machine Shrug"]
+						},
+						{
+							"id": "w8_wed_09",
+							"name": "Bayesian Cable Curl",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": 10,
+							"restSeconds": 75,
+							"tempo": "2-1-2-1",
+							"rir": 1,
+							"substitutions": ["Incline Dumbbell Curl", "Cable Curl"]
+						},
+						{
+							"id": "w8_wed_10",
+							"name": "Close-Grip Bench Press",
+							"type": "strength",
+							"targetSets": 3,
+							"targetReps": 6,
+							"restSeconds": 150,
+							"tempo": "2-1-X-1",
+							"rir": 2,
+							"substitutions": ["Weighted Dip", "Smith Close-Grip Press"]
+						},
+						{
+							"id": "w8_wed_11",
+							"name": "Ab Wheel Rollout",
+							"type": "core",
+							"targetSets": 3,
+							"targetReps": "10-12",
+							"restSeconds": 90,
+							"tempo": "3-1-2-1",
+							"rir": 1,
+							"substitutions": ["Stability Ball Rollout", "Body Saw"]
+						},
+						{
+							"id": "w8_wed_12",
+							"name": "Standing Calf Raise",
+							"type": "hypertrophy",
+							"targetSets": 3,
+							"targetReps": "12-15",
+							"restSeconds": 60,
+							"tempo": "2-1-2-2",
+							"rir": 1,
+							"substitutions": ["Leg Press Calf Raise", "Seated Calf Raise"]
+						}
+					],
+					"thursday": [],
+					"friday": []
+				}
+			}
 		}
 	},
+
 	"nutrition": {
 		"weeklyPlans": {
 			"week1": {

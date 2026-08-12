@@ -2,8 +2,7 @@
 
 import React, { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { Upload, Play, Archive, Trash2, Dumbbell, Edit } from "lucide-react";
-
+import { Upload, Play, Archive, Trash2, Dumbbell, Edit, Download } from "lucide-react";
 import { db } from "@/src/lib/db";
 import { WorkoutPlan } from "@/src/types/workout";
 import { useI18n } from "@/src/contexts/I18nContext";
@@ -31,8 +30,95 @@ export default function PlansManager() {
 		e.target.value = ""; // Reset
 	};
 
+	const downloadExampleJson = () => {
+		const exampleData = {
+			plan: {
+				name: "Sample 4-Week Plan",
+				description: "A comprehensive sample plan showcasing all features including weekly alternating routines.",
+				durationDays: 28,
+				startDate: `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(new Date().getDate()).padStart(2, "0")}`,
+				workout: {
+					weeklyPlans: {
+						week1: {
+							name: "Week 1 - Base Building",
+							schedule: {
+								saturday: [
+									{ id: "w1_s1", name: "Squats", type: "strength", targetSets: 3, targetReps: 10, restSeconds: 90 },
+									{ id: "w1_s2", name: "Push-ups", type: "strength", targetSets: 3, targetReps: 15, restSeconds: 60 },
+								],
+								sunday: [],
+								monday: [{ id: "w1_m1", name: "Running", type: "cardio", durationMinutes: 30 }],
+								tuesday: [],
+								wednesday: [{ id: "w1_w1", name: "Deadlifts", type: "strength", targetSets: 3, targetReps: 8, restSeconds: 120 }],
+								thursday: [],
+								friday: [],
+							},
+						},
+						week2: {
+							name: "Week 2 - Intensity",
+							schedule: {
+								saturday: [
+									{ id: "w2_s1", name: "Squats", type: "strength", targetSets: 4, targetReps: 8, restSeconds: 120 },
+									{ id: "w2_s2", name: "Bench Press", type: "strength", targetSets: 3, targetReps: 10, restSeconds: 90 },
+								],
+								sunday: [],
+								monday: [{ id: "w2_m1", name: "HIIT", type: "cardio", durationMinutes: 20 }],
+								tuesday: [],
+								wednesday: [{ id: "w2_w1", name: "Pull-ups", type: "strength", targetSets: 3, targetReps: 8, restSeconds: 90 }],
+								thursday: [],
+								friday: [],
+							},
+						},
+					},
+				},
+				nutrition: {
+					weeklyPlans: {
+						week1: {
+							name: "Standard Macros",
+							schedule: {
+								saturday: [
+									{ id: "n1_s1", name: "Oatmeal", type: "food", plannedQuantity: "1 bowl", time: "08:00" },
+									{ id: "n1_s2", name: "Chicken Rice", type: "food", plannedQuantity: "200g", time: "13:00" },
+								],
+								sunday: [],
+								monday: [],
+								tuesday: [],
+								wednesday: [],
+								thursday: [],
+								friday: [],
+							},
+						},
+						week2: {
+							name: "Low Carb",
+							schedule: {
+								saturday: [
+									{ id: "n2_s1", name: "Eggs", type: "food", plannedQuantity: "3 pcs", time: "08:00" },
+									{ id: "n2_s2", name: "Steak Salad", type: "food", plannedQuantity: "250g", time: "13:00" },
+								],
+								sunday: [],
+								monday: [],
+								tuesday: [],
+								wednesday: [],
+								thursday: [],
+								friday: [],
+							},
+						},
+					},
+				},
+			},
+		};
+
+		const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exampleData, null, 2));
+		const downloadAnchorNode = document.createElement("a");
+		downloadAnchorNode.setAttribute("href", dataStr);
+		downloadAnchorNode.setAttribute("download", "example_plan.json");
+		document.body.appendChild(downloadAnchorNode);
+		downloadAnchorNode.click();
+		downloadAnchorNode.remove();
+	};
+
 	const activatePlan = async (plan: WorkoutPlan) => {
-		const startDate = new Date().toISOString().split("T")[0];
+		const startDate = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(new Date().getDate()).padStart(2, "0")}`;
 
 		// Archive all currently active plans
 		const activePlans = plans.filter((p) => p.status === "active");
@@ -60,6 +146,13 @@ export default function PlansManager() {
 			<div className='flex justify-between items-center'>
 				<h2 className='text-xl font-bold'>{t("plans" as any) || "Plans"}</h2>
 				<div className='flex gap-2'>
+					<button
+						onClick={downloadExampleJson}
+						className='flex items-center gap-2 px-4 py-2 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 hover:bg-indigo-100 dark:hover:bg-indigo-900/40 rounded-lg cursor-pointer transition-colors text-sm font-medium border border-indigo-100 dark:border-indigo-800'
+						title='Download Example JSON'>
+						<Download size={18} />
+						Example JSON
+					</button>
 					<label className='flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg cursor-pointer transition-colors text-sm font-medium'>
 						<Upload size={18} />
 						{t("import_json" as any) || "Import JSON"}
@@ -152,7 +245,7 @@ export default function PlansManager() {
 					</p>
 				</div>
 			)}
-			
+
 			{editingPlan && <EditPlanModal plan={editingPlan} onClose={() => setEditingPlan(null)} />}
 		</div>
 	);

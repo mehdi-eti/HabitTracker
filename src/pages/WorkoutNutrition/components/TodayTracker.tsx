@@ -173,7 +173,7 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 							const exercises = dayData.workout?.exercises ?? [];
 
 							for (const exercise of exercises) {
-								for (let setIndex = 0; setIndex < exercise.sets.length; setIndex += 1) {
+								for (let setIndex = 0; setIndex < (exercise.sets?.length ?? 0); setIndex += 1) {
 									const set = exercise.sets[setIndex];
 
 									await db.workoutSetRecords.add({
@@ -181,11 +181,32 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 										dailyRecordId: workoutDailyRecordId,
 										exerciseId: exercise.id,
 										setIndex,
-										plannedReps: set.plannedReps ?? set.targetReps ?? 0,
+										plannedReps: set?.plannedReps ?? set?.targetReps ?? 0,
 										actualReps: 0,
-										plannedWeight: set.plannedWeight ?? set.targetWeightKg ?? set.targetWeight ?? 0,
+										plannedWeight: set?.plannedWeight ?? set?.targetWeightKg ?? set?.targetWeight ?? 0,
 										actualWeight: 0,
 									});
+								}
+							}
+						} else {
+							const exercises = dayData.workout?.exercises ?? [];
+							for (const exercise of exercises) {
+								for (let setIndex = 0; setIndex < (exercise.sets?.length ?? 0); setIndex += 1) {
+									const set = exercise.sets[setIndex];
+									const setId = `${existingWorkoutRecord.id}_${exercise.id}_${setIndex}`;
+									const existingSet = await db.workoutSetRecords.get(setId);
+									if (!existingSet) {
+										await db.workoutSetRecords.add({
+											id: setId,
+											dailyRecordId: existingWorkoutRecord.id,
+											exerciseId: exercise.id,
+											setIndex,
+											plannedReps: set?.plannedReps ?? set?.targetReps ?? 0,
+											actualReps: 0,
+											plannedWeight: set?.plannedWeight ?? set?.targetWeightKg ?? set?.targetWeight ?? 0,
+											actualWeight: 0,
+										});
+									}
 								}
 							}
 						}
@@ -217,6 +238,29 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 										date: today,
 										mealId: meal.id || meal.name,
 									});
+								}
+							}
+						} else {
+							const meals = dayData.nutrition?.meals ?? [];
+							for (const meal of meals) {
+								for (const food of meal.foods ?? []) {
+									const foodId = `${existingNutritionRecord.id}_${food.id}`;
+									const existingFood = await db.nutritionFoodRecords.get(foodId);
+									if (!existingFood) {
+										await db.nutritionFoodRecords.add({
+											id: foodId,
+											dailyRecordId: existingNutritionRecord.id,
+											foodId: food.id,
+											plannedQuantity: food.plannedQuantity ?? food.amount ?? 0,
+											consumed: false,
+											consumedMoreThanPlanned: false,
+											planId: activePlan.id,
+											planWeek: dayData.planWeek,
+											nutritionCycle: dayData.nutritionCycle,
+											date: today,
+											mealId: meal.id || meal.name,
+										});
+									}
 								}
 							}
 						}
@@ -446,7 +490,7 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 						</div>
 					) : (
 						<div className='space-y-6'>
-							{dayData.workout.exercises.map((exercise: any) => (
+							{dayData.workout.exercises?.map((exercise: any) => (
 								<div
 									key={exercise.id}
 									className='border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-900 shadow-sm'>
@@ -455,14 +499,14 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 									</div>
 
 									<div className='p-4 space-y-3'>
-										{exercise.sets.map((set: any, index: number) => {
+										{exercise.sets?.map((set: any, index: number) => {
 											const recordId = `${workoutRecord?.id}_${exercise.id}_${index}`;
 
 											const setRecord = setRecords.find((record: any) => record.id === recordId);
 
-											const plannedReps = set.plannedReps ?? set.targetReps ?? 0;
+											const plannedReps = set?.plannedReps ?? set?.targetReps ?? 0;
 
-											const plannedWeight = set.plannedWeight ?? set.targetWeightKg ?? set.targetWeight ?? 0;
+											const plannedWeight = set?.plannedWeight ?? set?.targetWeightKg ?? set?.targetWeight ?? 0;
 
 											return (
 												<div
@@ -529,7 +573,7 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 						</div>
 					) : (
 						<div className='space-y-6'>
-							{dayData.nutrition.meals.map((meal: any) => (
+							{dayData.nutrition.meals?.map((meal: any) => (
 								<div key={meal.id} className='space-y-2'>
 									<h4 className='font-semibold text-slate-700 dark:text-slate-300'>
 										{meal.name}
@@ -537,7 +581,7 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 									</h4>
 
 									<div className='space-y-2'>
-										{meal.foods.map((food: any) => {
+										{meal.foods?.map((food: any) => {
 											const recordId = `${nutritionRecord?.id}_${food.id}`;
 
 											const foodRecord = foodRecords.find((record: any) => record.id === recordId);

@@ -20,12 +20,13 @@ export async function importPlanFromJson(jsonString: string, makeActive: boolean
 	const planId = uuidv4();
 	const now = Date.now();
 
-	const today = fallbackStartDate || new Date().toISOString().split("T")[0];
+	const _t = new Date();
+	const today = fallbackStartDate || `${_t.getFullYear()}-${String(_t.getMonth() + 1).padStart(2, "0")}-${String(_t.getDate()).padStart(2, "0")}`;
 	const startDateStr = planData.startDate || today;
 
 	let days = json.days || planData.days;
 
-	if (!days && (json.workout?.schedule || json.nutrition?.schedule || json.nutrition?.weeklyPlans)) {
+	if (!days && (json.workout?.schedule || json.workout?.weeklyPlans || json.nutrition?.schedule || json.nutrition?.weeklyPlans)) {
 		days = [];
 		const durationDays = Number(planData.durationDays);
 		const start = new Date(`${startDateStr}T00:00:00`);
@@ -37,7 +38,17 @@ export async function importPlanFromJson(jsonString: string, makeActive: boolean
 			date.setDate(date.getDate() + (i - 1));
 			const dayOfWeek = weekDays[date.getDay()];
 
-			const workoutForDay = json.workout?.schedule?.[dayOfWeek];
+			let workoutForDay = json.workout?.schedule?.[dayOfWeek];
+			if (json.workout?.weeklyPlans) {
+				const numWeeks = Object.keys(json.workout.weeklyPlans).length;
+				const planWeek = Math.floor((i - 1) / 7) + 1;
+				const workoutCycle = ((planWeek - 1) % numWeeks) + 1;
+				const weekKey = "week" + workoutCycle;
+				const weeklyPlan = json.workout.weeklyPlans[weekKey];
+				if (weeklyPlan) {
+					workoutForDay = weeklyPlan.schedule?.[dayOfWeek];
+				}
+			}
 			
 			const planWeek = Math.floor((i - 1) / 7) + 1;
 			const nutritionCycle = ((planWeek - 1) % 2) + 1;

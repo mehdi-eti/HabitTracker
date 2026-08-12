@@ -1,6 +1,6 @@
 /** @format */
 
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { X, Save, AlertCircle } from "lucide-react";
 
 import { db } from "@/src/lib/db";
@@ -23,7 +23,7 @@ function PreviewMeals({ schedule }: { schedule: any }) {
 							<div className='p-3 text-xs text-slate-400'>No meals</div>
 						) : (
 							<div className='divide-y divide-slate-100 dark:divide-slate-800'>
-								{meals.map((meal: any, idx: number) => (
+								{meals?.map((meal: any, idx: number) => (
 									<div key={idx} className='p-3'>
 										<div className='font-semibold text-sm'>
 											{meal.name} {meal.time && <span className='text-slate-400 font-normal ml-1'>{meal.time}</span>}

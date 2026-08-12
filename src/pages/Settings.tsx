@@ -29,7 +29,7 @@ export default function Settings() {
 		const url = URL.createObjectURL(blob);
 		const a = document.createElement("a");
 		a.href = url;
-		a.download = `habit21-export-${new Date().toISOString().split("T")[0]}.json`;
+		a.download = `habit21-export-${`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(new Date().getDate()).padStart(2, "0")}`}.json`;
 		a.click();
 		URL.revokeObjectURL(url);
 	};

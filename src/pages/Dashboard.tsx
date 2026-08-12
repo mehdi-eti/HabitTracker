@@ -29,6 +29,8 @@ import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isTod
 import CSSConfetti from "../components/CSSConfetti";
 import { Link, useNavigate } from "react-router-dom";
 import DailyTrackingModal from "../components/DailyTrackingModal";
+import WorkoutNutritionSummary from "../components/WorkoutNutritionSummary";
+
 import { useLiveQuery } from "dexie-react-hooks";
 import { getDaysLeft } from "../lib/habitUtils";
 
@@ -491,6 +493,8 @@ export default function Dashboard() {
 					<DashboardChart />
 				</div>
 			</div>
+
+			<WorkoutNutritionSummary />
 
 			{showConfetti && <CSSConfetti active={showConfetti} onComplete={() => setShowConfetti(false)} />}
 

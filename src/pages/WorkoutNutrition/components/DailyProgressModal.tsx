@@ -89,19 +89,20 @@ export default function DailyProgressModal({ plan, planVersion, selectedDate, on
 
 	// Generate a list of dates to show in timeline
 	const timelineDates: string[] = [];
-	const todayStr = new Date().toISOString().split("T")[0];
-
+	const _today = new Date();
+	const todayStr = `${_today.getFullYear()}-${String(_today.getMonth() + 1).padStart(2, "0")}-${String(_today.getDate()).padStart(2, "0")}`;
+	
 	for (let i = 0; i < (plan.durationDays || 30); i++) {
 		const d = new Date(startDate);
 		d.setDate(d.getDate() + i);
-		const dateStr = d.toISOString().split("T")[0];
-
+		const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+		
 		// Only show dates up to today, or the selected date if it's in the future
-		if (dateStr <= todayStr || dateStr === selectedDate || dateStr <= selectedDate) {
+		if (dateStr <= todayStr || dateStr <= selectedDate) {
 			timelineDates.push(dateStr);
 		}
 	}
-
+	
 	// Ensure selectedDate is always in the timeline if it somehow got missed
 	if (!timelineDates.includes(selectedDate)) {
 		timelineDates.push(selectedDate);
@@ -201,6 +202,7 @@ export default function DailyProgressModal({ plan, planVersion, selectedDate, on
 	});
 
 	const selectedMetrics = dailyMetrics.find((m) => m.date === selectedDate);
+	const reportMetrics = dailyMetrics.filter((m) => m.date <= selectedDate);
 
 	// Calculate Streaks & Summaries
 	let currentWStreak = 0;
@@ -218,7 +220,7 @@ export default function DailyProgressModal({ plan, planVersion, selectedDate, on
 	let totalNAdherence = 0;
 	let nDaysCount = 0;
 
-	dailyMetrics.forEach((m) => {
+	reportMetrics.forEach((m) => {
 		if (m.wStatus === "Completed") {
 			currentWStreak++;
 			maxWStreak = Math.max(maxWStreak, currentWStreak);
@@ -478,7 +480,14 @@ export default function DailyProgressModal({ plan, planVersion, selectedDate, on
 
 									{selectedExercises.length > 0 && (
 										<div className='mt-6 space-y-3'>
-											<h4 className='font-semibold text-sm text-slate-600 dark:text-slate-400'>Exercise Progress</h4>
+											<div className='flex items-center justify-between'>
+												<h4 className='font-semibold text-sm text-slate-600 dark:text-slate-400'>Exercise Progress</h4>
+												<div className='flex gap-2 text-xs font-medium'>
+													{totalImproving > 0 && <span className='text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 py-0.5 rounded'>+{totalImproving} Improved</span>}
+													{totalRegressing > 0 && <span className='text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 px-2 py-0.5 rounded'>-{totalRegressing} Regressed</span>}
+													{totalStable > 0 && <span className='text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded'>{totalStable} Stable</span>}
+												</div>
+											</div>
 											{selectedExercises.map((ex, idx) => (
 												<div
 													key={idx}
@@ -499,9 +508,7 @@ export default function DailyProgressModal({ plan, planVersion, selectedDate, on
 														<div className='text-slate-500'>
 															Today:{" "}
 															<strong className='text-slate-800 dark:text-slate-200'>
-																{ex.bestWeight > 0 || ex.bestReps > 0
-																	? `${ex.bestWeight}kg x ${ex.bestReps}`
-																	: `${ex.plannedWeight}kg x ${ex.plannedReps} (Plan)`}
+																{ex.bestWeight > 0 || ex.bestReps > 0 ? `${ex.bestWeight}kg x ${ex.bestReps}` : `${ex.plannedWeight}kg x ${ex.plannedReps} (Plan)`}
 															</strong>
 														</div>
 														{ex.status !== "No Data" && (
@@ -586,7 +593,7 @@ export default function DailyProgressModal({ plan, planVersion, selectedDate, on
 							<div className='h-64'>
 								<h4 className='text-center text-sm font-semibold mb-2'>Workout Adherence %</h4>
 								<ResponsiveContainer width='100%' height='100%'>
-									<BarChart data={dailyMetrics}>
+									<BarChart data={reportMetrics}>
 										<CartesianGrid strokeDasharray='3 3' vertical={false} stroke='#e2e8f0' />
 										<XAxis dataKey='dayIndex' tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
 										<YAxis domain={[0, 100]} tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
@@ -601,7 +608,7 @@ export default function DailyProgressModal({ plan, planVersion, selectedDate, on
 							<div className='h-64'>
 								<h4 className='text-center text-sm font-semibold mb-2'>Nutrition Adherence %</h4>
 								<ResponsiveContainer width='100%' height='100%'>
-									<BarChart data={dailyMetrics}>
+									<BarChart data={reportMetrics}>
 										<CartesianGrid strokeDasharray='3 3' vertical={false} stroke='#e2e8f0' />
 										<XAxis dataKey='dayIndex' tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
 										<YAxis domain={[0, 100]} tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
