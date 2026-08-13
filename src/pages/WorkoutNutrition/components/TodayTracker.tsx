@@ -23,7 +23,12 @@ const getLocalDateString = () => {
 	return `${year}-${month}-${day}`;
 };
 
-const parseLocalDate = (date: string) => new Date(`${date}T00:00:00`);
+const parseLocalDate = (dateStr: string) => {
+	const [y, m, d] = dateStr.split("-");
+	const date = new Date(Number(y), Number(m) - 1, Number(d));
+	date.setHours(0, 0, 0, 0);
+	return date;
+};
 
 export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 	const { t } = useI18n();
@@ -114,7 +119,7 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 
 	const currentDate = parseLocalDate(today);
 
-	const dayIndex = startDate && activePlan ? Math.floor((currentDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 0;
+	const dayIndex = startDate && activePlan ? Math.round((currentDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 0;
 
 	const dayData = planVersion ? getDayDataFromPlan(today, dayIndex, planVersion) : null;
 

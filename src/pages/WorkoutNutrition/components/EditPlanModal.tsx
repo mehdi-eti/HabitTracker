@@ -96,10 +96,17 @@ export default function EditPlanModal({ plan, onClose }: { plan: WorkoutPlan; on
 		loadData();
 	}, [plan.id]);
 
-	const startDate = plan.startDate ? new Date(`${plan.startDate}T00:00:00`) : new Date();
+	let startDate;
+	if (plan.startDate) {
+		const [y, m, d] = plan.startDate.split("-");
+		startDate = new Date(Number(y), Number(m) - 1, Number(d));
+	} else {
+		startDate = new Date();
+	}
+	startDate.setHours(0, 0, 0, 0);
 	const today = new Date();
 	today.setHours(0, 0, 0, 0);
-	const dayIndex = Math.floor((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+	const dayIndex = Math.round((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
 	const planWeek = dayIndex > 0 ? Math.floor((dayIndex - 1) / 7) + 1 : 1;
 	const nutritionCycle = ((planWeek - 1) % 2) + 1;
 	const activeWeekKey = nutritionCycle === 1 ? "week1" : "week2";

@@ -29,7 +29,9 @@ export async function importPlanFromJson(jsonString: string, makeActive: boolean
 	if (!days && (json.workout?.schedule || json.workout?.weeklyPlans || json.nutrition?.schedule || json.nutrition?.weeklyPlans)) {
 		days = [];
 		const durationDays = Number(planData.durationDays);
-		const start = new Date(`${startDateStr}T00:00:00`);
+		const [yy, mm, dd] = startDateStr.split("-");
+		const start = new Date(Number(yy), Number(mm) - 1, Number(dd));
+		start.setHours(0, 0, 0, 0);
 
 		const weekDays = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
