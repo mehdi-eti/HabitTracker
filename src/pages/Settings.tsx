@@ -3,14 +3,15 @@
 import { useNavigate } from "react-router-dom";
 import React, { useState, useRef } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
+import { BellOff, Download, Upload, Globe, Bell, Database, LogOut, AlertTriangle, ChevronDown } from "lucide-react";
 
 import { db } from "@/src/lib/db";
 import { cn } from "@/src/lib/utils";
 import { useI18n } from "@/src/contexts/I18nContext";
 import { useAuth } from "@/src/contexts/AuthContext";
+import { subscribeToPush, unsubscribeFromPush } from "@/src/lib/push";
 import { useTheme, AVAILABLE_THEMES } from "@/src/contexts/ThemeContext";
 import { createFullBackup, restoreFullBackup, clearAllData } from "@/src/lib/backup";
-import { Download, Upload, Globe, Bell, Database, LogOut, AlertTriangle, ChevronDown } from "lucide-react";
 
 export default function Settings() {
 	const { t, lang, setLang } = useI18n();
@@ -200,6 +201,39 @@ export default function Settings() {
 								This default time is used for notifications if a habit doesn't have a custom reminder set. You can override this
 								setting individually when creating or editing a habit.
 							</p>
+						</div>
+					</div>
+					{/* Push Notifications Card */}
+					<div className='bg-white dark:bg-slate-900 rounded-4xl p-6 md:p-8 border border-slate-100 dark:border-slate-800 shadow-sm'>
+						<div className='flex items-center gap-3 mb-6'>
+							<div className='w-10 h-10 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-500 rounded-xl flex items-center justify-center'>
+								<Bell size={20} />
+							</div>
+							<h3 className='text-xl font-bold text-slate-800 dark:text-slate-100'>Push Notifications</h3>
+						</div>
+
+						<div className='space-y-4'>
+							<p className='text-sm font-medium text-slate-500 dark:text-slate-400 leading-relaxed'>
+								Enable background push notifications to receive habit reminders even when the app is closed.
+							</p>
+							<div className='flex gap-3'>
+								<button
+									onClick={async () => {
+										const sub = await subscribeToPush();
+										alert(sub ? "Push notifications enabled!" : "Failed to enable. Check browser permissions.");
+									}}
+									className='flex-1 flex items-center justify-center gap-2 px-5 py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-colors shadow-lg shadow-indigo-500/20'>
+									<Bell size={18} /> Enable Push
+								</button>
+								<button
+									onClick={async () => {
+										await unsubscribeFromPush();
+										alert("Push notifications disabled.");
+									}}
+									className='flex-1 flex items-center justify-center gap-2 px-5 py-3.5 bg-slate-50 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-bold rounded-xl hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors border border-slate-200 dark:border-slate-700'>
+									<BellOff size={18} /> Disable
+								</button>
+							</div>
 						</div>
 					</div>
 				</div>
