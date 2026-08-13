@@ -167,7 +167,7 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 						))}
 
 						{blanks.map((blank) => (
-							<div key={`blank-${blank}`} className='h-32 rounded-xl opacity-0'></div>
+							<div key={`blank-${blank}`} className='h-32 rounded-xl opacity-0' />
 						))}
 
 						{days.map((dayIndex) => {
@@ -178,7 +178,6 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 							const wRecord = workoutRecords?.find((r) => r.date === dateStr);
 							const nRecord = nutritionRecords?.find((r) => r.date === dateStr);
 
-							 
 							const todayStr = formatDateStr(new Date());
 							const isToday = dateStr === todayStr;
 							const isPast = date < getNormalizedToday();

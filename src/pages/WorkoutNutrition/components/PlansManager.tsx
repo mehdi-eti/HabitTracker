@@ -119,8 +119,6 @@ export default function PlansManager() {
 	};
 
 	const activatePlan = async (plan: WorkoutPlan) => {
-		const startDate = formatDateStr(new Date());
-
 		// Archive all currently active plans
 		const activePlans = plans.filter((p) => p.status === "active");
 		for (const p of activePlans) {
@@ -128,7 +126,7 @@ export default function PlansManager() {
 		}
 
 		// Activate this plan
-		await db.workoutPlans.update(plan.id, { status: "active", startDate });
+		await db.workoutPlans.update(plan.id, { status: "active" });
 	};
 
 	const archivePlan = async (id: string) => {

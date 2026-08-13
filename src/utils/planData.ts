@@ -1,7 +1,7 @@
 /** @format */
 
-import { PlanJsonExercise, PlanJsonDay } from "../types/workout";
 import { parseLocalDate } from "@/src/lib/utils";
+import { PlanJsonExercise } from "@/src/types/workout";
 
 const normalizeExercises = (exercises: PlanJsonExercise[] | any[]): PlanJsonExercise[] => {
 	if (!Array.isArray(exercises)) return [];
