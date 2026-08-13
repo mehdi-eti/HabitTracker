@@ -1,25 +1,31 @@
 /** @format */
 
+import axiosInstance from "./axios";
+
 let vapidPublicKey: string | null = null;
 
 async function getVapidPublicKey(): Promise<string | null> {
 	if (vapidPublicKey) return vapidPublicKey;
 	try {
-		const res = await fetch("/api/push/vapid-public-key");
-		const data = await res.json();
-		vapidPublicKey = data.publicKey;
+		const response = await axiosInstance.get("/api/push/vapid-public-key");
+		vapidPublicKey = response.data.publicKey;
+		console.log("VAPID public key received, length:", vapidPublicKey?.length);
 		return vapidPublicKey;
-	} catch (err) {
-		console.error("Failed to fetch VAPID key:", err);
+	} catch (err: any) {
+		console.error("Failed to fetch VAPID key:", err.response?.status || err.message);
 		return null;
 	}
 }
 
-function urlBase64ToUint8Array(base64String: string): Uint8Array {
+function urlBase64ToUint8Array(base64String: string): Uint8Array<ArrayBuffer> {
 	const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
 	const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
 	const rawData = atob(base64);
-	return Uint8Array.from([...rawData].map((char) => char.charCodeAt(0)));
+	const outputArray = new Uint8Array(rawData.length);
+	for (let i = 0; i < rawData.length; ++i) {
+		outputArray[i] = rawData.charCodeAt(i);
+	}
+	return outputArray;
 }
 
 export async function registerServiceWorker(): Promise<ServiceWorkerRegistration | null> {
@@ -29,6 +35,7 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
 	}
 	try {
 		const registration = await navigator.serviceWorker.register("/sw.js");
+		console.log("SW registered:", registration.scope);
 		return registration;
 	} catch (err) {
 		console.error("SW registration failed:", err);
@@ -39,19 +46,32 @@ export async function registerServiceWorker(): Promise<ServiceWorkerRegistration
 export async function subscribeToPush(): Promise<PushSubscription | null> {
 	const registration = await navigator.serviceWorker.ready;
 	const existing = await registration.pushManager.getSubscription();
-	if (existing) return existing;
+	if (existing) {
+		console.log("Already subscribed to push");
+		return existing;
+	}
 
 	const key = await getVapidPublicKey();
-	if (!key) return null;
+	if (!key) {
+		console.error("No VAPID public key available");
+		return null;
+	}
 
 	try {
+		const applicationServerKey = urlBase64ToUint8Array(key);
+		console.log("ApplicationServerKey bytes:", applicationServerKey.length, "(expected 65)");
+
 		const subscription = await registration.pushManager.subscribe({
 			userVisibleOnly: true,
-			applicationServerKey: urlBase64ToUint8Array(key),
+			applicationServerKey,
 		});
+		console.log("Push subscription successful:", subscription.endpoint);
 		return subscription;
-	} catch (err) {
-		console.error("Push subscription failed:", err);
+	} catch (err: any) {
+		console.error("Push subscription failed:", err.name, err.message);
+		if (err.name === "InvalidAccessError") {
+			console.error("💡 The VAPID public key is invalid. Generate proper keys with: npx web-push generate-vapid-keys");
+		}
 		return null;
 	}
 }
@@ -65,13 +85,11 @@ export async function unsubscribeFromPush(): Promise<boolean> {
 	await subscription.unsubscribe();
 
 	try {
-		await fetch("/api/push/unsubscribe", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({ endpoint }),
+		await axiosInstance.post("/api/push/unsubscribe", {
+			endpoint,
 		});
-	} catch (err) {
-		console.error("Unsubscribe sync failed:", err);
+	} catch (err: any) {
+		console.error("Unsubscribe sync failed:", err.response?.status || err.message);
 	}
 	return true;
 }
@@ -96,12 +114,8 @@ export async function syncPushSchedule(
 	};
 
 	try {
-		await fetch("/api/push/sync", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify(payload),
-		});
-	} catch (err) {
-		console.error("Push sync failed:", err);
+		await axiosInstance.post("/api/push/sync", payload);
+	} catch (err: any) {
+		console.error("Push sync failed:", err.response?.status || err.message);
 	}
 }

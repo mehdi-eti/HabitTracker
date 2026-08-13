@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
 	"log"
@@ -98,18 +99,28 @@ func (s *PushStore) GetAll() []*StoredSubscription {
 }
 
 func initVAPID() {
-	var err error
-	vapidPublicKey = os.Getenv("VAPID_PUBLIC_KEY")
-	vapidPrivateKey = os.Getenv("VAPID_PRIVATE_KEY")
+	vapidPublicKey = "BPLBCcLBERo9k_FnLH7xJPE4eTNdP4WU_TDbBZfEDuZblYfLIlHYaU2MFmrqmowGzzAUX3GUK0bSY3VGhITmMFU"
+	vapidPrivateKey = "NwKRF1eS9XYv6q1QnGCh3sAAjEEhFKHzLJNoHvKM53s"
 
 	if vapidPublicKey == "" || vapidPrivateKey == "" {
-		vapidPublicKey, vapidPrivateKey, err = webpush.GenerateVAPIDKeys()
-		if err != nil {
-			log.Fatalf("Failed to generate VAPID keys: %v", err)
-		}
-		log.Println("⚠️  Generated temporary VAPID keys. Set env vars to persist them.")
-		log.Printf("VAPID_PUBLIC_KEY=%s", vapidPublicKey)
+		log.Println("❌ VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY env vars are required.")
+		log.Println("   Generate keys with: npx web-push generate-vapid-keys")
+		log.Println("   Then run with:")
+		log.Println("   VAPID_PUBLIC_KEY=xxx VAPID_PRIVATE_KEY=yyy go run main.go")
+		os.Exit(1)
 	}
+
+	// Validate: public key must decode to 65 bytes (uncompressed P-256 point)
+	pubBytes, err := base64.RawURLEncoding.DecodeString(vapidPublicKey)
+	if err != nil {
+		// Try with standard Base64URL (with padding)
+		pubBytes, err = base64.URLEncoding.DecodeString(vapidPublicKey)
+	}
+	if err != nil || len(pubBytes) != 65 || pubBytes[0] != 0x04 {
+		log.Fatalf("❌ Invalid VAPID_PUBLIC_KEY. Must be a Base64URL-encoded uncompressed P-256 public key (65 bytes, starts with 0x04). Got %d bytes. Use 'npx web-push generate-vapid-keys'", len(pubBytes))
+	}
+
+	log.Printf("✅ VAPID public key validated (%d bytes)", len(pubBytes))
 }
 
 func main() {
@@ -118,16 +129,10 @@ func main() {
 	port := getEnv("PORT", "8979")
 	staticDir := getEnv("STATIC_DIR", "./dist")
 
-	staticDir, err := filepath.Abs(staticDir)
-	if err != nil {
-		log.Fatalf("Failed to resolve static directory: %v", err)
-	}
-
 	if _, err := os.Stat(staticDir); os.IsNotExist(err) {
 		log.Fatalf("Static directory '%s' not found. Run 'npm run build' first.", staticDir)
 	}
 
-	// Verify PWA files
 	for _, f := range []string{"sw.js", "manifest.json", "logo.png"} {
 		if _, err := os.Stat(filepath.Join(staticDir, f)); os.IsNotExist(err) {
 			log.Fatalf("CRITICAL: '%s' not found in '%s'", f, staticDir)
@@ -137,32 +142,26 @@ func main() {
 	go startPushCron()
 
 	router := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		// Security headers
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("X-Frame-Options", "DENY")
 		w.Header().Set("X-XSS-Protection", "1; mode=block")
 
 		path := r.URL.Path
 
-		// API routes
 		if strings.HasPrefix(path, "/api/") {
 			handleAPI(w, r)
 			return
 		}
 
-		// EXPLICIT: Serve sw.js with correct MIME type (BEFORE any fallback)
 		if path == "/sw.js" {
 			serveStaticFile(w, r, staticDir, "sw.js", "application/javascript; charset=utf-8")
 			return
 		}
-
-		// EXPLICIT: Serve manifest.json
 		if path == "/manifest.json" {
 			serveStaticFile(w, r, staticDir, "manifest.json", "application/json; charset=utf-8")
 			return
 		}
 
-		// Serve other static files (JS, CSS, images)
 		filePath := filepath.Join(staticDir, filepath.Clean(path))
 		info, err := os.Stat(filePath)
 		if err == nil && !info.IsDir() {
@@ -170,7 +169,6 @@ func main() {
 			return
 		}
 
-		// SPA fallback
 		serveSPA(w, r, staticDir)
 	})
 
@@ -187,7 +185,9 @@ func main() {
 
 	log.Printf("✅ SW found: %s (%d bytes)", swPath, info.Size())
 
-	if err := http.ListenAndServe(addr, router); err != nil {
+	handler := corsMiddleware(router)
+
+	if err := http.ListenAndServe(addr, handler); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
 }
@@ -211,6 +211,39 @@ func serveStaticFile(w http.ResponseWriter, r *http.Request, dir, filename, cont
 	w.Header().Set("Content-Type", contentType)
 	w.Header().Set("Cache-Control", "no-cache")
 	http.ServeContent(w, r, filename, stat.ModTime(), f)
+}
+
+func corsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		origin := r.Header.Get("Origin")
+
+		// Configure allowed origins for your frontend.
+		allowedOrigins := map[string]bool{
+			"http://localhost:3000": true,
+			"http://localhost:5173": true,
+			"http://localhost:4173": true,
+		}
+
+		if allowedOrigins[origin] {
+			w.Header().Set("Access-Control-Allow-Origin", origin)
+			w.Header().Set("Vary", "Origin")
+			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+		}
+
+		// Handle browser preflight requests.
+		if r.Method == http.MethodOptions {
+			if origin != "" && !allowedOrigins[origin] {
+				http.Error(w, "CORS origin not allowed", http.StatusForbidden)
+				return
+			}
+
+			w.WriteHeader(http.StatusNoContent)
+			return
+		}
+
+		next.ServeHTTP(w, r)
+	})
 }
 
 func serveSPA(w http.ResponseWriter, r *http.Request, staticDir string) {
@@ -251,7 +284,7 @@ func handleVapidPublicKey(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{"publicKey": vapidPublicKey})
+	json.NewEncoder(w).Encode(map[string]string{"publicKey": vapidPublicKey, "privateKey": vapidPrivateKey})
 }
 
 func handlePushSync(w http.ResponseWriter, r *http.Request) {
@@ -283,6 +316,7 @@ func handlePushUnsubscribe(w http.ResponseWriter, r *http.Request) {
 	}
 	pushStore.Delete(req.Endpoint)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"status": "unsubscribed"})
 }
 
