@@ -1,11 +1,12 @@
 /** @format */
 
-import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "../lib/db";
-import { Habit } from "../types";
-import { checkAndResetHabit } from "../lib/habitUtils";
-import { getTodayStr, getYesterdayStr } from "../lib/utils";
 import { useEffect } from "react";
+import { useLiveQuery } from "dexie-react-hooks";
+
+import { db } from "@/src/lib/db";
+import { Habit } from "@/src/types";
+import { checkAndResetHabit } from "@/src/lib/habitUtils";
+import { getTodayStr, getYesterdayStr } from "@/src/lib/utils";
 
 export function useHabits(status: "active" | "completed" | "deleted" | "archived" = "active") {
 	const habits = useLiveQuery(() => db.habits.where("status").equals(status).toArray(), [status]);

@@ -1,11 +1,12 @@
 /** @format */
 
 import { useEffect } from "react";
-import { db } from "../lib/db";
 import { useLiveQuery } from "dexie-react-hooks";
-import { getTodayStr } from "../lib/utils";
-import { Habit } from "../types";
-import { registerServiceWorker, subscribeToPush, syncPushSchedule, unsubscribeFromPush } from "../lib/push";
+
+import { db } from "@/src/lib/db";
+import { Habit } from "@/src/types";
+import { getTodayStr } from "@/src/lib/utils";
+import { registerServiceWorker, subscribeToPush, syncPushSchedule } from "@/src/lib/push";
 
 export function useNotifications() {
 	const habits = useLiveQuery(() => db.habits.where("status").equals("active").toArray());

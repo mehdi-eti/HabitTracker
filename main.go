@@ -6,7 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"path"
+	"path/filepath"
 	"strings"
 	"sync"
 	"time"
@@ -14,7 +14,6 @@ import (
 	webpush "github.com/SherClockHolmes/webpush-go"
 )
 
-// Configuration
 func getEnv(key, defaultValue string) string {
 	if value := os.Getenv(key); value != "" {
 		return value
@@ -22,7 +21,6 @@ func getEnv(key, defaultValue string) string {
 	return defaultValue
 }
 
-// VAPID & Push Store
 var (
 	vapidPublicKey  string
 	vapidPrivateKey string
@@ -53,12 +51,12 @@ type PushSyncRequest struct {
 type StoredSubscription struct {
 	Subscription PushSubscription
 	Habits       []HabitSchedule
-	LastNotified map[string]string // habitID_date -> "sent"
+	LastNotified map[string]string
 }
 
 type PushStore struct {
 	mu            sync.RWMutex
-	subscriptions map[string]*StoredSubscription // keyed by endpoint
+	subscriptions map[string]*StoredSubscription
 }
 
 func NewPushStore() *PushStore {
@@ -109,7 +107,7 @@ func initVAPID() {
 		if err != nil {
 			log.Fatalf("Failed to generate VAPID keys: %v", err)
 		}
-		log.Println("⚠️  Generated temporary VAPID keys. Set VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY env vars to persist them.")
+		log.Println("⚠️  Generated temporary VAPID keys. Set env vars to persist them.")
 		log.Printf("VAPID_PUBLIC_KEY=%s", vapidPublicKey)
 	}
 }
@@ -120,64 +118,118 @@ func main() {
 	port := getEnv("PORT", "8979")
 	staticDir := getEnv("STATIC_DIR", "./dist")
 
+	staticDir, err := filepath.Abs(staticDir)
+	if err != nil {
+		log.Fatalf("Failed to resolve static directory: %v", err)
+	}
+
 	if _, err := os.Stat(staticDir); os.IsNotExist(err) {
 		log.Fatalf("Static directory '%s' not found. Run 'npm run build' first.", staticDir)
 	}
 
-	fsRoot := http.Dir(staticDir)
-	fileServer := http.FileServer(fsRoot)
+	// Verify PWA files
+	for _, f := range []string{"sw.js", "manifest.json", "logo.png"} {
+		if _, err := os.Stat(filepath.Join(staticDir, f)); os.IsNotExist(err) {
+			log.Fatalf("CRITICAL: '%s' not found in '%s'", f, staticDir)
+		}
+	}
 
-	// Start background cron for push notifications
 	go startPushCron()
 
 	router := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Security headers
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("X-Frame-Options", "DENY")
 		w.Header().Set("X-XSS-Protection", "1; mode=block")
 
-		cleanPath := path.Clean(r.URL.Path)
+		path := r.URL.Path
 
 		// API routes
-		if strings.HasPrefix(cleanPath, "/api/") {
+		if strings.HasPrefix(path, "/api/") {
 			handleAPI(w, r)
 			return
 		}
 
-		// Serve static files
-		fullPath := path.Join(staticDir, cleanPath)
-		info, err := os.Stat(fullPath)
+		// EXPLICIT: Serve sw.js with correct MIME type (BEFORE any fallback)
+		if path == "/sw.js" {
+			serveStaticFile(w, r, staticDir, "sw.js", "application/javascript; charset=utf-8")
+			return
+		}
+
+		// EXPLICIT: Serve manifest.json
+		if path == "/manifest.json" {
+			serveStaticFile(w, r, staticDir, "manifest.json", "application/json; charset=utf-8")
+			return
+		}
+
+		// Serve other static files (JS, CSS, images)
+		filePath := filepath.Join(staticDir, filepath.Clean(path))
+		info, err := os.Stat(filePath)
 		if err == nil && !info.IsDir() {
-			fileServer.ServeHTTP(w, r)
+			http.ServeFile(w, r, filePath)
 			return
 		}
 
 		// SPA fallback
-		indexPath := path.Join(staticDir, "index.html")
-		indexFile, err := os.Open(indexPath)
-		if err != nil {
-			http.Error(w, "index.html not found", http.StatusInternalServerError)
-			return
-		}
-		defer indexFile.Close()
-
-		stat, err := indexFile.Stat()
-		if err != nil {
-			http.Error(w, "Cannot read index.html", http.StatusInternalServerError)
-			return
-		}
-
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		http.ServeContent(w, r, "index.html", stat.ModTime(), indexFile)
+		serveSPA(w, r, staticDir)
 	})
 
 	addr := ":" + port
 	log.Printf("🚀 Server starting on http://localhost%s", addr)
 	log.Printf("📁 Serving static files from: %s", staticDir)
-	log.Printf("🔔 Push notifications enabled")
+
+	swPath := filepath.Join(staticDir, "sw.js")
+
+	info, err := os.Stat(swPath)
+	if err != nil {
+		log.Fatalf("SW file check failed: %v", err)
+	}
+
+	log.Printf("✅ SW found: %s (%d bytes)", swPath, info.Size())
 
 	if err := http.ListenAndServe(addr, router); err != nil {
 		log.Fatalf("Server failed: %v", err)
 	}
+}
+
+func serveStaticFile(w http.ResponseWriter, r *http.Request, dir, filename, contentType string) {
+	fp := filepath.Join(dir, filename)
+	f, err := os.Open(fp)
+	if err != nil {
+		log.Printf("❌ Failed to open %s: %v", fp, err)
+		http.Error(w, "Not found", http.StatusNotFound)
+		return
+	}
+	defer f.Close()
+
+	stat, err := f.Stat()
+	if err != nil {
+		http.Error(w, "Cannot stat file", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", contentType)
+	w.Header().Set("Cache-Control", "no-cache")
+	http.ServeContent(w, r, filename, stat.ModTime(), f)
+}
+
+func serveSPA(w http.ResponseWriter, r *http.Request, staticDir string) {
+	fp := filepath.Join(staticDir, "index.html")
+	f, err := os.Open(fp)
+	if err != nil {
+		http.Error(w, "index.html not found", http.StatusInternalServerError)
+		return
+	}
+	defer f.Close()
+
+	stat, err := f.Stat()
+	if err != nil {
+		http.Error(w, "Cannot read index.html", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	http.ServeContent(w, r, "index.html", stat.ModTime(), f)
 }
 
 func handleAPI(w http.ResponseWriter, r *http.Request) {
@@ -207,16 +259,13 @@ func handlePushSync(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-
 	var req PushSyncRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-
 	pushStore.Save(req.Subscription, req.Habits)
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
 }
 
@@ -225,7 +274,6 @@ func handlePushUnsubscribe(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
-
 	var req struct {
 		Endpoint string `json:"endpoint"`
 	}
@@ -233,21 +281,16 @@ func handlePushUnsubscribe(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-
 	pushStore.Delete(req.Endpoint)
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
 	json.NewEncoder(w).Encode(map[string]string{"status": "unsubscribed"})
 }
 
 func startPushCron() {
-	// Wait a bit for server to start
 	time.Sleep(5 * time.Second)
 	log.Println("🔔 Push cron started")
-
 	ticker := time.NewTicker(1 * time.Minute)
 	defer ticker.Stop()
-
 	for {
 		select {
 		case <-ticker.C:
@@ -262,11 +305,8 @@ func checkAndSendPushes() {
 	currentTimeStr := fmt.Sprintf("%02d:%02d", now.Hour(), now.Minute())
 	todayStr := now.Format("2006-01-02")
 
-	subscriptions := pushStore.GetAll()
-
-	for _, sub := range subscriptions {
+	for _, sub := range pushStore.GetAll() {
 		for _, habit := range sub.Habits {
-			// Check selected days
 			if habit.Mode == "selected_days" {
 				found := false
 				for _, d := range habit.SelectedDays {
@@ -279,18 +319,13 @@ func checkAndSendPushes() {
 					continue
 				}
 			}
-
-			// Check time (exact minute match)
 			if habit.ReminderTime != currentTimeStr {
 				continue
 			}
-
-			// Dedup: only once per day per habit
 			notifiedKey := fmt.Sprintf("%s_%s", habit.ID, todayStr)
 			if sub.LastNotified[notifiedKey] == todayStr {
 				continue
 			}
-
 			if err := sendPush(sub.Subscription, habit.Title); err != nil {
 				log.Printf("Push failed for %s: %v", habit.Title, err)
 			} else {
@@ -309,16 +344,12 @@ func sendPush(sub PushSubscription, habitTitle string) error {
 			Auth:   sub.Keys.Auth,
 		},
 	}
-
 	payload, _ := json.Marshal(map[string]interface{}{
 		"title": "Habit Reminder",
 		"body":  fmt.Sprintf("Don't forget to complete your habit: %s", habitTitle),
 		"tag":   "habit-reminder-" + habitTitle,
-		"data": map[string]string{
-			"url": "/habits",
-		},
+		"data":  map[string]string{"url": "/habits"},
 	})
-
 	resp, err := webpush.SendNotification(payload, s, &webpush.Options{
 		Subscriber:      "mailto:admin@localhost",
 		VAPIDPublicKey:  vapidPublicKey,
@@ -329,7 +360,6 @@ func sendPush(sub PushSubscription, habitTitle string) error {
 		return err
 	}
 	defer resp.Body.Close()
-
 	if resp.StatusCode >= 300 {
 		return fmt.Errorf("push service returned %d", resp.StatusCode)
 	}
