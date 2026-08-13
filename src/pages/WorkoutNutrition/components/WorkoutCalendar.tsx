@@ -9,6 +9,7 @@ import { useI18n } from "@/src/contexts/I18nContext";
 import { importPlanFromJson } from "@/src/utils/planImport";
 import DailyProgressModal from "./DailyProgressModal";
 import { getDayDataFromPlan } from "@/src/utils/planData";
+import { parseLocalDate, formatDateStr, getNormalizedToday, getDaysDifference } from "@/src/lib/utils";
 
 export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPlans?: () => void }) {
 	const activePlan = useLiveQuery(() => db.workoutPlans.where("status").equals("active").first());
@@ -141,15 +142,7 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 
 	const days = Array.from({ length: activePlan.durationDays }, (_, i) => i + 1);
 
-	let startDate;
-	if (activePlan.startDate) {
-		const [y, m, d] = activePlan.startDate.split("-");
-		startDate = new Date(Number(y), Number(m) - 1, Number(d));
-	} else {
-		startDate = new Date();
-	}
-	startDate.setHours(0, 0, 0, 0);
-
+	const startDate = activePlan.startDate ? parseLocalDate(activePlan.startDate) : getNormalizedToday();
 	const firstDayOfWeek = startDate.getDay();
 	const blanks = Array.from({ length: firstDayOfWeek }, (_, i) => i);
 
@@ -180,15 +173,15 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 						{days.map((dayIndex) => {
 							const date = new Date(startDate);
 							date.setDate(date.getDate() + dayIndex - 1);
-							const dateStr = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getDate()).padStart(2, "0")}`;
+							const dateStr = formatDateStr(date);
 							const dayData = getDayDataFromPlan(dateStr, dayIndex, planVersion);
 							const wRecord = workoutRecords?.find((r) => r.date === dateStr);
 							const nRecord = nutritionRecords?.find((r) => r.date === dateStr);
 
-							const todayObj = new Date();
-							const todayStr = `${todayObj.getFullYear()}-${String(todayObj.getMonth() + 1).padStart(2, "0")}-${String(todayObj.getDate()).padStart(2, "0")}`;
+							 
+							const todayStr = formatDateStr(new Date());
 							const isToday = dateStr === todayStr;
-							const isPast = date < new Date(new Date().setHours(0, 0, 0, 0));
+							const isPast = date < getNormalizedToday();
 							const isFuture = !isToday && !isPast;
 
 							return (

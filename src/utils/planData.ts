@@ -1,6 +1,7 @@
 /** @format */
 
 import { PlanJsonExercise, PlanJsonDay } from "../types/workout";
+import { parseLocalDate } from "@/src/lib/utils";
 
 const normalizeExercises = (exercises: PlanJsonExercise[] | any[]): PlanJsonExercise[] => {
 	if (!Array.isArray(exercises)) return [];
@@ -52,9 +53,7 @@ export const getDayDataFromPlan = (dateString: string, dIndex: number, pVersion:
 			return result;
 		}
 	}
-
-	const [yy, mm, dd] = dateString.split("-");
-	const currentDayDate = new Date(Number(yy), Number(mm) - 1, Number(dd));
+	const currentDayDate = parseLocalDate(dateString);
 	currentDayDate.setHours(0, 0, 0, 0);
 
 	const planWeek = Math.floor((dIndex - 1) / 7) + 1;

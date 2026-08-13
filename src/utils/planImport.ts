@@ -3,6 +3,7 @@
 import { v4 as uuidv4 } from "uuid";
 
 import { db } from "@/src/lib/db";
+import { parseLocalDate, formatDateStr, addDaysToDate } from "@/src/lib/utils";
 import { WorkoutPlan, PlanJsonExport, PlanJsonData, PlanJsonDay, PlanJsonFood } from "@/src/types/workout";
 
 export async function importPlanFromJson(jsonString: string, makeActive: boolean = false, fallbackStartDate: string = "") {
@@ -19,9 +20,7 @@ export async function importPlanFromJson(jsonString: string, makeActive: boolean
 
 	const planId = uuidv4();
 	const now = Date.now();
-
-	const _t = new Date();
-	const today = fallbackStartDate || `${_t.getFullYear()}-${String(_t.getMonth() + 1).padStart(2, "0")}-${String(_t.getDate()).padStart(2, "0")}`;
+	const today = fallbackStartDate || formatDateStr(new Date());
 	const startDateStr = planData.startDate || today;
 
 	let days: PlanJsonDay[] = json.days || planData.days || [];
@@ -29,15 +28,11 @@ export async function importPlanFromJson(jsonString: string, makeActive: boolean
 	if (!days && (json.workout?.schedule || json.workout?.weeklyPlans || json.nutrition?.schedule || json.nutrition?.weeklyPlans)) {
 		days = [];
 		const durationDays = Number(planData.durationDays);
-		const [yy, mm, dd] = startDateStr.split("-");
-		const start = new Date(Number(yy), Number(mm) - 1, Number(dd));
-		start.setHours(0, 0, 0, 0);
+		const start = parseLocalDate(startDateStr);
 
 		const weekDays = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
-
 		for (let i = 1; i <= durationDays; i++) {
-			const date = new Date(start);
-			date.setDate(date.getDate() + (i - 1));
+			const date = addDaysToDate(start, i - 1);
 			const dayOfWeek = weekDays[date.getDay()];
 
 			let workoutForDay = json.workout?.schedule?.[dayOfWeek];

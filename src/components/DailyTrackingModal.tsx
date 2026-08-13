@@ -3,7 +3,8 @@
 import { X } from "lucide-react";
 import ReactQuill from "react-quill-new";
 import { useState, useEffect } from "react";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
+import { parseLocalDate } from "@/src/lib/utils";
 
 import { useI18n } from "@/src/contexts/I18nContext";
 import { Habit, DayRecord } from "@/src/types";
@@ -51,7 +52,7 @@ export default function DailyTrackingModal({ habit, date, initialRecord, onClose
 				<div className='p-6 border-b border-slate-50 dark:border-slate-800 flex justify-between items-center bg-slate-50/50 dark:bg-slate-900/50 shrink-0'>
 					<div>
 						<h2 className='text-xl font-bold'>{habit.title}</h2>
-						<p className='text-sm text-slate-500'>{format(parseISO(date), "MMMM d, yyyy")}</p>
+						<p className='text-sm text-slate-500'>{format(parseLocalDate(date), "MMMM d, yyyy")}</p>
 					</div>
 					<button
 						onClick={onClose}

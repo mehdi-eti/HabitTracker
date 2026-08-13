@@ -8,6 +8,7 @@ import { db } from "@/src/lib/db";
 import { X, TrendingUp, TrendingDown, Minus, Dumbbell, Utensils, Calendar } from "lucide-react";
 import { WorkoutPlan, WorkoutSetRecord, NutritionFoodRecord, ExtraFoodRecord } from "@/src/types/workout";
 import { getDayDataFromPlan } from "@/src/utils/planData";
+import { parseLocalDate, getDaysDifference, getNormalizedToday, addDaysToDate, formatDateStr } from "@/src/lib/utils";
 
 interface DailyProgressModalProps {
 	plan: WorkoutPlan;
@@ -18,20 +19,12 @@ interface DailyProgressModalProps {
 }
 
 export default function DailyProgressModal({ plan, planVersion, selectedDate, onClose, onSelectDate }: DailyProgressModalProps) {
-	const [sy, sm, sd] = (plan.startDate as string).split("-");
-	const startDate = new Date(Number(sy), Number(sm) - 1, Number(sd));
-	startDate.setHours(0, 0, 0, 0);
+	const startDate = parseLocalDate(plan.startDate as string);
+	const selectedDateObj = parseLocalDate(selectedDate);
+	const today = getNormalizedToday();
 
-	const [y, m, d] = selectedDate.split("-");
-	const selectedDateObj = new Date(Number(y), Number(m) - 1, Number(d));
-	selectedDateObj.setHours(0, 0, 0, 0);
-
-	const today = new Date();
-	today.setHours(0, 0, 0, 0);
-
-	const dayIndex = Math.round((selectedDateObj.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-	const daysPassed = Math.round((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
-
+	const dayIndex = getDaysDifference(startDate, selectedDateObj) + 1;
+	const daysPassed = getDaysDifference(startDate, today) + 1;
 	// Fetch all records for the plan up to the selected date
 	const workoutRecords = useLiveQuery(async () => {
 		const records = await db.workoutDailyRecords.where("planId").equals(plan.id).toArray();
@@ -90,20 +83,16 @@ export default function DailyProgressModal({ plan, planVersion, selectedDate, on
 
 	// Generate a list of dates to show in timeline
 	const timelineDates: string[] = [];
-	const _today = new Date();
-	const todayStr = `${_today.getFullYear()}-${String(_today.getMonth() + 1).padStart(2, "0")}-${String(_today.getDate()).padStart(2, "0")}`;
+	const todayStr = formatDateStr(new Date());
 
 	for (let i = 0; i < (plan.durationDays || 30); i++) {
-		const d = new Date(startDate);
-		d.setDate(d.getDate() + i);
-		const dateStr = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-
-		// Only show dates up to today, or the selected date if it's in the future
+		const d = addDaysToDate(startDate, i);
+		const dateStr = formatDateStr(d);
 		if (dateStr <= todayStr || dateStr <= selectedDate) {
 			timelineDates.push(dateStr);
 		}
 	}
-
+	
 	// Ensure selectedDate is always in the timeline if it somehow got missed
 	if (!timelineDates.includes(selectedDate)) {
 		timelineDates.push(selectedDate);
@@ -484,21 +473,9 @@ export default function DailyProgressModal({ plan, planVersion, selectedDate, on
 											<div className='flex items-center justify-between'>
 												<h4 className='font-semibold text-sm text-slate-600 dark:text-slate-400'>Exercise Progress</h4>
 												<div className='flex gap-2 text-xs font-medium'>
-													{totalImproving > 0 && (
-														<span className='text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 py-0.5 rounded'>
-															+{totalImproving} Improved
-														</span>
-													)}
-													{totalRegressing > 0 && (
-														<span className='text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 px-2 py-0.5 rounded'>
-															-{totalRegressing} Regressed
-														</span>
-													)}
-													{totalStable > 0 && (
-														<span className='text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded'>
-															{totalStable} Stable
-														</span>
-													)}
+													{totalImproving > 0 && <span className='text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 py-0.5 rounded'>+{totalImproving} Improved</span>}
+													{totalRegressing > 0 && <span className='text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 px-2 py-0.5 rounded'>-{totalRegressing} Regressed</span>}
+													{totalStable > 0 && <span className='text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded'>{totalStable} Stable</span>}
 												</div>
 											</div>
 											{selectedExercises.map((ex, idx) => (
@@ -521,9 +498,7 @@ export default function DailyProgressModal({ plan, planVersion, selectedDate, on
 														<div className='text-slate-500'>
 															Today:{" "}
 															<strong className='text-slate-800 dark:text-slate-200'>
-																{ex.bestWeight > 0 || ex.bestReps > 0
-																	? `${ex.bestWeight}kg x ${ex.bestReps}`
-																	: `${ex.plannedWeight}kg x ${ex.plannedReps} (Plan)`}
+																{ex.bestWeight > 0 || ex.bestReps > 0 ? `${ex.bestWeight}kg x ${ex.bestReps}` : `${ex.plannedWeight}kg x ${ex.plannedReps} (Plan)`}
 															</strong>
 														</div>
 														{ex.status !== "No Data" && (

@@ -1,6 +1,7 @@
 /** @format */
 
-import { addDays, parseISO, format, getDay } from "date-fns";
+import { addDays, format, getDay } from "date-fns";
+import { parseLocalDate } from "./utils";
 
 import { DayRecord, Habit } from "../types";
 
@@ -11,7 +12,7 @@ export function getHabitTargetDates(
 	totalDays: number = 21,
 ): string[] {
 	const dates: string[] = [];
-	let currentDate = parseISO(startDateStr);
+	let currentDate = parseLocalDate(startDateStr);
 
 	while (dates.length < totalDays) {
 		if (mode === "consecutive") {

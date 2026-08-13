@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { Upload, Play, Archive, Trash2, Dumbbell, Edit, Download } from "lucide-react";
 import { db } from "@/src/lib/db";
+import { formatDateStr } from "@/src/lib/utils";
 import { WorkoutPlan, PlanJsonExport } from "@/src/types/workout";
 import { useI18n } from "@/src/contexts/I18nContext";
 import { importPlanFromJson } from "@/src/utils/planImport";
@@ -36,7 +37,7 @@ export default function PlansManager() {
 				name: "Sample 4-Week Plan",
 				description: "A comprehensive sample plan showcasing all features including weekly alternating routines.",
 				durationDays: 28,
-				startDate: `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(new Date().getDate()).padStart(2, "0")}`,
+				startDate: formatDateStr(new Date()),
 				workout: {
 					weeklyPlans: {
 						week1: {
@@ -118,7 +119,7 @@ export default function PlansManager() {
 	};
 
 	const activatePlan = async (plan: WorkoutPlan) => {
-		const startDate = `${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(new Date().getDate()).padStart(2, "0")}`;
+		const startDate = formatDateStr(new Date());
 
 		// Archive all currently active plans
 		const activePlans = plans.filter((p) => p.status === "active");

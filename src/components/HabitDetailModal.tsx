@@ -4,9 +4,10 @@ import { useState } from "react";
 import DOMPurify from "dompurify";
 import { useLiveQuery } from "dexie-react-hooks";
 import { X, CalendarDays, History as HistoryIcon, CheckCircle2, XCircle, Check, FileText } from "lucide-react";
-import { format, parseISO, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, addMonths, subMonths } from "date-fns";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, addMonths, subMonths } from "date-fns";
 
 import { db } from "@/src/lib/db";
+import { parseLocalDate } from "@/src/lib/utils";
 import { Habit } from "@/src/types";
 import { CATEGORIES } from "./HabitModal";
 import { cn, getTodayStr } from "@/src/lib/utils";
@@ -56,7 +57,7 @@ export default function HabitDetailModal({ habit, onClose }: HabitDetailModalPro
 	// Determine status for a specific date
 	const getDayStatus = (dateStr: string) => {
 		const record = records.find((r) => r.date === dateStr);
-		const dateObj = parseISO(dateStr);
+		const dateObj = parseLocalDate(dateStr);
 		const isDayFuture = dateStr > todayStr;
 		const isSelectedDay = habit.mode === "consecutive" || (habit.selectedDays || []).includes(dateObj.getDay() as any);
 
@@ -85,8 +86,8 @@ export default function HabitDetailModal({ habit, onClose }: HabitDetailModalPro
 	const allHistoryDays: { date: string; status: string; note?: string }[] = [];
 
 	if (habit.currentStartDate) {
-		const startDate = parseISO(habit.currentStartDate);
-		const endDate = parseISO(todayStr);
+		const startDate = parseLocalDate(habit.currentStartDate);
+		const endDate = parseLocalDate(todayStr);
 
 		if (startDate <= endDate) {
 			const daysInterval = eachDayOfInterval({ start: startDate, end: endDate });
@@ -111,7 +112,7 @@ export default function HabitDetailModal({ habit, onClose }: HabitDetailModalPro
 
 	return (
 		<div className='fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50'>
-			<div className='bg-white dark:bg-slate-900 rounded-[2rem] w-full max-w-5xl shadow-2xl border border-slate-100 dark:border-slate-800 flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200'>
+			<div className='bg-white dark:bg-slate-900 rounded-4xl w-full max-w-5xl shadow-2xl border border-slate-100 dark:border-slate-800 flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200'>
 				{/* Header */}
 				<div className='flex items-center justify-between p-6 md:p-8 border-b border-slate-100 dark:border-slate-800 shrink-0'>
 					<div className='flex items-center gap-4'>
@@ -126,7 +127,7 @@ export default function HabitDetailModal({ habit, onClose }: HabitDetailModalPro
 						<div>
 							<h2 className='text-2xl font-extrabold text-slate-800 dark:text-slate-100 flex items-center gap-3'>{habit.title}</h2>
 							<p className='text-sm font-medium text-slate-500 dark:text-slate-400'>
-								Started {habit.currentStartDate ? format(parseISO(habit.currentStartDate), "MMM d, yyyy") : "Unknown"}
+								Started {habit.currentStartDate ? format(parseLocalDate(habit.currentStartDate), "MMM d, yyyy") : "Unknown"}
 							</p>
 						</div>
 					</div>
@@ -253,7 +254,7 @@ export default function HabitDetailModal({ habit, onClose }: HabitDetailModalPro
 													<div className='w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] p-4 rounded-2xl border border-slate-100 dark:border-slate-800 bg-white dark:bg-slate-800 shadow-sm'>
 														<div className='flex items-center justify-between mb-1'>
 															<span className='text-sm font-bold text-slate-700 dark:text-slate-200'>
-																{format(parseISO(record.date), "MMMM d, yyyy")}
+																{format(parseLocalDate(record.date), "MMMM d, yyyy")}
 															</span>
 															<span className='text-xs font-medium text-slate-400 bg-slate-100 dark:bg-slate-700 px-2 py-0.5 rounded-full'>
 																{isCompleted ? "Completed" : "Missed"}

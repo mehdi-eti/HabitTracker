@@ -7,28 +7,13 @@ import React, { useEffect, useRef, useState } from "react";
 import { db } from "@/src/lib/db";
 import { useI18n } from "@/src/contexts/I18nContext";
 import { importPlanFromJson } from "@/src/utils/planImport";
+import { parseLocalDate, getDaysDifference, formatDateStr } from "@/src/lib/utils";
 import { Dumbbell, Utensils, CheckCircle, Circle, Plus, X, Upload, AlertCircle } from "lucide-react";
 import { getDayDataFromPlan } from "@/src/utils/planData";
 
 interface TodayTrackerProps {
 	onNavigateToPlans?: () => void;
 }
-
-const getLocalDateString = () => {
-	const now = new Date();
-	const year = now.getFullYear();
-	const month = String(now.getMonth() + 1).padStart(2, "0");
-	const day = String(now.getDate()).padStart(2, "0");
-
-	return `${year}-${month}-${day}`;
-};
-
-const parseLocalDate = (dateStr: string) => {
-	const [y, m, d] = dateStr.split("-");
-	const date = new Date(Number(y), Number(m) - 1, Number(d));
-	date.setHours(0, 0, 0, 0);
-	return date;
-};
 
 export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 	const { t } = useI18n();
@@ -37,7 +22,7 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 	const [extraFoodDesc, setExtraFoodDesc] = useState("");
 	const [importError, setImportError] = useState("");
 
-	const today = getLocalDateString();
+	const today = formatDateStr(new Date());
 	const isInitializingRef = useRef(false);
 
 	/*
@@ -119,7 +104,7 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 
 	const currentDate = parseLocalDate(today);
 
-	const dayIndex = startDate && activePlan ? Math.round((currentDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1 : 0;
+	const dayIndex = startDate && activePlan ? getDaysDifference(startDate, currentDate) + 1 : 0;
 
 	const dayData = planVersion ? getDayDataFromPlan(today, dayIndex, planVersion) : null;
 

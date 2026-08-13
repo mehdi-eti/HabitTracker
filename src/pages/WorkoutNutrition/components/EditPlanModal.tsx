@@ -6,6 +6,7 @@ import { X, Save, AlertCircle } from "lucide-react";
 import { db } from "@/src/lib/db";
 import { WorkoutPlan } from "@/src/types/workout";
 import { useI18n } from "@/src/contexts/I18nContext";
+import { parseLocalDate, getNormalizedToday, getDaysDifference, formatDateStr, addDaysToDate } from "@/src/lib/utils";
 
 function PreviewMeals({ schedule }: { schedule: any }) {
 	if (!schedule) return <div className='text-sm text-slate-500'>No valid schedule format</div>;
@@ -96,17 +97,9 @@ export default function EditPlanModal({ plan, onClose }: { plan: WorkoutPlan; on
 		loadData();
 	}, [plan.id]);
 
-	let startDate;
-	if (plan.startDate) {
-		const [y, m, d] = plan.startDate.split("-");
-		startDate = new Date(Number(y), Number(m) - 1, Number(d));
-	} else {
-		startDate = new Date();
-	}
-	startDate.setHours(0, 0, 0, 0);
-	const today = new Date();
-	today.setHours(0, 0, 0, 0);
-	const dayIndex = Math.round((today.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24)) + 1;
+	const startDate = plan.startDate ? parseLocalDate(plan.startDate) : getNormalizedToday();
+	const today = getNormalizedToday();
+	const dayIndex = getDaysDifference(startDate, today) + 1;
 	const planWeek = dayIndex > 0 ? Math.floor((dayIndex - 1) / 7) + 1 : 1;
 	const nutritionCycle = ((planWeek - 1) % 2) + 1;
 	const activeWeekKey = nutritionCycle === 1 ? "week1" : "week2";
@@ -134,8 +127,7 @@ export default function EditPlanModal({ plan, onClose }: { plan: WorkoutPlan; on
 						const weekKey = dayCycle === 1 ? "week1" : "week2";
 						const weeklyPlan = newData.nutrition.weeklyPlans[weekKey];
 
-						const d = new Date(startDate);
-						d.setDate(d.getDate() + day.dayIndex - 1);
+						const d = addDaysToDate(startDate, day.dayIndex - 1);
 						const dayOfWeek = weekDays[d.getDay()];
 
 						const mealsForDay = weeklyPlan?.schedule?.[dayOfWeek] || [];

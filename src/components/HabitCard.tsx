@@ -1,7 +1,8 @@
 /** @format */
 
 import DOMPurify from "dompurify";
-import { format, parseISO } from "date-fns";
+import { format } from "date-fns";
+import { parseLocalDate } from "@/src/lib/utils";
 import React, { useState, useEffect } from "react";
 import { Check, Edit2, RotateCcw } from "lucide-react";
 
@@ -176,7 +177,7 @@ export default function HabitCard({ habit, dayRecords }: HabitCardProps) {
 							key={date}
 							disabled={isFuture}
 							onClick={() => setTrackingDate(date)}
-							title={format(parseISO(date), "MMM d, yyyy")}
+							title={format(parseLocalDate(date), "MMM d, yyyy")}
 							className={cn(
 								"relative aspect-square rounded-xl flex items-center justify-center text-xs font-bold transition-all",
 								isCompleted
@@ -217,7 +218,7 @@ export default function HabitCard({ habit, dayRecords }: HabitCardProps) {
 									className='bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl text-sm border border-slate-100 dark:border-slate-700/50'>
 									<div className='flex items-center justify-between mb-1'>
 										<span className='font-semibold text-slate-600 dark:text-slate-300 text-xs'>
-											{format(parseISO(record.date), "MMM d, yyyy")}
+											{format(parseLocalDate(record.date), "MMM d, yyyy")}
 										</span>
 										{record.completed && <Check size={12} className='text-emerald-500' />}
 									</div>
