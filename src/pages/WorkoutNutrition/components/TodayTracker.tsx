@@ -507,7 +507,7 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 													</span>
 
 													<div className='flex-1 flex gap-4 items-center'>
-														<div className='flex flex-col gap-1 w-full max-w-[110px]'>
+														<div className='flex flex-col gap-1 w-full max-w-27.5'>
 															<span className='text-[10px] text-slate-400'>Reps (Plan: {plannedReps})</span>
 
 															<input
@@ -521,7 +521,7 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 															/>
 														</div>
 
-														<div className='flex flex-col gap-1 w-full max-w-[110px]'>
+														<div className='flex flex-col gap-1 w-full max-w-27.5'>
 															<span className='text-[10px] text-slate-400'>Kg (Plan: {plannedWeight})</span>
 
 															<input

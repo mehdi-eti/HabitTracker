@@ -155,7 +155,7 @@ export default function HabitDetailModal({ habit, onClose }: HabitDetailModalPro
 										<span className='sr-only'>Previous month</span>
 										&larr;
 									</button>
-									<span className='text-sm font-bold text-slate-700 dark:text-slate-200 min-w-[100px] text-center'>
+									<span className='text-sm font-bold text-slate-700 dark:text-slate-200 min-w-25 text-center'>
 										{format(currentMonth, "MMMM yyyy")}
 									</span>
 									<button
@@ -227,14 +227,14 @@ export default function HabitDetailModal({ habit, onClose }: HabitDetailModalPro
 								Daily History
 							</h3>
 
-							<div className='bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl p-4 md:p-6 shadow-inner h-[400px] overflow-y-auto custom-scrollbar'>
+							<div className='bg-slate-50 dark:bg-slate-900/50 border border-slate-100 dark:border-slate-800 rounded-2xl p-4 md:p-6 shadow-inner h-100 overflow-y-auto custom-scrollbar'>
 								{historyList.length === 0 ? (
 									<div className='h-full flex flex-col items-center justify-center text-slate-400 dark:text-slate-500 space-y-3'>
 										<HistoryIcon size={32} className='opacity-50' />
 										<p className='font-medium text-sm'>No activity recorded yet.</p>
 									</div>
 								) : (
-									<div className='space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-slate-200 dark:before:via-slate-700 before:to-transparent'>
+									<div className='space-y-4 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-linear-to-b before:from-transparent before:via-slate-200 dark:before:via-slate-700 before:to-transparent'>
 										{historyList.map((record, index) => {
 											const isCompleted = record.status === "completed";
 											const hasNote = !!record.note?.trim();
