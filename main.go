@@ -133,7 +133,7 @@ func main() {
 		log.Fatalf("Static directory '%s' not found. Run 'npm run build' first.", staticDir)
 	}
 
-	for _, f := range []string{"sw.js", "manifest.json", "logo.png"} {
+	for _, f := range []string{"sw.js", "manifest.json", "logo.ico", "logo.png", "index.html"} {
 		if _, err := os.Stat(filepath.Join(staticDir, f)); os.IsNotExist(err) {
 			log.Fatalf("CRITICAL: '%s' not found in '%s'", f, staticDir)
 		}

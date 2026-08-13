@@ -1,10 +1,7 @@
 /** @format */
 
+import { useMemo } from "react";
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
-import { useI18n } from "../contexts/I18nContext";
-import { useTheme, AVAILABLE_THEMES } from "../contexts/ThemeContext";
-import { useNotifications } from "../hooks/useNotifications";
 import {
 	LayoutDashboard,
 	ListTodo,
@@ -16,9 +13,14 @@ import {
 	Sun,
 	Languages,
 	Dumbbell,
+	TargetIcon,
 } from "lucide-react";
-import { cn } from "../lib/utils";
-import { useMemo } from "react";
+
+import { cn } from "@/src/lib/utils";
+import { useAuth } from "@/src/contexts/AuthContext";
+import { useI18n } from "@/src/contexts/I18nContext";
+import { useNotifications } from "@/src/hooks/useNotifications";
+import { useTheme, AVAILABLE_THEMES } from "@/src/contexts/ThemeContext";
 
 export default function Layout() {
 	useNotifications();
@@ -57,8 +59,9 @@ export default function Layout() {
 				<div className='p-4 flex md:flex-col items-center md:items-stretch justify-between h-full'>
 					<div className='flex md:flex-col gap-2 md:gap-4 flex-1 md:flex-none overflow-x-auto md:overflow-x-visible items-center md:items-stretch px-2 md:px-0'>
 						<div className='hidden md:flex items-center gap-3 mb-6 px-2 md:mt-2'>
-							<div className='w-full flex items-center justify-center'>
-								<img src='/logo.png' alt='Reboot Reset' className='max-h-24 object-contain rounded-xl' />
+							<div className='w-full flex gap-2 items-center justify-center bg-indigo-600 text-white p-4 rounded-xl'>
+								<h1 className='font-extrabold text-xl'>Habit Tracker</h1>
+								<TargetIcon />
 							</div>
 						</div>
 
@@ -108,7 +111,7 @@ export default function Layout() {
 						onClick={toggleTheme}
 						className='flex items-center justify-center w-10 h-10 rounded-xl bg-slate-50 dark:bg-slate-800 text-slate-500 dark:text-slate-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/30 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all duration-200 shadow-sm border border-slate-100 dark:border-slate-700'
 						title={t("theme")}>
-						{theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
+						{isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
 					</button>
 				</header>
 
