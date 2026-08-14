@@ -206,20 +206,43 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 							{day}
 						</div>
 					))}
-					{[...blanks, ...days].map((dayIndex) => {
+
+					{blanks.map((blank) => {
+						const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), blank - firstDayOfMonth + 1);
+						const isToday = date.toDateString() === today.toDateString();
+
+						return (
+							<div
+								key={`prev-${blank}`}
+								className={`border rounded-xl p-2 md:p-3 flex flex-col h-24 md:h-32 opacity-40 transition-colors ${
+									isToday
+										? "border-indigo-300 border-2 dark:border-indigo-700 bg-indigo-50/30 dark:bg-indigo-900/10"
+										: "border-slate-200 dark:border-slate-700 bg-slate-50/30 dark:bg-slate-900/30"
+								}`}>
+								<div className='flex justify-start items-start mb-2'>
+									<span className={`text-xs flex items-center justify-center`}>
+										{date.toLocaleDateString([], { month: "short", day: "numeric" })}
+									</span>
+								</div>
+							</div>
+						);
+					})}
+
+					{days.map((dayIndex) => {
 						const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), dayIndex);
 						const isToday = date.toDateString() === today.toDateString();
 
 						return (
 							<div
-								key={dayIndex}
+								key={`day-${dayIndex}`}
 								className={`border bg-slate-50/50 dark:bg-slate-900/50 rounded-xl p-2 md:p-3 flex flex-col h-24 md:h-32 opacity-70 transition-colors ${
 									isToday
 										? "border-indigo-300 border-2 dark:border-indigo-700 bg-indigo-50/30 dark:bg-indigo-900/10"
 										: "border-slate-200 dark:border-slate-700"
 								}`}>
 								<div className='flex justify-start items-start mb-2'>
-									<span className='text-xs font-bold w-10 h-10 flex items-center justify-center rounded-full'>
+									<span
+										className={`text-xs flex items-center justify-center ${isToday ? "text-indigo-600 font-extrabold" : "text-slate-400 dark:text-slate-500"}`}>
 										{date.toLocaleDateString([], { month: "short", day: "numeric" })}
 									</span>
 								</div>
