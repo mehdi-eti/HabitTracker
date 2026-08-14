@@ -370,11 +370,15 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 						{blanks.map((blank, index) => {
 							const date = new Date(startDate);
 							date.setDate(date.getDate() - (firstDayOfWeek - blank));
+							const dateStr = formatDateStr(date);
+							const todayStr = formatDateStr(new Date());
+							const isToday = dateStr === todayStr;
 							return (
 								<div
 									key={`blank-${blank}-${index}`}
 									className='text-end p-2 h-full bg-slate-50/50 dark:bg-slate-800/30 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors duration-200 flex flex-col justify-between'>
-									<span className='text-[10px] text-slate-400 dark:text-slate-500 font-medium'>
+									<span
+										className={`text-[10px] ${isToday ? "text-indigo-600 font-extrabold" : "text-slate-400 dark:text-slate-500 font-medium"}`}>
 										{date.toLocaleDateString([], { month: "short", day: "numeric" })}
 									</span>
 									<div className='w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700 self-end' />
