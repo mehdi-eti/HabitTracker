@@ -217,6 +217,13 @@ export const translations = {
 		no_active_plan_desc: "Create a new workout and nutrition plan or import an existing JSON plan to get started.",
 		create_plan: "Create Plan",
 		no_active_plan_calendar_desc: "No active plan. Import or create a plan to see workouts and meals on the calendar.",
+		workout_nutrition_overview: "Workout & Nutrition Overview",
+		weight: "Weight",
+		chest: "Chest",
+		waist: "Waist",
+		hips: "Hips",
+		arms: "Arms",
+		legs: "Legs",
 	},
 	fa: {
 		quick_actions: "اقدامات سریع",
@@ -434,6 +441,13 @@ export const translations = {
 		no_active_plan_desc: "برای شروع، یک برنامه تمرینی و تغذیه جدید ایجاد کنید یا یک برنامه JSON موجود را وارد کنید.",
 		create_plan: "برنامه درست کنید",
 		no_active_plan_calendar_desc: "برنامه‌ی فعالی وجود ندارد. برای مشاهده‌ی تمرینات و وعده‌های غذایی در تقویم، برنامه‌ای را وارد یا ایجاد کنید.",
+		workout_nutrition_overview: "نمای کلی تمرین و تغذیه",
+		weight: "وزن",
+		chest: "سینه",
+		waist: "کمر",
+		hips: "باسن",
+		arms: "بازوها",
+		legs: "پاها",
 	},
 };
 

@@ -143,7 +143,7 @@ export default function PlansManager() {
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center'>
-				<h2 className='text-xl font-bold'>{t("plans" as any) || "Plans"}</h2>
+				<h2 className='text-xl font-bold'>{t("plans") || "Plans"}</h2>
 				<div className='flex gap-2'>
 					<button
 						onClick={downloadExampleJson}
@@ -154,7 +154,7 @@ export default function PlansManager() {
 					</button>
 					<label className='flex items-center gap-2 px-4 py-2 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-lg cursor-pointer transition-colors text-sm font-medium'>
 						<Upload size={18} />
-						{t("import_json" as any) || "Import JSON"}
+						{t("import_json") || "Import JSON"}
 						<input type='file' accept='.json' className='hidden' onChange={handleImport} />
 					</label>
 				</div>
@@ -166,7 +166,7 @@ export default function PlansManager() {
 						<div>
 							<div className='flex items-center gap-2 mb-1'>
 								<span className='bg-indigo-500 text-white text-xs px-2 py-0.5 rounded font-medium'>
-									{t("active_plan" as any) || "Active"}
+									{t("active_plan") || "Active"}
 								</span>
 								<h3 className='text-lg font-bold text-indigo-900 dark:text-indigo-100'>{activePlan.name}</h3>
 							</div>
@@ -195,7 +195,7 @@ export default function PlansManager() {
 
 			{otherPlans.length > 0 && (
 				<div>
-					<h3 className='text-lg font-semibold mb-3'>{t("other_plans" as any) || "Other Plans"}</h3>
+					<h3 className='text-lg font-semibold mb-3'>{t("other_plans") || "Other Plans"}</h3>
 					<div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4'>
 						{otherPlans.map((plan) => (
 							<div key={plan.id} className='border border-slate-200 dark:border-slate-700 rounded-xl p-4 flex flex-col'>
@@ -236,11 +236,9 @@ export default function PlansManager() {
 			{plans.filter((p) => p.status !== "deleted").length === 0 && (
 				<div className='text-center py-12 border-2 border-dashed border-slate-200 dark:border-slate-700 rounded-xl'>
 					<Dumbbell className='mx-auto text-slate-300 dark:text-slate-600 mb-3' size={48} />
-					<h3 className='text-lg font-medium text-slate-700 dark:text-slate-300'>
-						{t("no_workout_plans" as any) || "No workout plans yet"}
-					</h3>
+					<h3 className='text-lg font-medium text-slate-700 dark:text-slate-300'>{t("no_workout_plans") || "No workout plans yet"}</h3>
 					<p className='text-slate-500 dark:text-slate-400 mt-1 max-w-md mx-auto'>
-						{t("import_plan_desc" as any) || "Import a plan using the JSON format to get started with your fitness journey."}
+						{t("import_plan_desc") || "Import a plan using the JSON format to get started with your fitness journey."}
 					</p>
 				</div>
 			)}

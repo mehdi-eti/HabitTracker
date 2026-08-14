@@ -57,7 +57,7 @@ export default function DashboardChart() {
 	return (
 		<div className='bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-50 dark:border-slate-800 shadow-sm mt-6'>
 			<div className='flex justify-between items-center mb-6'>
-				<h3 className='text-lg font-bold'>{t("success_trends" as any)}</h3>
+				<h3 className='text-lg font-bold'>{t("success_trends")}</h3>
 			</div>
 			<div className='h-64'>
 				<ResponsiveContainer width='100%' height='100%'>
@@ -88,7 +88,7 @@ export default function DashboardChart() {
 							strokeWidth={3}
 							fillOpacity={1}
 							fill='url(#colorRate)'
-							name={t("success_rate_percent" as any)}
+							name={t("success_rate_percent")}
 						/>
 					</AreaChart>
 				</ResponsiveContainer>

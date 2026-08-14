@@ -27,7 +27,7 @@ export default function WorkoutNutritionSummary() {
 	return (
 		<div className='space-y-6 mt-8 animate-in fade-in'>
 			<h3 className='text-xl font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2'>
-				<Dumbbell className='text-indigo-500' /> {t("workout_nutrition_overview" as any) || "Workout & Nutrition Programs"}
+				<Dumbbell className='text-indigo-500' /> {t("workout_nutrition_overview") || "Workout & Nutrition Programs"}
 			</h3>
 			{allPlans.length === 0 ? (
 				<div className='bg-white dark:bg-slate-900 rounded-3xl p-6 text-center text-slate-500 font-medium border border-slate-100 dark:border-slate-800 shadow-sm'>

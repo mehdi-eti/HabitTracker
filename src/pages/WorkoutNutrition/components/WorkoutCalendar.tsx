@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
-import { CalendarDays, Dumbbell, Utensils, ChevronLeft, ChevronRight, Upload, Plus } from "lucide-react";
+import { CalendarDays, Dumbbell, Utensils, ChevronLeft, ChevronRight, Upload, Plus, TrendingUp, Flame, Target } from "lucide-react";
 
 import { db } from "@/src/lib/db";
 import { useI18n } from "@/src/contexts/I18nContext";
@@ -13,11 +13,17 @@ import { parseLocalDate, formatDateStr, getNormalizedToday, getDaysDifference } 
 
 export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPlans?: () => void }) {
 	const activePlan = useLiveQuery(() => db.workoutPlans.where("status").equals("active").first());
-	const planVersion = useLiveQuery(() => (activePlan ? db.workoutPlanVersions.where("planId").equals(activePlan.id).last() : undefined), [activePlan]);
-	const workoutRecords = useLiveQuery(() => (activePlan ? db.workoutDailyRecords.where("planId").equals(activePlan.id).toArray() : []), [activePlan]);
+	const planVersion = useLiveQuery(
+		() => (activePlan ? db.workoutPlanVersions.where("planId").equals(activePlan.id).last() : undefined),
+		[activePlan?.id],
+	);
+	const workoutRecords = useLiveQuery(
+		() => (activePlan ? db.workoutDailyRecords.where("planId").equals(activePlan.id).toArray() : []),
+		[activePlan?.id],
+	);
 	const nutritionRecords = useLiveQuery(
 		() => (activePlan ? db.nutritionDailyRecords.where("planId").equals(activePlan.id).toArray() : []),
-		[activePlan],
+		[activePlan?.id],
 	);
 
 	const { t } = useI18n();
@@ -25,11 +31,11 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 	const [currentDate, setCurrentDate] = useState(new Date());
 	const [selectedReportDate, setSelectedReportDate] = useState<string | null>(null);
 
-	const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
-	const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
-	const goToToday = () => setCurrentDate(new Date());
+	const prevMonth = React.useCallback(() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1)), [currentDate]);
+	const nextMonth = React.useCallback(() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1)), [currentDate]);
+	const goToToday = React.useCallback(() => setCurrentDate(new Date()), []);
 
-	const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
+	const handleImport = React.useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
 		const file = e.target.files?.[0];
 		if (!file) return;
 
@@ -43,9 +49,88 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 		};
 		reader.readAsText(file);
 		e.target.value = "";
-	};
+	}, []);
 
-	if (!activePlan || !planVersion) {
+	const days = React.useMemo(() => Array.from({ length: activePlan?.durationDays ?? 0 }, (_, i) => i + 1), [activePlan?.durationDays]);
+	const startDate = React.useMemo(() => (activePlan?.startDate ? parseLocalDate(activePlan.startDate) : getNormalizedToday()), [activePlan?.startDate]);
+	const date = new Date(startDate);
+
+	const firstDayOfWeek = startDate.getDay();
+	const blanks = React.useMemo(() => Array.from({ length: firstDayOfWeek }, (_, i) => i), [firstDayOfWeek]);
+
+	// Weekly stats computation
+	const today = React.useMemo(() => getNormalizedToday(), []);
+
+	const weeklyStats = React.useMemo(() => {
+		const daysPassed = Math.max(0, getDaysDifference(startDate, today));
+		const currentWeekIndex = Math.floor(daysPassed / 7);
+		const weekStartDay = currentWeekIndex * 7 + 1;
+		const weekEndDay = Math.min((currentWeekIndex + 1) * 7, activePlan?.durationDays ?? 0);
+
+		let plannedWorkouts = 0;
+		let doneWorkouts = 0;
+		let plannedNutrition = 0;
+		let doneNutrition = 0;
+		let restDays = 0;
+
+		for (let d = weekStartDay; d <= weekEndDay; d++) {
+			const dDate = new Date(startDate);
+			dDate.setDate(dDate.getDate() + d - 1);
+			const dStr = formatDateStr(dDate);
+			const dData = getDayDataFromPlan(dStr, d, planVersion);
+			const dW = workoutRecords?.find((r) => r.date === dStr);
+			const dN = nutritionRecords?.find((r) => r.date === dStr);
+
+			if (dData?.restDay) {
+				restDays++;
+			} else {
+				if (dData?.workout) {
+					plannedWorkouts++;
+					if (dW) doneWorkouts++;
+				}
+				if (dData?.nutrition) {
+					plannedNutrition++;
+					if (dN) doneNutrition++;
+				}
+			}
+		}
+
+		return {
+			currentWeekIndex,
+			weekStartDay,
+			weekEndDay,
+			plannedWorkouts,
+			doneWorkouts,
+			plannedNutrition,
+			doneNutrition,
+			restDays,
+		};
+	}, [startDate, today, activePlan?.durationDays, planVersion, workoutRecords, nutritionRecords]);
+
+	// Streak calculation
+	const streak = React.useMemo(() => {
+		const daysPassed = Math.max(0, getDaysDifference(startDate, today));
+		let streakCount = 0;
+		for (let d = daysPassed; d >= 1; d--) {
+			const dDate = new Date(startDate);
+			dDate.setDate(dDate.getDate() + d - 1);
+			const dStr = formatDateStr(dDate);
+			const dW = workoutRecords?.find((r) => r.date === dStr);
+			if (dW) {
+				streakCount++;
+			} else {
+				const dData = getDayDataFromPlan(dStr, d, planVersion);
+				if (dData?.restDay) continue;
+				break;
+			}
+		}
+		return streakCount;
+	}, [startDate, today, planVersion, workoutRecords]);
+
+	// Destructure for JSX usage
+	const { currentWeekIndex, weekStartDay, weekEndDay, plannedWorkouts, doneWorkouts, plannedNutrition, doneNutrition, restDays } = weeklyStats;
+
+	if (!activePlan) {
 		const today = new Date();
 		const daysInMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0).getDate();
 		const firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1).getDay();
@@ -56,7 +141,7 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 			<div className='space-y-6'>
 				<div className='flex flex-col md:flex-row justify-between items-start md:items-center gap-4 border-b border-slate-100 dark:border-slate-800 pb-4'>
 					<div>
-						<h2 className='text-2xl font-bold text-slate-800 dark:text-white'>{t("plan_calendar" as any) || "Plan Calendar"}</h2>
+						<h2 className='text-2xl font-bold text-slate-800 dark:text-white'>{t("plan_calendar") || "Plan Calendar"}</h2>
 						<p className='text-slate-500 dark:text-slate-400 mt-1'>
 							{currentDate.toLocaleString("default", { month: "long", year: "numeric" })}
 						</p>
@@ -140,17 +225,11 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 		);
 	}
 
-	const days = Array.from({ length: activePlan.durationDays }, (_, i) => i + 1);
-
-	const startDate = activePlan.startDate ? parseLocalDate(activePlan.startDate) : getNormalizedToday();
-	const firstDayOfWeek = startDate.getDay();
-	const blanks = Array.from({ length: firstDayOfWeek }, (_, i) => i);
-
 	return (
 		<div className='space-y-6'>
 			<div className='flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4'>
 				<div>
-					<h2 className='text-2xl font-bold text-slate-800 dark:text-white'>{t("plan_calendar" as any) || "Plan Calendar"}</h2>
+					<h2 className='text-2xl font-bold text-slate-800 dark:text-white'>{t("plan_calendar") || "Plan Calendar"}</h2>
 					<p className='text-slate-500 dark:text-slate-400 mt-1'>
 						{activePlan.name} ({activePlan.durationDays} {t("days")})
 					</p>
@@ -166,12 +245,18 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 							</div>
 						))}
 
-						{blanks.map((blank) => (
-							<div key={`blank-${blank}`} className='h-32 rounded-xl opacity-0' />
+						{blanks.map((blank, index) => (
+							<div
+								key={`blank-${blank}-${index}`}
+								className='text-end p-2 h-full bg-slate-50/50 dark:bg-slate-800/30 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors duration-200 flex flex-col justify-between'>
+								<span className='text-[10px] text-slate-400 dark:text-slate-500 font-medium'>
+									{date.toLocaleDateString([], { month: "short", day: "numeric" })}
+								</span>
+								<div className='w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700 self-end' />
+							</div>
 						))}
 
 						{days.map((dayIndex) => {
-							const date = new Date(startDate);
 							date.setDate(date.getDate() + dayIndex - 1);
 							const dateStr = formatDateStr(date);
 							const dayData = getDayDataFromPlan(dateStr, dayIndex, planVersion);
@@ -203,7 +288,7 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 									<div className='flex justify-between items-start mb-2'>
 										<span
 											className={`text-xs font-bold ${isToday ? "text-indigo-600 dark:text-indigo-400" : "text-slate-500"}`}>
-											{t("day" as any)} {dayIndex}
+											{t("day")} {dayIndex}
 										</span>
 										<span className='text-[10px] text-slate-400'>
 											{date.toLocaleDateString([], { month: "short", day: "numeric" })}
@@ -213,7 +298,7 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 									<div className='flex-1 overflow-hidden'>
 										{dayData?.restDay ? (
 											<div className='text-xs text-slate-400 font-medium h-full flex items-center justify-center bg-slate-50 dark:bg-slate-800/50 rounded-lg'>
-												{t("rest_day" as any) || "Rest"}
+												{t("rest_day") || "Rest"}
 											</div>
 										) : (
 											<div className='space-y-1.5 mt-1'>
@@ -231,9 +316,7 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 															size={12}
 															className={`shrink-0 ${wRecord ? "text-green-500" : isPast ? "text-red-500" : ""}`}
 														/>
-														<span className='truncate font-medium' title={dayData.workout.title}>
-															{dayData.workout.title}
-														</span>
+														<span className='truncate font-medium'>{dayData.workout.title}</span>
 													</div>
 												)}
 												{dayData?.nutrition && (
@@ -250,12 +333,7 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 															size={12}
 															className={`shrink-0 ${nRecord ? "text-green-500" : isPast ? "text-red-500" : ""}`}
 														/>
-														<span
-															className='truncate font-medium'
-															title={
-																dayData.nutritionPlanName ||
-																`${dayData.nutrition.meals?.length || 0} meals`
-															}>
+														<span className='truncate font-medium'>
 															{dayData.nutritionPlanName || `${dayData.nutrition.meals?.length || 0} meals`}
 														</span>
 													</div>
@@ -263,9 +341,133 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 											</div>
 										)}
 									</div>
+									<div className='bottom-0 left-0 right-0 h-0.75 rounded-b-xl overflow-hidden bg-slate-100 dark:bg-slate-800'>
+										<div
+											className={`h-full transition-all duration-500 ${
+												dayData?.restDay
+													? "bg-slate-300 dark:bg-slate-600"
+													: isPast
+														? wRecord
+															? "bg-emerald-500"
+															: "bg-red-400"
+														: isToday
+															? wRecord
+																? "bg-emerald-500"
+																: "bg-amber-400"
+															: "bg-indigo-200 dark:bg-indigo-900/40"
+											}`}
+											style={{
+												width: dayData?.restDay
+													? "100%"
+													: isPast
+														? wRecord
+															? "100%"
+															: "100%"
+														: isToday
+															? wRecord
+																? "100%"
+																: "55%"
+															: "30%",
+											}}
+										/>
+									</div>
 								</div>
 							);
 						})}
+					</div>
+				</div>
+				{/* Weekly Summary */}
+				<div className='rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4'>
+					<div className='flex items-center justify-between'>
+						<h3 className='text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2'>
+							<TrendingUp size={16} className='text-indigo-500' />
+							{t("this_week" as any) || "This Week"} {currentWeekIndex + 1}
+						</h3>
+						{streak > 0 && (
+							<div className='flex items-center gap-1.5 text-xs font-semibold text-orange-500 bg-orange-50 dark:bg-orange-950/30 px-2.5 py-1 rounded-full'>
+								<Flame size={14} />
+								{streak} {streak === 1 ? t("day" as any) || "day" : t("days" as any) || "days"} streak
+							</div>
+						)}
+					</div>
+
+					<div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+						<div className='rounded-xl bg-slate-50 dark:bg-slate-800/50 p-3 space-y-1.5'>
+							<div className='flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400'>
+								<Dumbbell size={12} />
+								<span>{t("workouts" as any) || "Workouts"}</span>
+							</div>
+							<div className='flex items-baseline gap-1'>
+								<span className='text-xl font-bold text-slate-800 dark:text-white'>{doneWorkouts}</span>
+								<span className='text-xs text-slate-400'>/ {plannedWorkouts}</span>
+							</div>
+							<div className='h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden'>
+								<div
+									className='h-full rounded-full bg-blue-500 transition-all duration-500'
+									style={{ width: plannedWorkouts > 0 ? `${(doneWorkouts / plannedWorkouts) * 100}%` : "0%" }}
+								/>
+							</div>
+						</div>
+
+						<div className='rounded-xl bg-slate-50 dark:bg-slate-800/50 p-3 space-y-1.5'>
+							<div className='flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400'>
+								<Utensils size={12} />
+								<span>{t("nutrition" as any) || "Nutrition"}</span>
+							</div>
+							<div className='flex items-baseline gap-1'>
+								<span className='text-xl font-bold text-slate-800 dark:text-white'>{doneNutrition}</span>
+								<span className='text-xs text-slate-400'>/ {plannedNutrition}</span>
+							</div>
+							<div className='h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden'>
+								<div
+									className='h-full rounded-full bg-emerald-500 transition-all duration-500'
+									style={{ width: plannedNutrition > 0 ? `${(doneNutrition / plannedNutrition) * 100}%` : "0%" }}
+								/>
+							</div>
+						</div>
+
+						<div className='rounded-xl bg-slate-50 dark:bg-slate-800/50 p-3 space-y-1.5'>
+							<div className='flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400'>
+								<Target size={12} />
+								<span>{t("rest_days" as any) || "Rest Days"}</span>
+							</div>
+							<div className='flex items-baseline gap-1'>
+								<span className='text-xl font-bold text-slate-800 dark:text-white'>{restDays}</span>
+								<span className='text-xs text-slate-400'>/ {weekEndDay - weekStartDay + 1}</span>
+							</div>
+							<div className='h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden'>
+								<div
+									className='h-full rounded-full bg-slate-400 transition-all duration-500'
+									style={{ width: `${(restDays / Math.max(1, weekEndDay - weekStartDay + 1)) * 100}%` }}
+								/>
+							</div>
+						</div>
+
+						<div className='rounded-xl bg-slate-50 dark:bg-slate-800/50 p-3 space-y-1.5'>
+							<div className='flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400'>
+								<TrendingUp size={12} />
+								<span>{t("overall" as any) || "Overall"}</span>
+							</div>
+							<div className='flex items-baseline gap-1'>
+								<span className='text-xl font-bold text-slate-800 dark:text-white'>
+									{plannedWorkouts + plannedNutrition > 0
+										? Math.round(((doneWorkouts + doneNutrition) / (plannedWorkouts + plannedNutrition)) * 100)
+										: 0}
+									%
+								</span>
+							</div>
+							<div className='h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden'>
+								<div
+									className='h-full rounded-full bg-indigo-500 transition-all duration-500'
+									style={{
+										width:
+											plannedWorkouts + plannedNutrition > 0
+												? `${((doneWorkouts + doneNutrition) / (plannedWorkouts + plannedNutrition)) * 100}%`
+												: "0%",
+									}}
+								/>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

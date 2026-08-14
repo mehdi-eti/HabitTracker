@@ -12,7 +12,9 @@ export default function WeeklyProgress() {
 	const records = useLiveQuery(() => db.weeklyProgressRecords.orderBy("date").toArray()) || [];
 	const { t } = useI18n();
 
-	const [date, setDate] = useState(`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(new Date().getDate()).padStart(2, "0")}`);
+	const [date, setDate] = useState(
+		`${new Date().getFullYear()}-${String(new Date().getMonth() + 1).padStart(2, "0")}-${String(new Date().getDate()).padStart(2, "0")}`,
+	);
 	const [weight, setWeight] = useState("");
 	const [chest, setChest] = useState("");
 	const [waist, setWaist] = useState("");
@@ -51,17 +53,17 @@ export default function WeeklyProgress() {
 		<div className='space-y-8'>
 			<div className='flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4'>
 				<div>
-					<h2 className='text-2xl font-bold text-slate-800 dark:text-white'>{t("weekly_progress" as any) || "Weekly Progress"}</h2>
-					<p className='text-slate-500 dark:text-slate-400 mt-1'>{t("track_measurements" as any) || "Track your body measurements"}</p>
+					<h2 className='text-2xl font-bold text-slate-800 dark:text-white'>{t("weekly_progress") || "Weekly Progress"}</h2>
+					<p className='text-slate-500 dark:text-slate-400 mt-1'>{t("track_measurements") || "Track your body measurements"}</p>
 				</div>
 			</div>
 
 			<div className='grid grid-cols-1 lg:grid-cols-3 gap-6'>
 				<div className='bg-slate-50 dark:bg-slate-800/50 rounded-2xl p-6 border border-slate-100 dark:border-slate-700 shadow-sm lg:col-span-1'>
-					<h3 className='font-bold text-slate-800 dark:text-slate-200 mb-4'>{t("add_measurement" as any) || "Add Measurement"}</h3>
+					<h3 className='font-bold text-slate-800 dark:text-slate-200 mb-4'>{t("add_measurement") || "Add Measurement"}</h3>
 					<form onSubmit={handleAdd} className='space-y-4'>
 						<div>
-							<label className='block text-xs font-medium text-slate-500 mb-1'>{t("date" as any) || "Date"}</label>
+							<label className='block text-xs font-medium text-slate-500 mb-1'>{t("date") || "Date"}</label>
 							<input
 								type='date'
 								required
@@ -71,7 +73,7 @@ export default function WeeklyProgress() {
 							/>
 						</div>
 						<div>
-							<label className='block text-xs font-medium text-slate-500 mb-1'>{t("weight_kg" as any) || "Weight (kg)"} *</label>
+							<label className='block text-xs font-medium text-slate-500 mb-1'>{t("weight_kg") || "Weight (kg)"} *</label>
 							<input
 								type='number'
 								step='0.1'
@@ -83,7 +85,7 @@ export default function WeeklyProgress() {
 						</div>
 						<div className='grid grid-cols-2 gap-4'>
 							<div>
-								<label className='block text-xs font-medium text-slate-500 mb-1'>{t("chest_cm" as any) || "Chest (cm)"}</label>
+								<label className='block text-xs font-medium text-slate-500 mb-1'>{t("chest_cm") || "Chest (cm)"}</label>
 								<input
 									type='number'
 									step='0.1'
@@ -93,7 +95,7 @@ export default function WeeklyProgress() {
 								/>
 							</div>
 							<div>
-								<label className='block text-xs font-medium text-slate-500 mb-1'>{t("waist_cm" as any) || "Waist (cm)"}</label>
+								<label className='block text-xs font-medium text-slate-500 mb-1'>{t("waist_cm") || "Waist (cm)"}</label>
 								<input
 									type='number'
 									step='0.1'
@@ -103,7 +105,7 @@ export default function WeeklyProgress() {
 								/>
 							</div>
 							<div>
-								<label className='block text-xs font-medium text-slate-500 mb-1'>{t("hips_cm" as any) || "Hips (cm)"}</label>
+								<label className='block text-xs font-medium text-slate-500 mb-1'>{t("hips_cm") || "Hips (cm)"}</label>
 								<input
 									type='number'
 									step='0.1'
@@ -113,7 +115,7 @@ export default function WeeklyProgress() {
 								/>
 							</div>
 							<div>
-								<label className='block text-xs font-medium text-slate-500 mb-1'>{t("arms_cm" as any) || "Arms (cm)"}</label>
+								<label className='block text-xs font-medium text-slate-500 mb-1'>{t("arms_cm") || "Arms (cm)"}</label>
 								<input
 									type='number'
 									step='0.1'
@@ -123,7 +125,7 @@ export default function WeeklyProgress() {
 								/>
 							</div>
 							<div>
-								<label className='block text-xs font-medium text-slate-500 mb-1'>{t("legs_cm" as any) || "Legs (cm)"}</label>
+								<label className='block text-xs font-medium text-slate-500 mb-1'>{t("legs_cm") || "Legs (cm)"}</label>
 								<input
 									type='number'
 									step='0.1'
@@ -136,7 +138,7 @@ export default function WeeklyProgress() {
 						<button
 							type='submit'
 							className='w-full bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg py-2 text-sm font-medium transition-colors mt-2'>
-							{t("save_record" as any) || "Save Record"}
+							{t("save_record") || "Save Record"}
 						</button>
 					</form>
 				</div>
@@ -145,7 +147,7 @@ export default function WeeklyProgress() {
 					{records.length === 0 ? (
 						<div className='bg-slate-50 dark:bg-slate-800/50 rounded-xl p-8 border border-slate-100 dark:border-slate-700 text-center text-slate-500 h-full flex flex-col justify-center'>
 							<LineChart className='mx-auto text-slate-400 mb-4' size={48} />
-							<p>{t("no_progress_records" as any) || "No progress records yet."}</p>
+							<p>{t("no_progress_records") || "No progress records yet."}</p>
 						</div>
 					) : (
 						<div className='space-y-3'>
@@ -157,32 +159,32 @@ export default function WeeklyProgress() {
 										<div className='font-bold text-slate-800 dark:text-slate-200'>{r.date}</div>
 										<div className='text-sm text-slate-500 flex gap-3 mt-1 flex-wrap'>
 											<span>
-												{t("weight" as any) || "Weight"}:{" "}
+												{t("weight") || "Weight"}:{" "}
 												<strong className='text-slate-700 dark:text-slate-300'>{r.weight}kg</strong>
 											</span>
 											{r.chest > 0 && (
 												<span>
-													{t("chest" as any) || "Chest"}: {r.chest}
+													{t("chest") || "Chest"}: {r.chest}
 												</span>
 											)}
 											{r.waist > 0 && (
 												<span>
-													{t("waist" as any) || "Waist"}: {r.waist}
+													{t("waist") || "Waist"}: {r.waist}
 												</span>
 											)}
 											{r.hips > 0 && (
 												<span>
-													{t("hips" as any) || "Hips"}: {r.hips}
+													{t("hips") || "Hips"}: {r.hips}
 												</span>
 											)}
 											{r.arms > 0 && (
 												<span>
-													{t("arms" as any) || "Arms"}: {r.arms}
+													{t("arms") || "Arms"}: {r.arms}
 												</span>
 											)}
 											{r.legs > 0 && (
 												<span>
-													{t("legs" as any) || "Legs"}: {r.legs}
+													{t("legs") || "Legs"}: {r.legs}
 												</span>
 											)}
 										</div>

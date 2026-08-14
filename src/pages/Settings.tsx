@@ -126,7 +126,7 @@ export default function Settings() {
 							{/* Language Toggle */}
 							<div>
 								<label className='block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3'>
-									{t("language" as any) || "Language"}
+									{t("language") || "Language"}
 								</label>
 								<div className='flex bg-slate-50 dark:bg-slate-800/50 p-1 rounded-xl border border-slate-100 dark:border-slate-700/50'>
 									<button
@@ -154,9 +154,7 @@ export default function Settings() {
 
 							{/* Theme Picker */}
 							<div>
-								<label className='block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3'>
-									{t("theme" as any) || "Theme"}
-								</label>
+								<label className='block text-sm font-bold text-slate-700 dark:text-slate-300 mb-3'>{t("theme") || "Theme"}</label>
 								<div className='grid grid-cols-2 gap-2'>
 									{AVAILABLE_THEMES.map((themeOption) => (
 										<button
@@ -306,7 +304,7 @@ export default function Settings() {
 									<div className='w-8 h-8 rounded-lg bg-slate-200 dark:bg-slate-700 flex items-center justify-center group-hover:bg-white dark:group-hover:bg-slate-600 transition-colors'>
 										<LogOut size={16} className='text-slate-500 dark:text-slate-400' />
 									</div>
-									{t("logout" as any) || "Log Out"}
+									{t("logout") || "Log Out"}
 								</div>
 							</button>
 

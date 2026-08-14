@@ -39,8 +39,8 @@ export default function Layout() {
 		() => [
 			{ to: "/", icon: LayoutDashboard, label: t("dashboard") },
 			{ to: "/habits", icon: ListTodo, label: t("habits") },
-			{ to: "/workout", icon: Dumbbell, label: t("workout_nutrition" as any) || "Workout & Nutrition" },
-			{ to: "/calendar", icon: CalendarIcon, label: t("calendar" as any) || "Calendar" },
+			{ to: "/workout", icon: Dumbbell, label: t("workout_nutrition") || "Workout & Nutrition" },
+			{ to: "/calendar", icon: CalendarIcon, label: t("calendar") || "Calendar" },
 			{ to: "/stats", icon: BarChart2, label: t("stats") },
 			{ to: "/settings", icon: SettingsIcon, label: t("settings") },
 		],

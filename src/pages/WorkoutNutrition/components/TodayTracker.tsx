@@ -346,11 +346,11 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 				</div>
 
 				<h3 className='text-xl font-bold text-slate-800 dark:text-slate-100 mb-2'>
-					{t("no_active_plan_yet" as any) || "You don't have an active plan yet."}
+					{t("no_active_plan_yet") || "You don't have an active plan yet."}
 				</h3>
 
 				<p className='text-slate-500 dark:text-slate-400 max-w-md mx-auto mb-8'>
-					{t("no_active_plan_desc" as any) || "Create a new workout and nutrition plan or import an existing JSON plan to get started."}
+					{t("no_active_plan_desc") || "Create a new workout and nutrition plan or import an existing JSON plan to get started."}
 				</p>
 
 				{importError && (
@@ -365,12 +365,12 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 						onClick={onNavigateToPlans}
 						className='flex items-center justify-center gap-2 px-6 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-lg transition-colors'>
 						<Plus size={18} />
-						{t("create_plan" as any) || "Create Plan"}
+						{t("create_plan") || "Create Plan"}
 					</button>
 
 					<label className='flex items-center justify-center gap-2 px-6 py-2.5 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 font-medium rounded-lg cursor-pointer transition-colors'>
 						<Upload size={18} />
-						{t("import_json" as any) || "Import JSON Plan"}
+						{t("import_json") || "Import JSON Plan"}
 						<input type='file' accept='.json,application/json' className='hidden' onChange={handleImport} />
 					</label>
 				</div>
@@ -399,15 +399,13 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 		return (
 			<div className='text-center py-12 px-4 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-slate-100 dark:border-slate-800'>
 				<h3 className='text-xl font-bold text-slate-700 dark:text-slate-200'>
-					{isFuture
-						? `Your plan starts in ${diffDays} day${diffDays === 1 ? "" : "s"}`
-						: t("out_of_plan_range" as any) || "Out of plan range"}
+					{isFuture ? `Your plan starts in ${diffDays} day${diffDays === 1 ? "" : "s"}` : t("out_of_plan_range") || "Out of plan range"}
 				</h3>
 
 				<p className='text-slate-500 dark:text-slate-400 mt-2 max-w-md mx-auto'>
 					{isFuture
 						? `This plan is scheduled to begin on ${startDate?.toLocaleDateString() || activePlan.startDate}. You can view the full schedule in the Calendar tab.`
-						: t("out_of_plan_range_desc" as any) || "Today's date is outside the active plan's duration."}
+						: t("out_of_plan_range_desc") || "Today's date is outside the active plan's duration."}
 				</p>
 			</div>
 		);
@@ -438,7 +436,7 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 			<div className='flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4'>
 				<div>
 					<h2 className='text-2xl font-bold text-slate-800 dark:text-white'>
-						{t("day" as any) || "Day"} {dayIndex}
+						{t("day") || "Day"} {dayIndex}
 					</h2>
 
 					<p className='text-slate-500 dark:text-slate-400 mt-1'>{currentDate.toLocaleDateString()}</p>
@@ -454,7 +452,7 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 					)}
 					{dayData.restDay && (
 						<div className='text-xs bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 px-2 py-1 rounded-md mt-1 inline-block'>
-							{t("rest_day" as any) || "Rest Day"}
+							{t("rest_day") || "Rest Day"}
 						</div>
 					)}
 				</div>
@@ -467,16 +465,12 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 							<Dumbbell size={24} />
 						</div>
 
-						<h3 className='text-xl font-bold text-slate-800 dark:text-white'>
-							{dayData.workout?.title || t("workout" as any) || "Workout"}
-						</h3>
+						<h3 className='text-xl font-bold text-slate-800 dark:text-white'>{dayData.workout?.title || t("workout") || "Workout"}</h3>
 					</div>
 
 					{!dayData.workout?.exercises?.length ? (
 						<div className='text-center py-6 text-slate-500 dark:text-slate-400'>
-							{dayData.restDay
-								? t("rest_day" as any) || "Rest Day"
-								: t("no_workout_today" as any) || "No workout scheduled for today."}
+							{dayData.restDay ? t("rest_day") || "Rest Day" : t("no_workout_today") || "No workout scheduled for today."}
 						</div>
 					) : (
 						<div className='space-y-6'>
@@ -553,13 +547,13 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 						</div>
 
 						<h3 className='text-xl font-bold text-slate-800 dark:text-white'>
-							{dayData.nutritionPlanName || dayData.nutrition?.name || t("nutrition" as any) || "Nutrition"}
+							{dayData.nutritionPlanName || dayData.nutrition?.name || t("nutrition") || "Nutrition"}
 						</h3>
 					</div>
 
 					{!dayData.nutrition?.meals?.length ? (
 						<div className='text-center py-6 text-slate-500 dark:text-slate-400'>
-							{t("no_meals_today" as any) || "No meals scheduled for today."}
+							{t("no_meals_today") || "No meals scheduled for today."}
 						</div>
 					) : (
 						<div className='space-y-6'>
@@ -619,14 +613,14 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 
 					<div className='mt-8 pt-6 border-t border-slate-200 dark:border-slate-700'>
 						<div className='flex justify-between items-center mb-4'>
-							<h4 className='font-semibold text-slate-700 dark:text-slate-300'>{t("extra_food" as any) || "Extra Food"}</h4>
+							<h4 className='font-semibold text-slate-700 dark:text-slate-300'>{t("extra_food") || "Extra Food"}</h4>
 
 							<button
 								type='button'
 								onClick={() => setShowExtraInput(true)}
 								className='flex items-center gap-1 text-sm bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-lg transition-colors'>
 								<Plus size={16} />
-								{t("add" as any) || "Add"}
+								{t("add") || "Add"}
 							</button>
 						</div>
 
@@ -645,7 +639,7 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 								<button
 									type='submit'
 									className='bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-lg text-sm transition-colors'>
-									{t("save" as any) || "Save"}
+									{t("save") || "Save"}
 								</button>
 
 								<button
@@ -659,7 +653,7 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 
 						{extraFoods.length === 0 ? (
 							<p className='text-sm text-slate-500 dark:text-slate-400 text-center py-2'>
-								{t("no_extra_food" as any) || "No extra food recorded today."}
+								{t("no_extra_food") || "No extra food recorded today."}
 							</p>
 						) : (
 							<div className='space-y-2'>

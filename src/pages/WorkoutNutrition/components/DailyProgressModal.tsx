@@ -92,7 +92,7 @@ export default function DailyProgressModal({ plan, planVersion, selectedDate, on
 			timelineDates.push(dateStr);
 		}
 	}
-	
+
 	// Ensure selectedDate is always in the timeline if it somehow got missed
 	if (!timelineDates.includes(selectedDate)) {
 		timelineDates.push(selectedDate);
@@ -120,7 +120,8 @@ export default function DailyProgressModal({ plan, planVersion, selectedDate, on
 			const exMap = new Map<string, { total: number; done: number }>();
 			daySets.forEach((s) => {
 				if (!exMap.has(s.exerciseId)) exMap.set(s.exerciseId, { total: 0, done: 0 });
-				const ex = exMap.get(s.exerciseId)!;
+				const ex = exMap.get(s.exerciseId);
+				if (!ex) return;
 				ex.total++;
 				if (s.actualReps > 0 || s.actualWeight > 0) {
 					ex.done++;
@@ -277,7 +278,8 @@ export default function DailyProgressModal({ plan, planVersion, selectedDate, on
 					plannedReps: s.plannedReps || 0,
 				});
 			}
-			const ex = exMap.get(s.exerciseId)!;
+			const ex = exMap.get(s.exerciseId);
+			if (!ex) return;
 			ex.sets.push(s);
 			if (s.actualWeight > ex.bestWeight || (s.actualWeight === ex.bestWeight && s.actualReps > ex.bestReps)) {
 				ex.bestWeight = s.actualWeight;
@@ -473,9 +475,21 @@ export default function DailyProgressModal({ plan, planVersion, selectedDate, on
 											<div className='flex items-center justify-between'>
 												<h4 className='font-semibold text-sm text-slate-600 dark:text-slate-400'>Exercise Progress</h4>
 												<div className='flex gap-2 text-xs font-medium'>
-													{totalImproving > 0 && <span className='text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 py-0.5 rounded'>+{totalImproving} Improved</span>}
-													{totalRegressing > 0 && <span className='text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 px-2 py-0.5 rounded'>-{totalRegressing} Regressed</span>}
-													{totalStable > 0 && <span className='text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded'>{totalStable} Stable</span>}
+													{totalImproving > 0 && (
+														<span className='text-green-600 dark:text-green-400 bg-green-50 dark:bg-green-900/30 px-2 py-0.5 rounded'>
+															+{totalImproving} Improved
+														</span>
+													)}
+													{totalRegressing > 0 && (
+														<span className='text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/30 px-2 py-0.5 rounded'>
+															-{totalRegressing} Regressed
+														</span>
+													)}
+													{totalStable > 0 && (
+														<span className='text-blue-600 dark:text-blue-400 bg-blue-50 dark:bg-blue-900/30 px-2 py-0.5 rounded'>
+															{totalStable} Stable
+														</span>
+													)}
 												</div>
 											</div>
 											{selectedExercises.map((ex, idx) => (
@@ -498,7 +512,9 @@ export default function DailyProgressModal({ plan, planVersion, selectedDate, on
 														<div className='text-slate-500'>
 															Today:{" "}
 															<strong className='text-slate-800 dark:text-slate-200'>
-																{ex.bestWeight > 0 || ex.bestReps > 0 ? `${ex.bestWeight}kg x ${ex.bestReps}` : `${ex.plannedWeight}kg x ${ex.plannedReps} (Plan)`}
+																{ex.bestWeight > 0 || ex.bestReps > 0
+																	? `${ex.bestWeight}kg x ${ex.bestReps}`
+																	: `${ex.plannedWeight}kg x ${ex.plannedReps} (Plan)`}
 															</strong>
 														</div>
 														{ex.status !== "No Data" && (

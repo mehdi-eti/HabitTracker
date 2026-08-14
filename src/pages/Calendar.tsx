@@ -39,7 +39,7 @@ const DayDetailModal = ({ date, habits, records, onClose, onHabitClick, habitTar
 				</div>
 				<div className='p-4 overflow-y-auto space-y-3'>
 					{relevantHabits.length === 0 ? (
-						<p className='text-slate-500 dark:text-slate-400 text-center py-4'>{t("no_habits_scheduled" as any)}</p>
+						<p className='text-slate-500 dark:text-slate-400 text-center py-4'>{t("no_habits_scheduled")}</p>
 					) : (
 						relevantHabits.map((habit) => {
 							const record = records.find((r) => r.habitId === habit.id && r.date === dateStr);
@@ -64,7 +64,7 @@ const DayDetailModal = ({ date, habits, records, onClose, onHabitClick, habitTar
 												? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
 												: "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400",
 										)}>
-										{isCompleted ? t("done" as any) : t("pending" as any)}
+										{isCompleted ? t("done") : t("pending")}
 									</div>
 								</div>
 							);
@@ -156,9 +156,9 @@ export default function Calendar() {
 				<div>
 					<h1 className='text-3xl font-extrabold text-slate-800 dark:text-slate-100 flex items-center gap-3'>
 						<CalendarIcon className='text-indigo-500' />
-						{t("calendar" as any) || "Calendar"}
+						{t("calendar") || "Calendar"}
 					</h1>
-					<p className='text-slate-500 dark:text-slate-400 mt-1 font-medium'>{t("track_habits" as any)}</p>
+					<p className='text-slate-500 dark:text-slate-400 mt-1 font-medium'>{t("track_habits")}</p>
 				</div>
 
 				<div className='flex flex-wrap items-center gap-3'>
@@ -166,18 +166,18 @@ export default function Calendar() {
 						value={statusFilter}
 						onChange={(e) => setStatusFilter(e.target.value as any)}
 						className='px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-600 dark:text-slate-300 outline-none focus:border-indigo-500 shadow-sm'>
-						<option value='all'>{t("all_statuses" as any)}</option>
-						<option value='active'>{t("active" as any)}</option>
-						<option value='completed'>{t("completed" as any)}</option>
-						<option value='archived'>{t("archived" as any)}</option>
+						<option value='all'>{t("all_statuses")}</option>
+						<option value='active'>{t("active")}</option>
+						<option value='completed'>{t("completed")}</option>
+						<option value='archived'>{t("archived")}</option>
 					</select>
 					<select
 						value={modeFilter}
 						onChange={(e) => setModeFilter(e.target.value as any)}
 						className='px-4 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-xs font-bold text-slate-600 dark:text-slate-300 outline-none focus:border-indigo-500 shadow-sm'>
-						<option value='all'>{t("all_modes" as any)}</option>
-						<option value='consecutive'>{t("consecutive_days" as any)}</option>
-						<option value='selected_days'>{t("selected_days" as any)}</option>
+						<option value='all'>{t("all_modes")}</option>
+						<option value='consecutive'>{t("consecutive_days")}</option>
+						<option value='selected_days'>{t("selected_days")}</option>
 					</select>
 				</div>
 			</div>
@@ -190,9 +190,9 @@ export default function Calendar() {
 					</div>
 					<div>
 						<h3 className='text-lg font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider'>
-							{t("monthly_completion" as any)}
+							{t("monthly_completion")}
 						</h3>
-						<p className='text-xs text-slate-800 dark:text-slate-100'>{t("success_rate" as any)}</p>
+						<p className='text-xs text-slate-800 dark:text-slate-100'>{t("success_rate")}</p>
 					</div>
 				</div>
 				<div className='bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-100 dark:border-slate-800 shadow-sm flex items-center gap-4'>
@@ -201,10 +201,10 @@ export default function Calendar() {
 					</div>
 					<div>
 						<h3 className='text-lg font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider'>
-							{t("completed_lowercase" as any)}
+							{t("completed_lowercase")}
 						</h3>
 						<p className='text-xs text-slate-800 dark:text-slate-100'>
-							<strong>{stats.completed}</strong> {t("habits_done" as any)}
+							<strong>{stats.completed}</strong> {t("habits_done")}
 						</p>
 					</div>
 				</div>
@@ -213,9 +213,9 @@ export default function Calendar() {
 						<X size={24} />
 					</div>
 					<div>
-						<h3 className='text-lg font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider'>{t("missed" as any)}</h3>
+						<h3 className='text-lg font-extrabold text-slate-500 dark:text-slate-400 uppercase tracking-wider'>{t("missed")}</h3>
 						<p className='text-xs text-slate-800 dark:text-slate-100'>
-							<strong>{stats.missed}</strong> {t("days_missed" as any)}
+							<strong>{stats.missed}</strong> {t("days_missed")}
 						</p>
 					</div>
 				</div>
@@ -270,7 +270,7 @@ export default function Calendar() {
 									key={idx}
 									onClick={() => setSelectedDay(day)}
 									className={cn(
-										"min-h-[100px] bg-white dark:bg-slate-900 p-2 cursor-pointer transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/80 group",
+										"min-h-25 bg-white dark:bg-slate-900 p-2 cursor-pointer transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/80 group",
 										!isCurrentMonth && "bg-slate-50/50 dark:bg-slate-900/50 opacity-60",
 									)}>
 									<div className='flex justify-between items-start mb-1'>

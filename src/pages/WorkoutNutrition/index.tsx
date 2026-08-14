@@ -17,19 +17,19 @@ export default function WorkoutNutrition() {
 	const [activeTab, setActiveTab] = useState<Tab>("today");
 
 	const tabs = [
-		{ id: "today" as Tab, label: t("today" as any) || "Today", icon: Dumbbell },
-		{ id: "calendar" as Tab, label: t("calendar" as any) || "Calendar", icon: CalendarDays },
-		{ id: "progress" as Tab, label: t("progress" as any) || "Progress", icon: LineChart },
-		{ id: "plans" as Tab, label: t("plans" as any) || "Plans", icon: FileText },
+		{ id: "today" as Tab, label: t("today") || "Today", icon: Dumbbell },
+		{ id: "calendar" as Tab, label: t("calendar") || "Calendar", icon: CalendarDays },
+		{ id: "progress" as Tab, label: t("progress") || "Progress", icon: LineChart },
+		{ id: "plans" as Tab, label: t("plans") || "Plans", icon: FileText },
 	];
 
 	return (
 		<div className='space-y-6'>
 			<div className='flex flex-col sm:flex-row sm:items-center justify-between gap-4'>
 				<div>
-					<h1 className='text-2xl font-bold text-slate-800 dark:text-white'>{t("workout_nutrition" as any) || "Workout & Nutrition"}</h1>
+					<h1 className='text-2xl font-bold text-slate-800 dark:text-white'>{t("workout_nutrition") || "Workout & Nutrition"}</h1>
 					<p className='text-slate-500 dark:text-slate-400 mt-1'>
-						{t("workout_nutrition_desc" as any) || "Manage your workout plans and track nutrition"}
+						{t("workout_nutrition_desc") || "Manage your workout plans and track nutrition"}
 					</p>
 				</div>
 			</div>

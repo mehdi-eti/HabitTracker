@@ -202,7 +202,7 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 
 							<div className='space-y-3'>
 								<label className='text-sm font-bold text-slate-700 dark:text-slate-300 flex items-center gap-2'>
-									<Tag size={16} className='text-slate-400' /> {t("category" as any) || "Category"}
+									<Tag size={16} className='text-slate-400' /> {t("category") || "Category"}
 								</label>
 								<div className='flex flex-wrap gap-2'>
 									{CATEGORIES.map((cat) => (
@@ -226,7 +226,7 @@ export default function HabitModal({ habit, onClose }: HabitModalProps) {
 										className='w-4 h-4 rounded-full border border-slate-200 dark:border-slate-700'
 										style={{ backgroundColor: color }}
 									/>{" "}
-									{t("color" as any) || "Color"}
+									{t("color") || "Color"}
 								</label>
 								<div className='flex items-center gap-4'>
 									<input
