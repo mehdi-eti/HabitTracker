@@ -53,7 +53,6 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 
 	const days = React.useMemo(() => Array.from({ length: activePlan?.durationDays ?? 0 }, (_, i) => i + 1), [activePlan?.durationDays]);
 	const startDate = React.useMemo(() => (activePlan?.startDate ? parseLocalDate(activePlan.startDate) : getNormalizedToday()), [activePlan?.startDate]);
-	const date = React.useMemo(() => new Date(startDate), [startDate]);
 
 	const firstDayOfWeek = React.useMemo(() => startDate.getDay(), [startDate]);
 	const blanks = React.useMemo(() => Array.from({ length: firstDayOfWeek }, (_, i) => i), [firstDayOfWeek]);
@@ -207,12 +206,7 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 							{day}
 						</div>
 					))}
-
-					{blanks.map((blank) => (
-						<div key={`blank-${blank}`} className='h-24 md:h-32 rounded-xl opacity-0'></div>
-					))}
-
-					{days.map((dayIndex) => {
+					{[...blanks, ...days].map((dayIndex) => {
 						const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), dayIndex);
 						const isToday = date.toDateString() === today.toDateString();
 
@@ -221,15 +215,12 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 								key={dayIndex}
 								className={`border bg-slate-50/50 dark:bg-slate-900/50 rounded-xl p-2 md:p-3 flex flex-col h-24 md:h-32 opacity-70 transition-colors ${
 									isToday
-										? "border-indigo-300 dark:border-indigo-700 bg-indigo-50/30 dark:bg-indigo-900/10"
+										? "border-indigo-300 border-2 dark:border-indigo-700 bg-indigo-50/30 dark:bg-indigo-900/10"
 										: "border-slate-200 dark:border-slate-700"
 								}`}>
 								<div className='flex justify-start items-start mb-2'>
-									<span
-										className={`text-xs md:text-sm font-bold w-6 h-6 flex items-center justify-center rounded-full ${
-											isToday ? "bg-indigo-600 text-white" : "text-slate-500 dark:text-slate-400"
-										}`}>
-										{dayIndex}
+									<span className='text-xs font-bold w-10 h-10 flex items-center justify-center rounded-full'>
+										{date.toLocaleDateString([], { month: "short", day: "numeric" })}
 									</span>
 								</div>
 							</div>
@@ -353,16 +344,20 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 							</div>
 						))}
 
-						{blanks.map((blank, index) => (
-							<div
-								key={`blank-${blank}-${index}`}
-								className='text-end p-2 h-full bg-slate-50/50 dark:bg-slate-800/30 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors duration-200 flex flex-col justify-between'>
-								<span className='text-[10px] text-slate-400 dark:text-slate-500 font-medium'>
-									{date.toLocaleDateString([], { month: "short", day: "numeric" })}
-								</span>
-								<div className='w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700 self-end' />
-							</div>
-						))}
+						{blanks.map((blank, index) => {
+							const date = new Date(startDate);
+							date.setDate(date.getDate() - (firstDayOfWeek - blank));
+							return (
+								<div
+									key={`blank-${blank}-${index}`}
+									className='text-end p-2 h-full bg-slate-50/50 dark:bg-slate-800/30 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800/60 transition-colors duration-200 flex flex-col justify-between'>
+									<span className='text-[10px] text-slate-400 dark:text-slate-500 font-medium'>
+										{date.toLocaleDateString([], { month: "short", day: "numeric" })}
+									</span>
+									<div className='w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700 self-end' />
+								</div>
+							);
+						})}
 
 						{days.map((dayIndex) => {
 							const date = new Date(startDate);
@@ -445,7 +440,7 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 															className={`shrink-0 ${nRecord ? "text-green-500" : isPast ? "text-red-500" : ""}`}
 														/>
 														<span className='truncate font-medium'>
-															{dayData.nutrition.name || `${dayData.nutrition.meals?.length || 0} meals`}
+															{`${dayData.nutrition.meals?.length || 0} meals`}
 														</span>
 													</div>
 												)}
