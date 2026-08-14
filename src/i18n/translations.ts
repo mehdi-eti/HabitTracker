@@ -224,6 +224,10 @@ export const translations = {
 		hips: "Hips",
 		arms: "Arms",
 		legs: "Legs",
+		this_week: "This Week",
+		workouts: "Workouts",
+		rest_days: "Rest Days",
+		overall: "Overall",
 	},
 	fa: {
 		quick_actions: "اقدامات سریع",
@@ -448,6 +452,10 @@ export const translations = {
 		hips: "باسن",
 		arms: "بازوها",
 		legs: "پاها",
+		this_week: "این هفته",
+		workouts: "تمرینات",
+		rest_days: "روزهای استراحت",
+		overall: "کلی",
 	},
 };
 

@@ -53,9 +53,9 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 
 	const days = React.useMemo(() => Array.from({ length: activePlan?.durationDays ?? 0 }, (_, i) => i + 1), [activePlan?.durationDays]);
 	const startDate = React.useMemo(() => (activePlan?.startDate ? parseLocalDate(activePlan.startDate) : getNormalizedToday()), [activePlan?.startDate]);
-	const date = new Date(startDate);
+	const date = React.useMemo(() => new Date(startDate), [startDate]);
 
-	const firstDayOfWeek = startDate.getDay();
+	const firstDayOfWeek = React.useMemo(() => startDate.getDay(), [startDate]);
 	const blanks = React.useMemo(() => Array.from({ length: firstDayOfWeek }, (_, i) => i), [firstDayOfWeek]);
 
 	// Weekly stats computation
@@ -116,16 +116,31 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 			dDate.setDate(dDate.getDate() + d - 1);
 			const dStr = formatDateStr(dDate);
 			const dW = workoutRecords?.find((r) => r.date === dStr);
-			if (dW) {
+			const dN = nutritionRecords?.find((r) => r.date === dStr);
+			const dData = getDayDataFromPlan(dStr, d, planVersion);
+
+			// Rest days don't break streak but don't count either
+			if (dData?.restDay) continue;
+
+			// Check if day was planned for anything
+			const hasPlannedWorkout = !!dData?.workout;
+			const hasPlannedNutrition = !!dData?.nutrition;
+
+			// If nothing planned, streak breaks (unplanned day = missed)
+			if (!hasPlannedWorkout && !hasPlannedNutrition) break;
+
+			// Day is "done" if all planned items have records
+			const workoutDone = !hasPlannedWorkout || !!dW;
+			const nutritionDone = !hasPlannedNutrition || !!dN;
+
+			if (workoutDone && nutritionDone) {
 				streakCount++;
 			} else {
-				const dData = getDayDataFromPlan(dStr, d, planVersion);
-				if (dData?.restDay) continue;
 				break;
 			}
 		}
 		return streakCount;
-	}, [startDate, today, planVersion, workoutRecords]);
+	}, [startDate, today, planVersion, workoutRecords, nutritionRecords]);
 
 	// Destructure for JSX usage
 	const { currentWeekIndex, weekStartDay, weekEndDay, plannedWorkouts, doneWorkouts, plannedNutrition, doneNutrition, restDays } = weeklyStats;
@@ -227,12 +242,105 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 
 	return (
 		<div className='space-y-6'>
-			<div className='flex justify-between items-center border-b border-slate-100 dark:border-slate-800 pb-4'>
+			<div className='flex justify-between border-b border-slate-100 dark:border-slate-800 pb-4'>
 				<div>
 					<h2 className='text-2xl font-bold text-slate-800 dark:text-white'>{t("plan_calendar") || "Plan Calendar"}</h2>
-					<p className='text-slate-500 dark:text-slate-400 mt-1'>
+					<p className='text-slate-500 dark:text-slate-400 mt-1 text-xs'>
 						{activePlan.name} ({activePlan.durationDays} {t("days")})
 					</p>
+				</div>
+				<div className='w-2/3 rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4'>
+					<div className='flex items-center justify-between'>
+						<h3 className='text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2'>
+							<TrendingUp size={16} className='text-indigo-500' />
+							{t("this_week") || "This Week"} {currentWeekIndex + 1}
+						</h3>
+						{streak > 0 && (
+							<div className='flex items-center gap-1.5 text-xs font-semibold text-orange-500 bg-orange-50 dark:bg-orange-950/30 px-2.5 py-1 rounded-full'>
+								<Flame size={14} />
+								{streak} {streak === 1 ? t("day") || "day" : t("days") || "days"} streak
+							</div>
+						)}
+					</div>
+
+					<div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
+						<div className='rounded-xl bg-slate-50 dark:bg-slate-800/50 p-3 space-y-1.5'>
+							<div className='flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400'>
+								<Dumbbell size={12} />
+								<span>{t("workouts") || "Workouts"}</span>
+							</div>
+							<div className='flex items-baseline gap-1'>
+								<span className='text-xl font-bold text-slate-800 dark:text-white'>{doneWorkouts}</span>
+								<span className='text-xs text-slate-400'>/ {plannedWorkouts}</span>
+							</div>
+							<div className='h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden'>
+								<div
+									className='h-full rounded-full bg-blue-500 transition-all duration-500'
+									style={{ width: plannedWorkouts > 0 ? `${(doneWorkouts / plannedWorkouts) * 100}%` : "0%" }}
+								/>
+							</div>
+						</div>
+
+						<div className='rounded-xl bg-slate-50 dark:bg-slate-800/50 p-3 space-y-1.5'>
+							<div className='flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400'>
+								<Utensils size={12} />
+								<span>{t("nutrition") || "Nutrition"}</span>
+							</div>
+							<div className='flex items-baseline gap-1'>
+								<span className='text-xl font-bold text-slate-800 dark:text-white'>{doneNutrition}</span>
+								<span className='text-xs text-slate-400'>/ {plannedNutrition}</span>
+							</div>
+							<div className='h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden'>
+								<div
+									className='h-full rounded-full bg-emerald-500 transition-all duration-500'
+									style={{ width: plannedNutrition > 0 ? `${(doneNutrition / plannedNutrition) * 100}%` : "0%" }}
+								/>
+							</div>
+						</div>
+
+						<div className='rounded-xl bg-slate-50 dark:bg-slate-800/50 p-3 space-y-1.5'>
+							<div className='flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400'>
+								<Target size={12} />
+								<span>{t("rest_days") || "Rest Days"}</span>
+							</div>
+							<div className='flex items-baseline gap-1'>
+								<span className='text-xl font-bold text-slate-800 dark:text-white'>{restDays}</span>
+								<span className='text-xs text-slate-400'>/ {weekEndDay - weekStartDay + 1}</span>
+							</div>
+							<div className='h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden'>
+								<div
+									className='h-full rounded-full bg-slate-400 transition-all duration-500'
+									style={{ width: `${(restDays / Math.max(1, weekEndDay - weekStartDay + 1)) * 100}%` }}
+								/>
+							</div>
+						</div>
+
+						<div className='rounded-xl bg-slate-50 dark:bg-slate-800/50 p-3 space-y-1.5'>
+							<div className='flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400'>
+								<TrendingUp size={12} />
+								<span>{t("overall") || "Overall"}</span>
+							</div>
+							<div className='flex items-baseline gap-1'>
+								<span className='text-xl font-bold text-slate-800 dark:text-white'>
+									{plannedWorkouts + plannedNutrition > 0
+										? Math.round(((doneWorkouts + doneNutrition) / (plannedWorkouts + plannedNutrition)) * 100)
+										: 0}
+									%
+								</span>
+							</div>
+							<div className='h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden'>
+								<div
+									className='h-full rounded-full bg-indigo-500 transition-all duration-500'
+									style={{
+										width:
+											plannedWorkouts + plannedNutrition > 0
+												? `${((doneWorkouts + doneNutrition) / (plannedWorkouts + plannedNutrition)) * 100}%`
+												: "0%",
+									}}
+								/>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -257,6 +365,7 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 						))}
 
 						{days.map((dayIndex) => {
+							const date = new Date(startDate);
 							date.setDate(date.getDate() + dayIndex - 1);
 							const dateStr = formatDateStr(date);
 							const dayData = getDayDataFromPlan(dateStr, dayIndex, planVersion);
@@ -316,7 +425,9 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 															size={12}
 															className={`shrink-0 ${wRecord ? "text-green-500" : isPast ? "text-red-500" : ""}`}
 														/>
-														<span className='truncate font-medium'>{dayData.workout.title}</span>
+														<span className='truncate font-medium'>
+															{`${dayData.workout.exercises.length} ${dayData.workout.title}`}
+														</span>
 													</div>
 												)}
 												{dayData?.nutrition && (
@@ -334,7 +445,7 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 															className={`shrink-0 ${nRecord ? "text-green-500" : isPast ? "text-red-500" : ""}`}
 														/>
 														<span className='truncate font-medium'>
-															{dayData.nutritionPlanName || `${dayData.nutrition.meals?.length || 0} meals`}
+															{dayData.nutrition.name || `${dayData.nutrition.meals?.length || 0} meals`}
 														</span>
 													</div>
 												)}
@@ -374,100 +485,6 @@ export default function WorkoutCalendar({ onNavigateToPlans }: { onNavigateToPla
 								</div>
 							);
 						})}
-					</div>
-				</div>
-				{/* Weekly Summary */}
-				<div className='rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 p-5 space-y-4'>
-					<div className='flex items-center justify-between'>
-						<h3 className='text-sm font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2'>
-							<TrendingUp size={16} className='text-indigo-500' />
-							{t("this_week" as any) || "This Week"} {currentWeekIndex + 1}
-						</h3>
-						{streak > 0 && (
-							<div className='flex items-center gap-1.5 text-xs font-semibold text-orange-500 bg-orange-50 dark:bg-orange-950/30 px-2.5 py-1 rounded-full'>
-								<Flame size={14} />
-								{streak} {streak === 1 ? t("day" as any) || "day" : t("days" as any) || "days"} streak
-							</div>
-						)}
-					</div>
-
-					<div className='grid grid-cols-2 md:grid-cols-4 gap-3'>
-						<div className='rounded-xl bg-slate-50 dark:bg-slate-800/50 p-3 space-y-1.5'>
-							<div className='flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400'>
-								<Dumbbell size={12} />
-								<span>{t("workouts" as any) || "Workouts"}</span>
-							</div>
-							<div className='flex items-baseline gap-1'>
-								<span className='text-xl font-bold text-slate-800 dark:text-white'>{doneWorkouts}</span>
-								<span className='text-xs text-slate-400'>/ {plannedWorkouts}</span>
-							</div>
-							<div className='h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden'>
-								<div
-									className='h-full rounded-full bg-blue-500 transition-all duration-500'
-									style={{ width: plannedWorkouts > 0 ? `${(doneWorkouts / plannedWorkouts) * 100}%` : "0%" }}
-								/>
-							</div>
-						</div>
-
-						<div className='rounded-xl bg-slate-50 dark:bg-slate-800/50 p-3 space-y-1.5'>
-							<div className='flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400'>
-								<Utensils size={12} />
-								<span>{t("nutrition" as any) || "Nutrition"}</span>
-							</div>
-							<div className='flex items-baseline gap-1'>
-								<span className='text-xl font-bold text-slate-800 dark:text-white'>{doneNutrition}</span>
-								<span className='text-xs text-slate-400'>/ {plannedNutrition}</span>
-							</div>
-							<div className='h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden'>
-								<div
-									className='h-full rounded-full bg-emerald-500 transition-all duration-500'
-									style={{ width: plannedNutrition > 0 ? `${(doneNutrition / plannedNutrition) * 100}%` : "0%" }}
-								/>
-							</div>
-						</div>
-
-						<div className='rounded-xl bg-slate-50 dark:bg-slate-800/50 p-3 space-y-1.5'>
-							<div className='flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400'>
-								<Target size={12} />
-								<span>{t("rest_days" as any) || "Rest Days"}</span>
-							</div>
-							<div className='flex items-baseline gap-1'>
-								<span className='text-xl font-bold text-slate-800 dark:text-white'>{restDays}</span>
-								<span className='text-xs text-slate-400'>/ {weekEndDay - weekStartDay + 1}</span>
-							</div>
-							<div className='h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden'>
-								<div
-									className='h-full rounded-full bg-slate-400 transition-all duration-500'
-									style={{ width: `${(restDays / Math.max(1, weekEndDay - weekStartDay + 1)) * 100}%` }}
-								/>
-							</div>
-						</div>
-
-						<div className='rounded-xl bg-slate-50 dark:bg-slate-800/50 p-3 space-y-1.5'>
-							<div className='flex items-center gap-1.5 text-xs text-slate-500 dark:text-slate-400'>
-								<TrendingUp size={12} />
-								<span>{t("overall" as any) || "Overall"}</span>
-							</div>
-							<div className='flex items-baseline gap-1'>
-								<span className='text-xl font-bold text-slate-800 dark:text-white'>
-									{plannedWorkouts + plannedNutrition > 0
-										? Math.round(((doneWorkouts + doneNutrition) / (plannedWorkouts + plannedNutrition)) * 100)
-										: 0}
-									%
-								</span>
-							</div>
-							<div className='h-1.5 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden'>
-								<div
-									className='h-full rounded-full bg-indigo-500 transition-all duration-500'
-									style={{
-										width:
-											plannedWorkouts + plannedNutrition > 0
-												? `${((doneWorkouts + doneNutrition) / (plannedWorkouts + plannedNutrition)) * 100}%`
-												: "0%",
-									}}
-								/>
-							</div>
-						</div>
 					</div>
 				</div>
 			</div>
