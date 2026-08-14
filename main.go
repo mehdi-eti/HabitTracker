@@ -25,7 +25,7 @@ func getEnv(key, defaultValue string) string {
 var (
 	vapidPublicKey  string
 	vapidPrivateKey string
-	pushStore       = NewPushStore()
+	pushStore       *PushStore
 )
 
 type PushSubscription struct {
@@ -50,25 +50,68 @@ type PushSyncRequest struct {
 }
 
 type StoredSubscription struct {
-	Subscription PushSubscription
-	Habits       []HabitSchedule
-	LastNotified map[string]string
+	Subscription PushSubscription  `json:"subscription"`
+	Habits       []HabitSchedule   `json:"habits"`
+	LastNotified map[string]string `json:"lastNotified"`
 }
 
 type PushStore struct {
 	mu            sync.RWMutex
 	subscriptions map[string]*StoredSubscription
+	filePath      string
 }
 
-func NewPushStore() *PushStore {
-	return &PushStore{
+func NewPushStore(filePath string) *PushStore {
+	s := &PushStore{
 		subscriptions: make(map[string]*StoredSubscription),
+		filePath:      filePath,
+	}
+	s.Load()
+	return s
+}
+
+func (s *PushStore) Load() {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	data, err := os.ReadFile(s.filePath)
+	if err != nil {
+		if !os.IsNotExist(err) {
+			log.Printf("⚠️ Failed to read push store: %v", err)
+		}
+		return
+	}
+
+	var subs map[string]*StoredSubscription
+	if err := json.Unmarshal(data, &subs); err != nil {
+		log.Printf("⚠️ Failed to unmarshal push store: %v", err)
+		return
+	}
+
+	s.subscriptions = subs
+	log.Printf("📥 Loaded %d push subscriptions from disk", len(subs))
+}
+
+func (s *PushStore) Save() {
+	s.mu.RLock()
+	data, err := json.MarshalIndent(s.subscriptions, "", "  ")
+	s.mu.RUnlock()
+
+	if err != nil {
+		log.Printf("❌ Failed to marshal push store: %v", err)
+		return
+	}
+
+	if err := os.WriteFile(s.filePath, data, 0644); err != nil {
+		log.Printf("❌ Failed to write push store: %v", err)
+		return
 	}
 }
 
-func (s *PushStore) Save(sub PushSubscription, habits []HabitSchedule) {
+func (s *PushStore) SaveSubscription(sub PushSubscription, habits []HabitSchedule) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+
 	key := sub.Endpoint
 	if existing, ok := s.subscriptions[key]; ok {
 		existing.Habits = habits
@@ -80,17 +123,40 @@ func (s *PushStore) Save(sub PushSubscription, habits []HabitSchedule) {
 			LastNotified: make(map[string]string),
 		}
 	}
+
+	// Persist to disk
+	go s.Save()
 }
 
 func (s *PushStore) Delete(endpoint string) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
+
 	delete(s.subscriptions, endpoint)
+
+	// Persist to disk
+	go s.Save()
+}
+
+func (s *PushStore) MarkNotified(endpoint, habitID, todayStr string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+
+	if sub, ok := s.subscriptions[endpoint]; ok {
+		if sub.LastNotified == nil {
+			sub.LastNotified = make(map[string]string)
+		}
+		sub.LastNotified[fmt.Sprintf("%s_%s", habitID, todayStr)] = todayStr
+	}
+
+	// Persist to disk
+	go s.Save()
 }
 
 func (s *PushStore) GetAll() []*StoredSubscription {
 	s.mu.RLock()
 	defer s.mu.RUnlock()
+
 	result := make([]*StoredSubscription, 0, len(s.subscriptions))
 	for _, v := range s.subscriptions {
 		result = append(result, v)
@@ -99,8 +165,8 @@ func (s *PushStore) GetAll() []*StoredSubscription {
 }
 
 func initVAPID() {
-	vapidPublicKey = "BPLBCcLBERo9k_FnLH7xJPE4eTNdP4WU_TDbBZfEDuZblYfLIlHYaU2MFmrqmowGzzAUX3GUK0bSY3VGhITmMFU"
-	vapidPrivateKey = "NwKRF1eS9XYv6q1QnGCh3sAAjEEhFKHzLJNoHvKM53s"
+	vapidPublicKey = getEnv("VAPID_PUBLIC_KEY", "BPLBCcLBERo9k_FnLH7xJPE4eTNdP4WU_TDbBZfEDuZblYfLIlHYaU2MFmrqmowGzzAUX3GUK0bSY3VGhITmMFU")
+	vapidPrivateKey = getEnv("VAPID_PRIVATE_KEY", "NwKRF1eS9XYv6q1QnGCh3sAAjEEhFKHzLJNoHvKM53s")
 
 	if vapidPublicKey == "" || vapidPrivateKey == "" {
 		log.Println("❌ VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY env vars are required.")
@@ -110,10 +176,8 @@ func initVAPID() {
 		os.Exit(1)
 	}
 
-	// Validate: public key must decode to 65 bytes (uncompressed P-256 point)
 	pubBytes, err := base64.RawURLEncoding.DecodeString(vapidPublicKey)
 	if err != nil {
-		// Try with standard Base64URL (with padding)
 		pubBytes, err = base64.URLEncoding.DecodeString(vapidPublicKey)
 	}
 	if err != nil || len(pubBytes) != 65 || pubBytes[0] != 0x04 {
@@ -128,6 +192,9 @@ func main() {
 
 	port := getEnv("PORT", "8979")
 	staticDir := getEnv("STATIC_DIR", "./dist")
+	storeFile := getEnv("PUSH_STORE_FILE", "push-store.json")
+
+	pushStore = NewPushStore(storeFile)
 
 	if _, err := os.Stat(staticDir); os.IsNotExist(err) {
 		log.Fatalf("Static directory '%s' not found. Run 'npm run build' first.", staticDir)
@@ -177,7 +244,6 @@ func main() {
 	log.Printf("📁 Serving static files from: %s", staticDir)
 
 	swPath := filepath.Join(staticDir, "sw.js")
-
 	info, err := os.Stat(swPath)
 	if err != nil {
 		log.Fatalf("SW file check failed: %v", err)
@@ -217,7 +283,6 @@ func corsMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		origin := r.Header.Get("Origin")
 
-		// Configure allowed origins for your frontend.
 		allowedOrigins := map[string]bool{
 			"http://localhost:3000": true,
 			"http://localhost:5173": true,
@@ -231,7 +296,6 @@ func corsMiddleware(next http.Handler) http.Handler {
 			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
 		}
 
-		// Handle browser preflight requests.
 		if r.Method == http.MethodOptions {
 			if origin != "" && !allowedOrigins[origin] {
 				http.Error(w, "CORS origin not allowed", http.StatusForbidden)
@@ -284,7 +348,7 @@ func handleVapidPublicKey(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(map[string]string{"publicKey": vapidPublicKey, "privateKey": vapidPrivateKey})
+	json.NewEncoder(w).Encode(map[string]string{"publicKey": vapidPublicKey})
 }
 
 func handlePushSync(w http.ResponseWriter, r *http.Request) {
@@ -297,7 +361,7 @@ func handlePushSync(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-	pushStore.Save(req.Subscription, req.Habits)
+	pushStore.SaveSubscription(req.Subscription, req.Habits)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"status": "ok"})
 }
@@ -323,7 +387,7 @@ func handlePushUnsubscribe(w http.ResponseWriter, r *http.Request) {
 func startPushCron() {
 	time.Sleep(5 * time.Second)
 	log.Println("🔔 Push cron started")
-	ticker := time.NewTicker(1 * time.Minute)
+	ticker := time.NewTicker(30 * time.Second) // ← FIX #1: 1m → 30s
 	defer ticker.Stop()
 	for {
 		select {
@@ -363,7 +427,7 @@ func checkAndSendPushes() {
 			if err := sendPush(sub.Subscription, habit.Title); err != nil {
 				log.Printf("Push failed for %s: %v", habit.Title, err)
 			} else {
-				sub.LastNotified[notifiedKey] = todayStr
+				pushStore.MarkNotified(sub.Subscription.Endpoint, habit.ID, todayStr) // ← FIX #2: persist
 				log.Printf("✅ Push sent: %s", habit.Title)
 			}
 		}
@@ -388,7 +452,7 @@ func sendPush(sub PushSubscription, habitTitle string) error {
 		Subscriber:      "mailto:admin@localhost",
 		VAPIDPublicKey:  vapidPublicKey,
 		VAPIDPrivateKey: vapidPrivateKey,
-		TTL:             60,
+		TTL:             3600,
 	})
 	if err != nil {
 		return err

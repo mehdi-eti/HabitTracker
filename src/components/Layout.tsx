@@ -58,7 +58,7 @@ export default function Layout() {
 			<nav className='w-full md:w-64 bg-white dark:bg-slate-900 border-e border-slate-100 dark:border-slate-800 shadow-sm z-10 flex flex-col justify-between shrink-0'>
 				<div className='p-4 flex md:flex-col items-center md:items-stretch justify-between h-full'>
 					<div className='flex md:flex-col gap-2 md:gap-4 flex-1 md:flex-none overflow-x-auto md:overflow-x-visible items-center md:items-stretch px-2 md:px-0'>
-						<div className='hidden md:flex items-center gap-3 mb-6 px-2 md:mt-2'>
+						<div className='hidden md:flex items-center gap-3 mb-6 px-2'>
 							<div className='w-full flex gap-2 items-center justify-center bg-indigo-600 text-white p-4 rounded-xl'>
 								<h1 className='font-extrabold text-xl'>Habit Tracker</h1>
 								<TargetIcon />
