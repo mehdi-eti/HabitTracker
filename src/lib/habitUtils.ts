@@ -55,6 +55,24 @@ export function checkAndResetHabit(
 	}
 	return { requiresReset: false };
 }
+export type HabitDateStatus = "completed" | "missed" | "pending" | "inactive";
+export function getHabitDateStatus(
+	habit: Habit,
+	records: DayRecord[],
+	dateStr: string,
+	todayStr: string = format(new Date(), "yyyy-MM-dd"),
+): HabitDateStatus {
+	const targetDates = getHabitTargetDates(habit.currentStartDate, habit.mode, habit.selectedDays, habit.durationDays || 21);
+
+	if (!targetDates.includes(dateStr)) return "inactive";
+	if (dateStr > todayStr) return "pending";
+
+	const record = records.find((r) => r.habitId === habit.id && r.date === dateStr);
+	if (record?.completed) return "completed";
+
+	// Past target day without completion = missed
+	return "missed";
+}
 
 export const getDaysLeft = (habit: Habit, allRecords: DayRecord[]) => {
 	const duration = habit.durationDays || 21;

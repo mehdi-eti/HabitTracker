@@ -1,15 +1,16 @@
 /** @format */
 
 import { useState, useMemo } from "react";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, addMonths, subMonths, isSameMonth, startOfWeek, endOfWeek } from "date-fns";
 import { useLiveQuery } from "dexie-react-hooks";
-import { db } from "../lib/db";
-import { Habit, HabitMode, HabitStatus, DayRecord } from "../types";
-import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Check, X, Filter } from "lucide-react";
-import { useI18n } from "../contexts/I18nContext";
-import { cn, getTodayStr } from "../lib/utils";
-import { getHabitTargetDates } from "../lib/habitUtils";
-import HabitDetailModal from "../components/HabitDetailModal";
+import { ChevronLeft, ChevronRight, Calendar as CalendarIcon, Check, X, AlertCircle } from "lucide-react";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, addMonths, subMonths, isSameMonth, startOfWeek, endOfWeek, getDay } from "date-fns";
+
+import { db } from "@/src/lib/db";
+import { useI18n } from "@/src/contexts/I18nContext";
+import { getHabitDateStatus, getHabitTargetDates } from "@/src/lib/habitUtils";
+import HabitDetailModal from "@/src/components/HabitDetailModal";
+import { cn, getTodayStr } from "@/src/lib/utils";
+import { Habit, HabitMode, HabitStatus, DayRecord } from "@/src/types";
 
 interface DayDetailModalProps {
 	habitTargetDatesMap: Map<string, Set<string>>;
@@ -23,6 +24,7 @@ interface DayDetailModalProps {
 const DayDetailModal = ({ date, habits, records, onClose, onHabitClick, habitTargetDatesMap }: DayDetailModalProps) => {
 	const { t, dir } = useI18n();
 	const dateStr = format(date, "yyyy-MM-dd");
+	const todayStr = getTodayStr();
 
 	const relevantHabits = habits.filter((h) => habitTargetDatesMap.get(h.id)?.has(dateStr));
 
@@ -42,8 +44,10 @@ const DayDetailModal = ({ date, habits, records, onClose, onHabitClick, habitTar
 						<p className='text-slate-500 dark:text-slate-400 text-center py-4'>{t("no_habits_scheduled")}</p>
 					) : (
 						relevantHabits.map((habit) => {
-							const record = records.find((r) => r.habitId === habit.id && r.date === dateStr);
-							const isCompleted = record?.completed;
+							const status = getHabitDateStatus(habit, records, dateStr, todayStr);
+							const isCompleted = status === "completed";
+							const isMissed = status === "missed";
+
 							return (
 								<div
 									key={habit.id}
@@ -54,17 +58,21 @@ const DayDetailModal = ({ date, habits, records, onClose, onHabitClick, habitTar
 									className='flex items-center gap-3 p-3 rounded-xl border border-slate-100 dark:border-slate-800 hover:border-indigo-500 hover:shadow-sm cursor-pointer transition-all'>
 									<div
 										className='w-4 h-4 rounded-full border border-slate-200 dark:border-slate-700'
-										style={{ backgroundColor: habit.color || "#6366f1" }}
+										style={{
+											backgroundColor: habit.color || "#6366f1",
+										}}
 									/>
 									<div className='flex-1 font-bold text-slate-700 dark:text-slate-200'>{habit.title}</div>
 									<div
 										className={cn(
-											"px-2 py-1 rounded-md text-xs font-bold",
-											isCompleted
-												? "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400"
-												: "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400",
+											"px-2 py-1 rounded-md text-xs font-bold flex items-center gap-1",
+											isCompleted && "bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+											isMissed && "bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400",
+											!isCompleted && !isMissed && "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400",
 										)}>
-										{isCompleted ? t("done") : t("pending")}
+										{isCompleted && <Check size={12} />}
+										{isMissed && <AlertCircle size={12} />}
+										{isCompleted ? t("done") : isMissed ? t("missed") : t("pending")}
 									</div>
 								</div>
 							);
@@ -125,7 +133,6 @@ export default function Calendar() {
 		let completed = 0;
 		let missed = 0;
 
-		// For each day in monthStart to monthEnd
 		const daysInMonth = eachDayOfInterval({ start: monthStart, end: monthEnd });
 
 		filteredHabits.forEach((habit) => {
@@ -262,7 +269,6 @@ export default function Calendar() {
 							const isCurrentMonth = isSameMonth(day, currentMonth);
 							const isTodayFlag = dateStr === todayStr;
 
-							// Get habits active on this day
 							const dayHabits = filteredHabits.filter((h) => habitTargetDatesMap.get(h.id)?.has(dateStr));
 
 							return (
@@ -287,8 +293,9 @@ export default function Calendar() {
 
 									<div className='space-y-1'>
 										{dayHabits.map((habit) => {
-											const record = allRecords.find((r) => r.habitId === habit.id && r.date === dateStr);
-											const isCompleted = record?.completed;
+											const status = getHabitDateStatus(habit, allRecords, dateStr, todayStr);
+											const isCompleted = status === "completed";
+											const isMissed = status === "missed";
 											const baseColor = habit.color || "#6366f1";
 
 											return (
@@ -300,14 +307,22 @@ export default function Calendar() {
 													}}
 													className={cn(
 														"text-xs px-2 py-1 rounded md:rounded-md font-bold truncate transition-all shadow-sm hover:opacity-80",
-														isCompleted
-															? "text-white"
-															: "text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800",
+														isCompleted && "text-white",
+														isMissed &&
+															"bg-red-50 dark:bg-red-900/20 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-800",
+														!isCompleted &&
+															!isMissed &&
+															"text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800",
 													)}
 													style={
 														isCompleted
 															? { backgroundColor: baseColor }
-															: { borderLeftColor: baseColor, borderLeftWidth: "4px" }
+															: isMissed
+																? { borderLeftColor: "#ef4444", borderLeftWidth: "4px" }
+																: {
+																		borderLeftColor: baseColor,
+																		borderLeftWidth: "4px",
+																	}
 													}
 													title={habit.title}>
 													{habit.title}
