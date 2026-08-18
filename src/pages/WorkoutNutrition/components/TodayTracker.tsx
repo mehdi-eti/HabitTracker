@@ -3,13 +3,13 @@
 import { v4 as uuidv4 } from "uuid";
 import { useLiveQuery } from "dexie-react-hooks";
 import React, { useEffect, useRef, useState } from "react";
+import { Dumbbell, Utensils, CheckCircle, Circle, Plus, X, Upload, AlertCircle } from "lucide-react";
 
 import { db } from "@/src/lib/db";
 import { useI18n } from "@/src/contexts/I18nContext";
+import { getDayDataFromPlan } from "@/src/utils/planData";
 import { importPlanFromJson } from "@/src/utils/planImport";
 import { parseLocalDate, getDaysDifference, formatDateStr } from "@/src/lib/utils";
-import { Dumbbell, Utensils, CheckCircle, Circle, Plus, X, Upload, AlertCircle } from "lucide-react";
-import { getDayDataFromPlan } from "@/src/utils/planData";
 
 interface TodayTrackerProps {
 	onNavigateToPlans?: () => void;
@@ -21,9 +21,47 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 	const [showExtraInput, setShowExtraInput] = useState(false);
 	const [extraFoodDesc, setExtraFoodDesc] = useState("");
 	const [importError, setImportError] = useState("");
+	const [previousSets, setPreviousSets] = useState<Record<string, any>>({});
 
 	const today = formatDateStr(new Date());
 	const isInitializingRef = useRef(false);
+
+	useEffect(() => {
+		async function loadPreviousSets() {
+			const currentActivePlan = await db.workoutPlans.where("status").equals("active").first();
+			if (!currentActivePlan?.id) return;
+
+			const pastDailyRecords = await db.workoutDailyRecords
+				.where("planId")
+				.equals(currentActivePlan.id)
+				.filter((r) => r.date < today)
+				.toArray();
+
+			pastDailyRecords.sort((a, b) => b.date.localeCompare(a.date));
+			const recordIds = pastDailyRecords.map((r) => r.id);
+			if (recordIds.length === 0) return;
+
+			const allPastSets = await db.workoutSetRecords.where("dailyRecordId").anyOf(recordIds).toArray();
+
+			const latestSetsMap: Record<string, any> = {};
+
+			for (const dr of pastDailyRecords) {
+				const setsForDr = allPastSets.filter((s) => s.dailyRecordId === dr.id);
+				for (const s of setsForDr) {
+					const key = `${s.exerciseId}_${s.setIndex}`;
+					if (!latestSetsMap[key]) {
+						if (s.actualReps > 0 || s.actualWeight > 0) {
+							latestSetsMap[key] = s;
+						}
+					}
+				}
+			}
+
+			setPreviousSets(latestSetsMap);
+		}
+
+		loadPreviousSets();
+	}, [today]);
 
 	/*
     Important:
@@ -502,7 +540,18 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 
 													<div className='flex-1 flex gap-4 items-center'>
 														<div className='flex flex-col gap-1 w-full max-w-27.5'>
-															<span className='text-[10px] text-slate-400'>Reps (Plan: {plannedReps})</span>
+															<div className='flex justify-between items-center px-1'>
+																<span className='text-[10px] text-slate-400'>
+																	Reps (Plan: {plannedReps})
+																</span>
+																{previousSets[`${exercise.id}_${index}`]?.actualReps > 0 && (
+																	<span
+																		className='text-[10px] text-indigo-500 dark:text-indigo-400 font-bold'
+																		title='Last time'>
+																		Prev: {previousSets[`${exercise.id}_${index}`].actualReps}
+																	</span>
+																)}
+															</div>
 
 															<input
 																type='number'
@@ -516,7 +565,18 @@ export default function TodayTracker({ onNavigateToPlans }: TodayTrackerProps) {
 														</div>
 
 														<div className='flex flex-col gap-1 w-full max-w-27.5'>
-															<span className='text-[10px] text-slate-400'>Kg (Plan: {plannedWeight})</span>
+															<div className='flex justify-between items-center px-1'>
+																<span className='text-[10px] text-slate-400'>
+																	Kg (Plan: {plannedWeight})
+																</span>
+																{previousSets[`${exercise.id}_${index}`]?.actualWeight > 0 && (
+																	<span
+																		className='text-[10px] text-indigo-500 dark:text-indigo-400 font-bold'
+																		title='Last time'>
+																		Prev: {previousSets[`${exercise.id}_${index}`].actualWeight}
+																	</span>
+																)}
+															</div>
 
 															<input
 																type='number'
