@@ -1,9 +1,9 @@
 /** @format */
 
+import { useLiveQuery } from "dexie-react-hooks";
+import { Link, useNavigate } from "react-router-dom";
 import React, { useState, useEffect, useMemo } from "react";
-import { useI18n } from "../contexts/I18nContext";
-import { useHabits } from "../hooks/useHabits";
-import { Habit, DayRecord } from "../types";
+import { format, startOfMonth, endOfMonth, eachDayOfInterval, subDays } from "date-fns";
 import {
 	Plus,
 	Check,
@@ -21,18 +21,18 @@ import {
 	BarChart2,
 	Clock,
 } from "lucide-react";
-import HabitModal, { CATEGORIES } from "../components/HabitModal";
-import DashboardChart from "../components/DashboardChart";
-import { getTodayStr, cn } from "../lib/utils";
-import { db } from "../lib/db";
-import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, isToday, subDays } from "date-fns";
-import CSSConfetti from "../components/CSSConfetti";
-import { Link, useNavigate } from "react-router-dom";
-import DailyTrackingModal from "../components/DailyTrackingModal";
-import WorkoutNutritionSummary from "../components/WorkoutNutritionSummary";
 
-import { useLiveQuery } from "dexie-react-hooks";
-import { getDaysLeft } from "../lib/habitUtils";
+import { db } from "@/src/lib/db";
+import { Habit, DayRecord } from "@/src/types";
+import { useHabits } from "@/src/hooks/useHabits";
+import { getDaysLeft } from "@/src/lib/habitUtils";
+import { useI18n } from "@/src/contexts/I18nContext";
+import CSSConfetti from "@/src/components/CSSConfetti";
+import DashboardChart from "@/src/components/DashboardChart";
+import { getTodayStr, getYesterdayStr, cn } from "@/src/lib/utils";
+import DailyTrackingModal from "@/src/components/DailyTrackingModal";
+import HabitModal, { CATEGORIES } from "@/src/components/HabitModal";
+import WorkoutNutritionSummary from "@/src/components/WorkoutNutritionSummary";
 
 const MOTIVATION_QUOTES = [
 	"Small daily improvements over time lead to stunning results.",
@@ -58,6 +58,8 @@ export default function Dashboard() {
 	const [trackingHabit, setTrackingHabit] = useState<Habit | null>(null);
 	const [showConfetti, setShowConfetti] = useState(false);
 
+	const [viewingDate, setViewingDate] = useState<"today" | "yesterday">("today");
+
 	const allRecords = useLiveQuery(() => db.dayRecords.toArray(), []) || [];
 	const allHabits = useLiveQuery(() => db.habits.toArray(), []) || [];
 	const completedHabitsAll = allHabits.filter((h) => h.status === "completed");
@@ -68,30 +70,33 @@ export default function Dashboard() {
 	}, []);
 
 	const todayStr = getTodayStr();
-	const todayDateObj = new Date();
-	const dayOfWeek = todayDateObj.getDay() as 0 | 1 | 2 | 3 | 4 | 5 | 6;
+	const yesterdayStr = getYesterdayStr();
+	const activeDateStr = viewingDate === "today" ? todayStr : yesterdayStr;
+	const activeDateObj = viewingDate === "today" ? new Date() : subDays(new Date(), 1);
+	const activeDayOfWeek = activeDateObj.getDay() as 0 | 1 | 2 | 3 | 4 | 5 | 6;
 
-	const todayHabits =
+	const activeHabitsForDate =
 		habits?.filter((habit) => {
-			return habit.mode === "consecutive" || (habit.selectedDays || []).includes(dayOfWeek);
+			if (habit.mode === "consecutive") return true;
+			return (habit.selectedDays || []).includes(activeDayOfWeek);
 		}) || [];
 
-	const completedTodayHabits: Habit[] = [];
-	const pendingTodayHabits: Habit[] = [];
+	const completedActiveHabits: Habit[] = [];
+	const pendingActiveHabits: Habit[] = [];
 
-	todayHabits.forEach((habit) => {
-		const record = dayRecords?.find((r) => r.habitId === habit.id && r.date === todayStr);
+	activeHabitsForDate.forEach((habit) => {
+		const record = dayRecords?.find((r) => r.habitId === habit.id && r.date === activeDateStr);
 		if (record && record.completed) {
-			completedTodayHabits.push(habit);
+			completedActiveHabits.push(habit);
 		} else {
-			pendingTodayHabits.push(habit);
+			pendingActiveHabits.push(habit);
 		}
 	});
 
-	const todayTasks = todayHabits.length;
-	const todayCompleted = completedTodayHabits.length;
-	const todayRemaining = pendingTodayHabits.length;
-	const successRate = todayTasks > 0 ? Math.round((todayCompleted / todayTasks) * 100) : 0;
+	const activeTasks = activeHabitsForDate.length;
+	const activeCompleted = completedActiveHabits.length;
+	const activeRemaining = pendingActiveHabits.length;
+	const successRate = activeTasks > 0 ? Math.round((activeCompleted / activeTasks) * 100) : 0;
 
 	// Calculate some stats
 	const activeHabitsCount = habits?.length || 0;
@@ -195,8 +200,8 @@ export default function Dashboard() {
 	}, [allRecords]);
 
 	const handleToggle = async (habit: Habit, completed: boolean) => {
-		const recordId = `${habit.id}_${todayStr}`;
-		const existing = dayRecords?.find((r) => r.habitId === habit.id && r.date === todayStr);
+		const recordId = `${habit.id}_${activeDateStr}`;
+		const existing = dayRecords?.find((r) => r.habitId === habit.id && r.date === activeDateStr);
 
 		if (existing) {
 			await db.dayRecords.update(recordId, { completed, updatedAt: Date.now() });
@@ -204,7 +209,7 @@ export default function Dashboard() {
 			await db.dayRecords.put({
 				id: recordId,
 				habitId: habit.id,
-				date: todayStr,
+				date: activeDateStr,
 				completed,
 				note: "",
 				updatedAt: Date.now(),
@@ -212,7 +217,7 @@ export default function Dashboard() {
 		}
 
 		if (completed) {
-			if (todayCompleted + 1 >= todayTasks && todayTasks > 0) {
+			if (activeCompleted + 1 >= activeTasks && activeTasks > 0) {
 				setShowConfetti(true);
 			}
 		}
@@ -235,9 +240,9 @@ export default function Dashboard() {
 			});
 		}
 
-		if (completed && trackingDate === todayStr) {
+		if (completed && trackingDate === activeDateStr) {
 			const wasCompleted = !!dayRecords?.find((r) => r.habitId === trackingHabit.id && r.date === trackingDate)?.completed;
-			if (!wasCompleted && todayCompleted + 1 >= todayTasks && todayTasks > 0) {
+			if (!wasCompleted && activeCompleted + 1 >= activeTasks && activeTasks > 0) {
 				setShowConfetti(true);
 			}
 		}
@@ -302,7 +307,7 @@ export default function Dashboard() {
 				<StatCard
 					icon={<Zap size={18} className='text-amber-500' />}
 					label={t("remaining_today")}
-					value={todayRemaining}
+					value={activeRemaining}
 					bg='bg-amber-50 dark:bg-amber-900/20'
 				/>
 			</div>
@@ -402,9 +407,33 @@ export default function Dashboard() {
 					<div className='bg-white dark:bg-slate-900 rounded-4xl p-6 md:p-8 shadow-sm border border-slate-100 dark:border-slate-800 h-full flex flex-col'>
 						<div className='flex justify-between items-center mb-6'>
 							<div>
-								<h2 className='text-xl font-bold text-slate-800 dark:text-slate-100'>{t("todays_todos")}</h2>
+								<div className='flex items-center gap-2 mb-2'>
+									<button
+										onClick={() => setViewingDate("yesterday")}
+										className={cn(
+											"px-3 py-1 text-xs font-bold rounded-lg transition-colors",
+											viewingDate === "yesterday"
+												? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400"
+												: "bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700",
+										)}>
+										{t("yesterday")}
+									</button>
+									<button
+										onClick={() => setViewingDate("today")}
+										className={cn(
+											"px-3 py-1 text-xs font-bold rounded-lg transition-colors",
+											viewingDate === "today"
+												? "bg-indigo-100 text-indigo-700 dark:bg-indigo-900/30 dark:text-indigo-400"
+												: "bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700",
+										)}>
+										{t("today")}
+									</button>
+								</div>
+								<h2 className='text-xl font-bold text-slate-800 dark:text-slate-100'>
+									{viewingDate === "today" ? t("todays_todos") : t("yesterday")}
+								</h2>
 								<p className='text-sm text-slate-500 font-medium mt-1'>
-									{todayTasks} {t("tasks_scheduled")}
+									{activeTasks} {t("tasks_scheduled")}
 								</p>
 							</div>
 							<div className='w-12 h-12 rounded-full border-4 border-indigo-50 dark:border-indigo-900/30 flex items-center justify-center relative'>
@@ -423,7 +452,7 @@ export default function Dashboard() {
 						</div>
 
 						<div className='flex-1 space-y-6 overflow-y-auto custom-scrollbar pr-2 pb-2'>
-							{todayHabits.length === 0 ? (
+							{activeHabitsForDate.length === 0 ? (
 								<div className='text-center py-12 flex flex-col items-center justify-center h-full border-2 border-dashed border-slate-100 dark:border-slate-800 rounded-3xl'>
 									<div className='w-16 h-16 mx-auto bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center mb-4'>
 										<CheckCircle2 className='text-slate-300 dark:text-slate-600' size={32} />
@@ -432,12 +461,12 @@ export default function Dashboard() {
 								</div>
 							) : (
 								<>
-									{pendingTodayHabits.length > 0 && (
+									{pendingActiveHabits.length > 0 && (
 										<div className='space-y-3'>
 											<h4 className='text-[11px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2'>
-												{t("pending")} ({pendingTodayHabits.length})
+												{t("pending")} ({pendingActiveHabits.length})
 											</h4>
-											{pendingTodayHabits.map((habit) => (
+											{pendingActiveHabits.map((habit) => (
 												<TodoItem
 													key={habit.id}
 													habit={habit}
@@ -445,19 +474,19 @@ export default function Dashboard() {
 													onToggle={(c) => handleToggle(habit, c)}
 													onClick={() => {
 														setTrackingHabit(habit);
-														setTrackingDate(todayStr);
+														setTrackingDate(activeDateStr);
 													}}
 												/>
 											))}
 										</div>
 									)}
 
-									{completedTodayHabits.length > 0 && (
+									{completedActiveHabits.length > 0 && (
 										<div className='space-y-3 mt-6'>
 											<h4 className='text-[11px] font-extrabold text-slate-400 dark:text-slate-500 uppercase tracking-wider mb-2'>
-												{t("completed")} ({completedTodayHabits.length})
+												{t("completed")} ({completedActiveHabits.length})
 											</h4>
-											{completedTodayHabits.map((habit) => (
+											{completedActiveHabits.map((habit) => (
 												<TodoItem
 													key={habit.id}
 													habit={habit}
@@ -465,7 +494,7 @@ export default function Dashboard() {
 													onToggle={(c) => handleToggle(habit, c)}
 													onClick={() => {
 														setTrackingHabit(habit);
-														setTrackingDate(todayStr);
+														setTrackingDate(activeDateStr);
 													}}
 												/>
 											))}
@@ -560,6 +589,8 @@ function TodoItem({
 	const { t } = useI18n();
 	const catDef = CATEGORIES.find((c) => c.id === habit.category) || CATEGORIES[CATEGORIES.length - 1];
 	const baseColor = habit.color || "#6366f1";
+	const [viewingDate, setViewingDate] = useState<"today" | "yesterday">("today");
+
 	const allRecords = useLiveQuery(() => db.dayRecords.toArray(), []) || [];
 
 	const daysLeft = useMemo(() => getDaysLeft(habit, allRecords), [habit, allRecords]);

@@ -6,7 +6,7 @@ import { X, Save, AlertCircle } from "lucide-react";
 import { db } from "@/src/lib/db";
 import { WorkoutPlan } from "@/src/types/workout";
 import { useI18n } from "@/src/contexts/I18nContext";
-import { parseLocalDate, getNormalizedToday, getDaysDifference, formatDateStr, addDaysToDate } from "@/src/lib/utils";
+import { parseLocalDate, getNormalizedToday, getDaysDifference, addDaysToDate } from "@/src/lib/utils";
 
 function PreviewMeals({ schedule }: { schedule: any }) {
 	if (!schedule) return <div className='text-sm text-slate-500'>No valid schedule format</div>;
@@ -50,13 +50,47 @@ function PreviewMeals({ schedule }: { schedule: any }) {
 	);
 }
 
+function PreviewWorkout({ schedule }: { schedule: any }) {
+	if (!schedule) return <div className='text-sm text-slate-500'>No valid schedule format</div>;
+	const days = ["saturday", "sunday", "monday", "tuesday", "wednesday", "thursday", "friday"];
+	return (
+		<div className='space-y-4 pb-12'>
+			{days.map((day) => {
+				const exercises = schedule[day] || [];
+				return (
+					<div key={day} className='border border-slate-200 dark:border-slate-800 rounded-lg overflow-hidden bg-white dark:bg-slate-950'>
+						<div className='bg-slate-100 dark:bg-slate-900 px-3 py-1.5 text-xs font-bold uppercase text-slate-600 dark:text-slate-400'>
+							{day}
+						</div>
+						{exercises.length === 0 ? (
+							<div className='p-3 text-xs text-slate-400'>Rest Day</div>
+						) : (
+							<div className='divide-y divide-slate-100 dark:divide-slate-800'>
+								{exercises?.map((ex: any, idx: number) => (
+									<div key={idx} className='p-3'>
+										<div className='font-semibold text-sm flex justify-between'>
+											<span>{ex.name}</span>
+											<span className='text-slate-500 font-normal text-xs'>{ex.targetSets || 0} Sets</span>
+										</div>
+									</div>
+								))}
+							</div>
+						)}
+					</div>
+				);
+			})}
+		</div>
+	);
+}
+
 export default function EditPlanModal({ plan, onClose }: { plan: WorkoutPlan; onClose: () => void }) {
 	const { t } = useI18n();
 	const [planData, setPlanData] = useState<any>(null);
 	const [versionId, setVersionId] = useState<string>("");
+	const [workoutJson, setWorkoutJson] = useState("");
 	const [week1Json, setWeek1Json] = useState("");
 	const [week2Json, setWeek2Json] = useState("");
-	const [activeTab, setActiveTab] = useState<"week1" | "week2">("week1");
+	const [activeTab, setActiveTab] = useState<"workout" | "week1" | "week2">("workout");
 	const [error, setError] = useState("");
 
 	useEffect(() => {
@@ -68,6 +102,7 @@ export default function EditPlanModal({ plan, onClose }: { plan: WorkoutPlan; on
 
 				const w1 = version.data?.nutrition?.weeklyPlans?.week1;
 				const w2 = version.data?.nutrition?.weeklyPlans?.week2;
+				const w = version.data?.workout;
 
 				const defaultPlan = {
 					name: "Nutrition Plan",
@@ -82,9 +117,20 @@ export default function EditPlanModal({ plan, onClose }: { plan: WorkoutPlan; on
 					},
 				};
 
+				const defaultWorkoutPlan = {
+					schedule: {
+						saturday: [],
+						sunday: [],
+						monday: [],
+						tuesday: [],
+						wednesday: [],
+						thursday: [],
+						friday: [],
+					},
+				};
+
 				if (w1) setWeek1Json(JSON.stringify(w1, null, 2));
 				else if (version.data?.nutrition?.schedule) {
-					// Fallback if they only had a schedule
 					setWeek1Json(JSON.stringify({ name: "Nutrition Plan A", schedule: version.data.nutrition.schedule }, null, 2));
 				} else {
 					setWeek1Json(JSON.stringify({ ...defaultPlan, name: "Nutrition Plan A" }, null, 2));
@@ -92,6 +138,9 @@ export default function EditPlanModal({ plan, onClose }: { plan: WorkoutPlan; on
 
 				if (w2) setWeek2Json(JSON.stringify(w2, null, 2));
 				else setWeek2Json(JSON.stringify({ ...defaultPlan, name: "Nutrition Plan B" }, null, 2));
+
+				if (w) setWorkoutJson(JSON.stringify(w, null, 2));
+				else setWorkoutJson(JSON.stringify(defaultWorkoutPlan, null, 2));
 			}
 		}
 		loadData();
@@ -108,6 +157,7 @@ export default function EditPlanModal({ plan, onClose }: { plan: WorkoutPlan; on
 		try {
 			const parsedW1 = JSON.parse(week1Json);
 			const parsedW2 = JSON.parse(week2Json);
+			const parsedWorkout = JSON.parse(workoutJson);
 
 			const newData = { ...planData };
 			if (!newData.nutrition) newData.nutrition = {};
@@ -115,6 +165,7 @@ export default function EditPlanModal({ plan, onClose }: { plan: WorkoutPlan; on
 				week1: parsedW1,
 				week2: parsedW2,
 			};
+			newData.workout = parsedWorkout;
 
 			const weekDays = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
 
@@ -132,6 +183,19 @@ export default function EditPlanModal({ plan, onClose }: { plan: WorkoutPlan; on
 
 						const mealsForDay = weeklyPlan?.schedule?.[dayOfWeek] || [];
 
+						let workoutExercises = parsedWorkout?.schedule?.[dayOfWeek] || [];
+						let workoutPlanName = "";
+						if (parsedWorkout?.weeklyPlans) {
+							const numWeeks = Object.keys(parsedWorkout.weeklyPlans).length;
+							const workoutCycle = ((dayPlanWeek - 1) % numWeeks) + 1;
+							const wKey = "week" + workoutCycle;
+							const wPlan = parsedWorkout.weeklyPlans[wKey];
+							if (wPlan) {
+								workoutExercises = wPlan.schedule?.[dayOfWeek] || [];
+								workoutPlanName = wPlan.name || "";
+							}
+						}
+
 						return {
 							...day,
 							planWeek: dayPlanWeek,
@@ -140,6 +204,12 @@ export default function EditPlanModal({ plan, onClose }: { plan: WorkoutPlan; on
 							nutrition: {
 								name: weeklyPlan?.name || "",
 								meals: mealsForDay,
+							},
+							restDay: workoutExercises.length === 0,
+							workoutPlanName,
+							workout: {
+								title: workoutExercises.length > 0 ? "Workout" : "Rest Day",
+								exercises: workoutExercises,
 							},
 						};
 					}
@@ -172,9 +242,9 @@ export default function EditPlanModal({ plan, onClose }: { plan: WorkoutPlan; on
 			<div className='bg-white dark:bg-slate-900 rounded-2xl w-full max-w-5xl h-[85vh] flex flex-col shadow-xl'>
 				<div className='flex justify-between items-center p-6 border-b border-slate-100 dark:border-slate-800'>
 					<div>
-						<h2 className='text-xl font-bold'>Edit Nutrition Plans</h2>
+						<h2 className='text-xl font-bold'>Edit Workout & Nutrition Plan</h2>
 						<p className='text-sm text-slate-500'>
-							Currently active: {activeWeekKey === "week1" ? "Week 1 (Plan A)" : "Week 2 (Plan B)"}
+							Nutrition currently active: {activeWeekKey === "week1" ? "Week 1 (Plan A)" : "Week 2 (Plan B)"}
 						</p>
 					</div>
 					<button onClick={onClose} className='p-2 text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-full'>
@@ -182,27 +252,36 @@ export default function EditPlanModal({ plan, onClose }: { plan: WorkoutPlan; on
 					</button>
 				</div>
 
-				<div className='flex border-b border-slate-100 dark:border-slate-800'>
+				<div className='flex border-b border-slate-100 dark:border-slate-800 overflow-x-auto'>
+					<button
+						onClick={() => setActiveTab("workout")}
+						className={`flex-1 py-3 px-4 text-sm font-medium border-b-2 whitespace-nowrap ${
+							activeTab === "workout"
+								? "border-indigo-600 text-indigo-600"
+								: "border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
+						}`}>
+						Workout Plan
+					</button>
 					<button
 						onClick={() => setActiveTab("week1")}
-						className={`flex-1 py-3 text-sm font-medium border-b-2 ${
+						className={`flex-1 py-3 px-4 text-sm font-medium border-b-2 whitespace-nowrap ${
 							activeTab === "week1"
 								? "border-indigo-600 text-indigo-600"
 								: "border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
 						}`}>
-						Week 1 (Plan A){" "}
+						Nutrition Week 1 (Plan A){" "}
 						{activeWeekKey === "week1" && (
 							<span className='ml-2 text-[10px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full'>ACTIVE</span>
 						)}
 					</button>
 					<button
 						onClick={() => setActiveTab("week2")}
-						className={`flex-1 py-3 text-sm font-medium border-b-2 ${
+						className={`flex-1 py-3 px-4 text-sm font-medium border-b-2 whitespace-nowrap ${
 							activeTab === "week2"
 								? "border-indigo-600 text-indigo-600"
 								: "border-transparent text-slate-500 hover:text-slate-700 dark:hover:text-slate-300"
 						}`}>
-						Week 2 (Plan B){" "}
+						Nutrition Week 2 (Plan B){" "}
 						{activeWeekKey === "week2" && (
 							<span className='ml-2 text-[10px] bg-indigo-100 text-indigo-700 px-2 py-0.5 rounded-full'>ACTIVE</span>
 						)}
@@ -216,19 +295,27 @@ export default function EditPlanModal({ plan, onClose }: { plan: WorkoutPlan; on
 					</div>
 				)}
 
-				<div className='flex-1 overflow-hidden flex bg-slate-50 dark:bg-slate-900'>
-					<div className='w-1/2 p-4 flex flex-col border-r border-slate-200 dark:border-slate-800'>
+				<div className='flex-1 overflow-hidden flex flex-col md:flex-row bg-slate-50 dark:bg-slate-900'>
+					<div className='w-full md:w-1/2 p-4 flex flex-col border-b md:border-b-0 md:border-r border-slate-200 dark:border-slate-800 h-1/2 md:h-full'>
 						<label className='text-xs font-bold text-slate-500 mb-2 uppercase'>JSON Editor</label>
 						<textarea
-							value={activeTab === "week1" ? week1Json : week2Json}
-							onChange={(e) => (activeTab === "week1" ? setWeek1Json(e.target.value) : setWeek2Json(e.target.value))}
+							value={activeTab === "workout" ? workoutJson : activeTab === "week1" ? week1Json : week2Json}
+							onChange={(e) => {
+								if (activeTab === "workout") setWorkoutJson(e.target.value);
+								else if (activeTab === "week1") setWeek1Json(e.target.value);
+								else setWeek2Json(e.target.value);
+							}}
 							className='flex-1 font-mono text-xs bg-white dark:bg-slate-950 border border-slate-200 dark:border-slate-800 rounded-lg p-4 focus:ring-2 focus:ring-indigo-500 outline-none resize-none'
 							spellCheck={false}
 						/>
 					</div>
-					<div className='w-1/2 p-4 flex flex-col overflow-auto bg-slate-100/50 dark:bg-slate-900/50'>
+					<div className='w-full md:w-1/2 p-4 flex flex-col overflow-auto bg-slate-100/50 dark:bg-slate-900/50 h-1/2 md:h-full'>
 						<label className='text-xs font-bold text-slate-500 mb-2 uppercase'>Preview</label>
-						<PreviewMeals schedule={safeParse(activeTab === "week1" ? week1Json : week2Json)?.schedule} />
+						{activeTab === "workout" ? (
+							<PreviewWorkout schedule={safeParse(workoutJson)?.schedule} />
+						) : (
+							<PreviewMeals schedule={safeParse(activeTab === "week1" ? week1Json : week2Json)?.schedule} />
+						)}
 					</div>
 				</div>
 
