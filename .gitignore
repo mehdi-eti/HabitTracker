@@ -8,3 +8,5 @@ coverage/
 !.env.example
 *.exe
 *.zip
+push-store.json
+pb_data/

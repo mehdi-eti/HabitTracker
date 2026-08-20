@@ -1,3 +1,4 @@
+import { pb } from './pocketbase';
 import Dexie, { Table } from 'dexie';
 import { Habit, DayRecord, AppSettings } from '../types';
 import {
@@ -58,5 +59,47 @@ db.on('populate', async () => {
     globalReminderTime: '20:00',
     theme: 'light',
     language: 'en'
+  });
+});
+
+
+
+
+const collectionsToSync = [
+  'habits', 'dayRecords', 'settings', 'workoutPlans', 
+  'workoutPlanVersions', 'workoutDailyRecords', 'workoutSetRecords', 
+  'nutritionDailyRecords', 'nutritionFoodRecords', 'extraFoodRecords', 
+  'weeklyProgressRecords', 'workoutNutritionNotes'
+];
+
+collectionsToSync.forEach(col => {
+  // @ts-ignore
+  db[col].hook('creating', function (primKey, obj, trans) {
+    // @ts-ignore
+    if (pb.authStore.isValid && !db.ignoreSync) {
+      const payload = { ...obj, recordId: primKey, user: pb.authStore.model?.id };
+      delete payload.id;
+      pb.collection(col).create(payload).catch(console.error);
+    }
+  });
+
+  // @ts-ignore
+  db[col].hook('updating', function (mods, primKey, obj, trans) {
+    // @ts-ignore
+    if (pb.authStore.isValid && !db.ignoreSync) {
+      pb.collection(col).getFirstListItem(`recordId="${primKey}"`).then(record => {
+        pb.collection(col).update(record.id, mods).catch(console.error);
+      }).catch(console.error);
+    }
+  });
+
+  // @ts-ignore
+  db[col].hook('deleting', function (primKey, obj, trans) {
+    // @ts-ignore
+    if (pb.authStore.isValid && !db.ignoreSync) {
+      pb.collection(col).getFirstListItem(`recordId="${primKey}"`).then(record => {
+        pb.collection(col).delete(record.id).catch(console.error);
+      }).catch(console.error);
+    }
   });
 });

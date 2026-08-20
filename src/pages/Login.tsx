@@ -1,77 +1,166 @@
 /** @format */
 
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { LogIn, UserPlus, Mail, Lock, Loader2 } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 import { useI18n } from "../contexts/I18nContext";
 
 export default function Login() {
-	const [username, setUsername] = useState("admin");
-	const [password, setPassword] = useState("admin");
-	const [error, setError] = useState("");
-	const { login } = useAuth();
+	const { login, register, isLoading } = useAuth();
 	const { t, dir } = useI18n();
-	const navigate = useNavigate();
 
-	const handleSubmit = (e: React.FormEvent) => {
+	const [email, setEmail] = useState("");
+	const [pass, setPass] = useState("");
+	const [isRegister, setIsRegister] = useState(false);
+	const [error, setError] = useState("");
+
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		if (username === "admin" && password === "admin") {
-			login();
-			navigate("/");
-		} else {
-			setError(t("invalid_credentials"));
+		setError("");
+
+		try {
+			if (isRegister) {
+				await register(email, pass);
+			} else {
+				await login(email, pass);
+			}
+		} catch (err: any) {
+			setError(err?.message || t("error_occurred"));
 		}
 	};
 
 	return (
-		<div className='min-h-screen flex items-center justify-center bg-[#F4F7FE] dark:bg-slate-950 p-4' dir={dir}>
-			<div className='w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-50 dark:border-slate-800 p-8 space-y-8 relative overflow-hidden'>
-				{/* Soft decorative background circles */}
-				<div className='absolute top-0 left-0 w-full h-2 bg-indigo-600' />
+		<div dir={dir} className='flex min-h-screen items-center justify-center bg-slate-50 px-4 py-8 transition-colors dark:bg-slate-950'>
+			<div className='w-full max-w-md'>
+				{/* Brand */}
+				<div className='mb-8 text-center'>
+					<div className='mx-auto mb-5 flex h-16 w-16 items-center justify-center overflow-hidden rounded-2xl bg-indigo-600 shadow-lg shadow-indigo-600/25'>
+						<img src='/logo.png' alt={t("app_name")} className='h-full w-full object-cover' />
+					</div>
 
-				<div className='text-center space-y-2'>
-					<div className='mx-auto p-5 w-fit rounded-2xl flex items-center justify-center'>
-						<img src='/logo.png' alt='Reboot Reset' className='max-h-32 object-contain' />
+					<h1 className='text-2xl font-bold tracking-tight text-slate-900 dark:text-white'>{t("app_name")}</h1>
+
+					<p className='mt-2 text-sm text-slate-500 dark:text-slate-400'>
+						{isRegister ? t("login_register_description") : t("login_welcome_description")}
+					</p>
+				</div>
+
+				{/* Card */}
+				<div className='rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-200/50 dark:border-slate-800 dark:bg-slate-900 dark:shadow-black/20 sm:p-8'>
+					<div className='mb-7'>
+						<h2 className='text-xl font-semibold text-slate-900 dark:text-white'>
+							{isRegister ? t("create_account") : t("welcome_back")}
+						</h2>
+
+						<p className='mt-1 text-sm text-slate-500 dark:text-slate-400'>
+							{isRegister ? t("register_description") : t("login_description")}
+						</p>
+					</div>
+
+					<form onSubmit={handleSubmit} className='space-y-5'>
+						{error && (
+							<div className='rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:border-red-900/50 dark:bg-red-950/30 dark:text-red-400'>
+								{error}
+							</div>
+						)}
+
+						{/* Email */}
+						<div>
+							<label htmlFor='email' className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
+								{t("email")}
+							</label>
+
+							<div className='relative'>
+								<Mail
+									size={18}
+									className={`absolute top-1/2 -translate-y-1/2 text-slate-400 ${dir === "rtl" ? "right-3.5" : "left-3.5"}`}
+								/>
+
+								<input
+									id='email'
+									type='email'
+									required
+									autoComplete='email'
+									value={email}
+									onChange={(e) => setEmail(e.target.value)}
+									placeholder={t("email_placeholder")}
+									className={`w-full rounded-xl border border-slate-200 bg-slate-50 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-indigo-500 dark:focus:bg-slate-800 ${
+										dir === "rtl" ? "pr-11 pl-4" : "pl-11 pr-4"
+									}`}
+								/>
+							</div>
+						</div>
+
+						{/* Password */}
+						<div>
+							<label htmlFor='password' className='mb-2 block text-sm font-medium text-slate-700 dark:text-slate-300'>
+								{t("password")}
+							</label>
+
+							<div className='relative'>
+								<Lock
+									size={18}
+									className={`absolute top-1/2 -translate-y-1/2 text-slate-400 ${dir === "rtl" ? "right-3.5" : "left-3.5"}`}
+								/>
+
+								<input
+									id='password'
+									type='password'
+									required
+									autoComplete={isRegister ? "new-password" : "current-password"}
+									value={pass}
+									onChange={(e) => setPass(e.target.value)}
+									placeholder='••••••••'
+									className={`w-full rounded-xl border border-slate-200 bg-slate-50 py-3 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-4 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:focus:border-indigo-500 dark:focus:bg-slate-800 ${
+										dir === "rtl" ? "pr-11 pl-4" : "pl-11 pr-4"
+									}`}
+								/>
+							</div>
+						</div>
+
+						{/* Submit */}
+						<button
+							type='submit'
+							disabled={isLoading}
+							className='flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-600/20 transition hover:bg-indigo-700 focus:outline-none focus:ring-4 focus:ring-indigo-500/20 disabled:cursor-not-allowed disabled:opacity-60'>
+							{isLoading ? (
+								<>
+									<Loader2 size={18} className='animate-spin' />
+									{t("processing")}
+								</>
+							) : isRegister ? (
+								<>
+									<UserPlus size={18} />
+									{t("create_account")}
+								</>
+							) : (
+								<>
+									<LogIn size={18} />
+									{t("sign_in")}
+								</>
+							)}
+						</button>
+					</form>
+
+					{/* Switch mode */}
+					<div className='mt-7 border-t border-slate-100 pt-6 text-center dark:border-slate-800'>
+						<p className='text-sm text-slate-500 dark:text-slate-400'>
+							{isRegister ? t("already_have_account") : t("dont_have_account")}
+						</p>
+
+						<button
+							type='button'
+							onClick={() => {
+								setIsRegister((value) => !value);
+								setError("");
+							}}
+							className='mt-1 text-sm font-semibold text-indigo-600 transition hover:text-indigo-700 dark:text-indigo-400 dark:hover:text-indigo-300'>
+							{isRegister ? t("sign_in_instead") : t("create_account")}
+						</button>
 					</div>
 				</div>
 
-				<form onSubmit={handleSubmit} className='space-y-6'>
-					{error && (
-						<div className='p-3 rounded-xl bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400 text-sm font-medium text-center'>
-							{error}
-						</div>
-					)}
-
-					<div className='space-y-4'>
-						<div className='space-y-1.5'>
-							<label className='text-sm font-medium text-slate-700 dark:text-slate-300'>{t("username")}</label>
-							<input
-								type='text'
-								value={username}
-								onChange={(e) => setUsername(e.target.value)}
-								className='w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all dark:text-white'
-								dir='ltr'
-							/>
-						</div>
-
-						<div className='space-y-1.5'>
-							<label className='text-sm font-medium text-slate-700 dark:text-slate-300'>{t("password")}</label>
-							<input
-								type='password'
-								value={password}
-								onChange={(e) => setPassword(e.target.value)}
-								className='w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-950 border border-slate-100 dark:border-slate-800 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 outline-none transition-all dark:text-white'
-								dir='ltr'
-							/>
-						</div>
-					</div>
-
-					<button
-						type='submit'
-						className='w-full py-3.5 px-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all'>
-						{t("login_btn")}
-					</button>
-				</form>
+				<p className='mt-6 text-center text-xs text-slate-400 dark:text-slate-600'>{t("privacy_notice")}</p>
 			</div>
 		</div>
 	);

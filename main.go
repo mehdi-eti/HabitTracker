@@ -13,8 +13,31 @@ import (
 	"time"
 
 	webpush "github.com/SherClockHolmes/webpush-go"
+	"github.com/pocketbase/pocketbase"
+	"github.com/pocketbase/pocketbase/cmd"
+
+	_ "habittracker/migrations"
 )
 
+func startPocketBase() *pocketbase.PocketBase {
+	app := pocketbase.New()
+
+	if err := app.Bootstrap(); err != nil {
+		log.Fatalf("❌ PocketBase bootstrap failed: %v", err)
+	}
+
+	go func() {
+		serveCmd := cmd.NewServeCommand(app, false)
+
+		if err := serveCmd.Execute(); err != nil {
+			log.Fatalf("❌ PocketBase failed: %v", err)
+		}
+	}()
+
+	log.Println("🗄️ PocketBase starting on http://127.0.0.1:8090")
+
+	return app
+}
 func getEnv(key, defaultValue string) string {
 	if value := os.Getenv(key); value != "" {
 		return value
@@ -206,6 +229,7 @@ func main() {
 		}
 	}
 
+	startPocketBase()
 	go startPushCron()
 
 	router := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {

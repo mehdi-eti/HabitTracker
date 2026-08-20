@@ -1,0 +1,1500 @@
+[
+	{
+		"id": "_pb_users_auth_",
+		"listRule": "id = @request.auth.id",
+		"viewRule": "id = @request.auth.id",
+		"createRule": "",
+		"updateRule": "id = @request.auth.id",
+		"deleteRule": "id = @request.auth.id",
+		"name": "users",
+		"type": "auth",
+		"fields": [
+			{
+				"autogeneratePattern": "[a-z0-9]{15}",
+				"help": "",
+				"hidden": false,
+				"id": "text3208210256",
+				"max": 15,
+				"min": 15,
+				"name": "id",
+				"pattern": "^[a-z0-9]+$",
+				"presentable": false,
+				"primaryKey": true,
+				"required": true,
+				"system": true,
+				"type": "text"
+			},
+			{
+				"cost": 0,
+				"help": "",
+				"hidden": true,
+				"id": "password901924565",
+				"max": 0,
+				"min": 8,
+				"name": "password",
+				"pattern": "",
+				"presentable": false,
+				"required": true,
+				"system": true,
+				"type": "password"
+			},
+			{
+				"autogeneratePattern": "[a-zA-Z0-9]{50}",
+				"help": "",
+				"hidden": true,
+				"id": "text2504183744",
+				"max": 60,
+				"min": 30,
+				"name": "tokenKey",
+				"pattern": "",
+				"presentable": false,
+				"primaryKey": false,
+				"required": true,
+				"system": true,
+				"type": "text"
+			},
+			{
+				"exceptDomains": null,
+				"help": "",
+				"hidden": false,
+				"id": "email3885137012",
+				"name": "email",
+				"onlyDomains": null,
+				"presentable": false,
+				"required": true,
+				"system": true,
+				"type": "email"
+			},
+			{
+				"help": "",
+				"hidden": false,
+				"id": "bool1547992806",
+				"name": "emailVisibility",
+				"presentable": false,
+				"required": false,
+				"system": true,
+				"type": "bool"
+			},
+			{
+				"help": "",
+				"hidden": false,
+				"id": "bool256245529",
+				"name": "verified",
+				"presentable": false,
+				"required": false,
+				"system": true,
+				"type": "bool"
+			},
+			{
+				"autogeneratePattern": "",
+				"help": "",
+				"hidden": false,
+				"id": "text1579384326",
+				"max": 255,
+				"min": 0,
+				"name": "name",
+				"pattern": "",
+				"presentable": false,
+				"primaryKey": false,
+				"required": false,
+				"system": false,
+				"type": "text"
+			},
+			{
+				"help": "",
+				"hidden": false,
+				"id": "file376926767",
+				"maxSelect": 1,
+				"maxSize": 0,
+				"mimeTypes": ["image/jpeg", "image/png", "image/svg+xml", "image/gif", "image/webp"],
+				"name": "avatar",
+				"presentable": false,
+				"protected": false,
+				"required": false,
+				"system": false,
+				"thumbs": null,
+				"type": "file"
+			},
+			{
+				"hidden": false,
+				"id": "autodate2990389176",
+				"name": "created",
+				"onCreate": true,
+				"onUpdate": false,
+				"presentable": false,
+				"system": false,
+				"type": "autodate"
+			},
+			{
+				"hidden": false,
+				"id": "autodate3332085495",
+				"name": "updated",
+				"onCreate": true,
+				"onUpdate": true,
+				"presentable": false,
+				"system": false,
+				"type": "autodate"
+			}
+		],
+		"indexes": [
+			"CREATE UNIQUE INDEX `idx_tokenKey__pb_users_auth_` ON `users` (`tokenKey`)",
+			"CREATE UNIQUE INDEX `idx_email__pb_users_auth_` ON `users` (`email`) WHERE `email` != ''"
+		],
+		"system": false,
+		"authRule": "",
+		"manageRule": null,
+		"authAlert": {
+			"enabled": true,
+			"emailTemplate": {
+				"subject": "Login from a new location",
+				"body": "<p>Hello,</p>\n<p>We noticed a login to your {APP_NAME} account from a new location:</p>\n<p><em>{ALERT_INFO}</em></p>\n<p><strong>If this wasn't you, you should immediately change your {APP_NAME} account password to revoke access from all other locations.</strong></p>\n<p>If this was you, you may disregard this email.</p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+			}
+		},
+		"oauth2": {
+			"mappedFields": {
+				"id": "",
+				"name": "name",
+				"username": "",
+				"avatarURL": "avatar"
+			},
+			"enabled": false
+		},
+		"passwordAuth": {
+			"enabled": true,
+			"identityFields": ["email"]
+		},
+		"mfa": {
+			"enabled": false,
+			"duration": 600,
+			"rule": ""
+		},
+		"otp": {
+			"enabled": false,
+			"duration": 180,
+			"length": 8,
+			"emailTemplate": {
+				"subject": "OTP for {APP_NAME}",
+				"body": "<p>Hello,</p>\n<p>Your one-time password is: <strong>{OTP}</strong></p>\n<p><i>If you didn't ask for the one-time password, you can ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+			}
+		},
+		"authToken": {
+			"duration": 432000
+		},
+		"passwordResetToken": {
+			"duration": 1800
+		},
+		"emailChangeToken": {
+			"duration": 1800
+		},
+		"verificationToken": {
+			"duration": 86400
+		},
+		"fileToken": {
+			"duration": 180
+		},
+		"verificationTemplate": {
+			"subject": "Verify your {APP_NAME} email",
+			"body": "<p>Hello,</p>\n<p>Thank you for joining us at {APP_NAME}.</p>\n<p>Click on the button below to verify your email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-verification/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Verify</a>\n</p>\n<p><i>If you didn't recently register, please ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+		},
+		"resetPasswordTemplate": {
+			"subject": "Reset your {APP_NAME} password",
+			"body": "<p>Hello,</p>\n<p>Click on the button below to reset your password.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-password-reset/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Reset password</a>\n</p>\n<p><i>If you didn't ask to reset your password, please ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+		},
+		"confirmEmailChangeTemplate": {
+			"subject": "Confirm your {APP_NAME} new email address",
+			"body": "<p>Hello,</p>\n<p>Click on the button below to confirm your new email address.</p>\n<p>\n  <a class=\"btn\" href=\"{APP_URL}/_/#/auth/confirm-email-change/{TOKEN}\" target=\"_blank\" rel=\"noopener\">Confirm new email</a>\n</p>\n<p><i>If you didn't ask to change your email address, please ignore this email.</i></p>\n<p>\n  Thanks,<br/>\n  {APP_NAME} team\n</p>"
+		}
+	},
+	{
+		"id": "ybo9pfjtdvcfypk",
+		"name": "habits",
+		"type": "base",
+		"system": false,
+		"fields": [
+			{
+				"autogeneratePattern": "[a-z0-9]{15}",
+				"hidden": false,
+				"id": "id_fz1r390gaz",
+				"name": "id",
+				"pattern": "^[a-z0-9]+$",
+				"primaryKey": true,
+				"required": true,
+				"system": true,
+				"type": "text"
+			},
+			{
+				"id": "rel_u8ugfgu293",
+				"name": "user",
+				"type": "relation",
+				"required": true,
+				"collectionId": "_pb_users_auth_",
+				"cascadeDelete": true,
+				"maxSelect": 1,
+				"minSelect": 0,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_ov25cwvy",
+				"name": "recordId",
+				"type": "text",
+				"required": true,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_d3irfce5",
+				"name": "title",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_90p8mnv8",
+				"name": "description",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_783eiww2",
+				"name": "category",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_vs0pbk7b",
+				"name": "createdAt",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_ct6zymrb",
+				"name": "mode",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "jso_s7v0ii01",
+				"name": "selectedDays",
+				"type": "json",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_z9rhbp4e",
+				"name": "status",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_pdq2q68a",
+				"name": "version",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_jppozvu3",
+				"name": "originalHabitId",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_bjcxtnkm",
+				"name": "reminderTime",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "boo_g8awnqks",
+				"name": "hidden",
+				"type": "bool",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_80bpm74u",
+				"name": "currentStartDate",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"hidden": false,
+				"id": "cre_rrr2fv0z",
+				"name": "created",
+				"onCreate": true,
+				"onUpdate": false,
+				"system": false,
+				"type": "autodate"
+			},
+			{
+				"hidden": false,
+				"id": "upd_5vyd51w6",
+				"name": "updated",
+				"onCreate": true,
+				"onUpdate": true,
+				"system": false,
+				"type": "autodate"
+			}
+		],
+		"listRule": "@request.auth.id = user",
+		"viewRule": "@request.auth.id = user",
+		"createRule": "@request.auth.id = user",
+		"updateRule": "@request.auth.id = user",
+		"deleteRule": "@request.auth.id = user",
+		"indexes": []
+	},
+	{
+		"id": "cpihtmct32cmp83",
+		"name": "dayRecords",
+		"type": "base",
+		"system": false,
+		"fields": [
+			{
+				"autogeneratePattern": "[a-z0-9]{15}",
+				"hidden": false,
+				"id": "id_bc32ow4r8b",
+				"name": "id",
+				"pattern": "^[a-z0-9]+$",
+				"primaryKey": true,
+				"required": true,
+				"system": true,
+				"type": "text"
+			},
+			{
+				"id": "rel_kr280o39os",
+				"name": "user",
+				"type": "relation",
+				"required": true,
+				"collectionId": "_pb_users_auth_",
+				"cascadeDelete": true,
+				"maxSelect": 1,
+				"minSelect": 0,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_eahj9ad9",
+				"name": "recordId",
+				"type": "text",
+				"required": true,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_ehow22kp",
+				"name": "habitId",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_i1m8x2vr",
+				"name": "date",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "boo_owt8qq4p",
+				"name": "completed",
+				"type": "bool",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_c9me7gi0",
+				"name": "note",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_ec8c74ja",
+				"name": "updatedAt",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"hidden": false,
+				"id": "cre_p2tbsb83",
+				"name": "created",
+				"onCreate": true,
+				"onUpdate": false,
+				"system": false,
+				"type": "autodate"
+			},
+			{
+				"hidden": false,
+				"id": "upd_5wi9ulcq",
+				"name": "updated",
+				"onCreate": true,
+				"onUpdate": true,
+				"system": false,
+				"type": "autodate"
+			}
+		],
+		"listRule": "@request.auth.id = user",
+		"viewRule": "@request.auth.id = user",
+		"createRule": "@request.auth.id = user",
+		"updateRule": "@request.auth.id = user",
+		"deleteRule": "@request.auth.id = user",
+		"indexes": []
+	},
+	{
+		"id": "7x4o98rfdhvqes3",
+		"name": "settings",
+		"type": "base",
+		"system": false,
+		"fields": [
+			{
+				"autogeneratePattern": "[a-z0-9]{15}",
+				"hidden": false,
+				"id": "id_08tlq51e8d",
+				"name": "id",
+				"pattern": "^[a-z0-9]+$",
+				"primaryKey": true,
+				"required": true,
+				"system": true,
+				"type": "text"
+			},
+			{
+				"id": "rel_bu8xmknoqw",
+				"name": "user",
+				"type": "relation",
+				"required": true,
+				"collectionId": "_pb_users_auth_",
+				"cascadeDelete": true,
+				"maxSelect": 1,
+				"minSelect": 0,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_b8n73kbk",
+				"name": "recordId",
+				"type": "text",
+				"required": true,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_8rbjyhi5",
+				"name": "language",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_4lvvtu96",
+				"name": "theme",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_8b4y8r6x",
+				"name": "globalReminderTime",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"hidden": false,
+				"id": "cre_9uexh9dh",
+				"name": "created",
+				"onCreate": true,
+				"onUpdate": false,
+				"system": false,
+				"type": "autodate"
+			},
+			{
+				"hidden": false,
+				"id": "upd_08ffbq2e",
+				"name": "updated",
+				"onCreate": true,
+				"onUpdate": true,
+				"system": false,
+				"type": "autodate"
+			}
+		],
+		"listRule": "@request.auth.id = user",
+		"viewRule": "@request.auth.id = user",
+		"createRule": "@request.auth.id = user",
+		"updateRule": "@request.auth.id = user",
+		"deleteRule": "@request.auth.id = user",
+		"indexes": []
+	},
+	{
+		"id": "3qdmbawt7hoomsd",
+		"name": "workoutPlans",
+		"type": "base",
+		"system": false,
+		"fields": [
+			{
+				"autogeneratePattern": "[a-z0-9]{15}",
+				"hidden": false,
+				"id": "id_ard48tcjpe",
+				"name": "id",
+				"pattern": "^[a-z0-9]+$",
+				"primaryKey": true,
+				"required": true,
+				"system": true,
+				"type": "text"
+			},
+			{
+				"id": "rel_0vmzabolyd",
+				"name": "user",
+				"type": "relation",
+				"required": true,
+				"collectionId": "_pb_users_auth_",
+				"cascadeDelete": true,
+				"maxSelect": 1,
+				"minSelect": 0,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_sxmmfy61",
+				"name": "recordId",
+				"type": "text",
+				"required": true,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_f9vsmgmt",
+				"name": "name",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_vimkr8kg",
+				"name": "description",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_qt2ygibd",
+				"name": "createdAt",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_bk2o9pbo",
+				"name": "status",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_7rvvb24h",
+				"name": "durationDays",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_cik1k1ay",
+				"name": "startDate",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_4hv3ut82",
+				"name": "version",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"hidden": false,
+				"id": "cre_xwi26262",
+				"name": "created",
+				"onCreate": true,
+				"onUpdate": false,
+				"system": false,
+				"type": "autodate"
+			},
+			{
+				"hidden": false,
+				"id": "upd_tp1rgewb",
+				"name": "updated",
+				"onCreate": true,
+				"onUpdate": true,
+				"system": false,
+				"type": "autodate"
+			}
+		],
+		"listRule": "@request.auth.id = user",
+		"viewRule": "@request.auth.id = user",
+		"createRule": "@request.auth.id = user",
+		"updateRule": "@request.auth.id = user",
+		"deleteRule": "@request.auth.id = user",
+		"indexes": []
+	},
+	{
+		"id": "zkgkh8ykbiah0cb",
+		"name": "workoutPlanVersions",
+		"type": "base",
+		"system": false,
+		"fields": [
+			{
+				"autogeneratePattern": "[a-z0-9]{15}",
+				"hidden": false,
+				"id": "id_yv6mbw7obi",
+				"name": "id",
+				"pattern": "^[a-z0-9]+$",
+				"primaryKey": true,
+				"required": true,
+				"system": true,
+				"type": "text"
+			},
+			{
+				"id": "rel_o4244z6cm3",
+				"name": "user",
+				"type": "relation",
+				"required": true,
+				"collectionId": "_pb_users_auth_",
+				"cascadeDelete": true,
+				"maxSelect": 1,
+				"minSelect": 0,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_9fw8t0x5",
+				"name": "recordId",
+				"type": "text",
+				"required": true,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_gq9dy6hg",
+				"name": "planId",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_oz8v2oel",
+				"name": "version",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_b4gz4ivp",
+				"name": "createdAt",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "jso_c3c61tl9",
+				"name": "data",
+				"type": "json",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"hidden": false,
+				"id": "cre_4km7c36p",
+				"name": "created",
+				"onCreate": true,
+				"onUpdate": false,
+				"system": false,
+				"type": "autodate"
+			},
+			{
+				"hidden": false,
+				"id": "upd_vfs10ajj",
+				"name": "updated",
+				"onCreate": true,
+				"onUpdate": true,
+				"system": false,
+				"type": "autodate"
+			}
+		],
+		"listRule": "@request.auth.id = user",
+		"viewRule": "@request.auth.id = user",
+		"createRule": "@request.auth.id = user",
+		"updateRule": "@request.auth.id = user",
+		"deleteRule": "@request.auth.id = user",
+		"indexes": []
+	},
+	{
+		"id": "wnrlrf1mzhqqe74",
+		"name": "workoutDailyRecords",
+		"type": "base",
+		"system": false,
+		"fields": [
+			{
+				"autogeneratePattern": "[a-z0-9]{15}",
+				"hidden": false,
+				"id": "id_y3rhuujxou",
+				"name": "id",
+				"pattern": "^[a-z0-9]+$",
+				"primaryKey": true,
+				"required": true,
+				"system": true,
+				"type": "text"
+			},
+			{
+				"id": "rel_ta35dxpapk",
+				"name": "user",
+				"type": "relation",
+				"required": true,
+				"collectionId": "_pb_users_auth_",
+				"cascadeDelete": true,
+				"maxSelect": 1,
+				"minSelect": 0,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_czasaaxn",
+				"name": "recordId",
+				"type": "text",
+				"required": true,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_111vtn14",
+				"name": "planId",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_kkfdlk89",
+				"name": "date",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "boo_drcq6hsh",
+				"name": "completed",
+				"type": "bool",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "boo_gwuhgsaw",
+				"name": "restDay",
+				"type": "bool",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"hidden": false,
+				"id": "cre_yncsqarv",
+				"name": "created",
+				"onCreate": true,
+				"onUpdate": false,
+				"system": false,
+				"type": "autodate"
+			},
+			{
+				"hidden": false,
+				"id": "upd_3y8fpfow",
+				"name": "updated",
+				"onCreate": true,
+				"onUpdate": true,
+				"system": false,
+				"type": "autodate"
+			}
+		],
+		"listRule": "@request.auth.id = user",
+		"viewRule": "@request.auth.id = user",
+		"createRule": "@request.auth.id = user",
+		"updateRule": "@request.auth.id = user",
+		"deleteRule": "@request.auth.id = user",
+		"indexes": []
+	},
+	{
+		"id": "rlj8w3fviburl12",
+		"name": "workoutSetRecords",
+		"type": "base",
+		"system": false,
+		"fields": [
+			{
+				"autogeneratePattern": "[a-z0-9]{15}",
+				"hidden": false,
+				"id": "id_3z4i866hkf",
+				"name": "id",
+				"pattern": "^[a-z0-9]+$",
+				"primaryKey": true,
+				"required": true,
+				"system": true,
+				"type": "text"
+			},
+			{
+				"id": "rel_mxc1jdezfd",
+				"name": "user",
+				"type": "relation",
+				"required": true,
+				"collectionId": "_pb_users_auth_",
+				"cascadeDelete": true,
+				"maxSelect": 1,
+				"minSelect": 0,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_a4n2fela",
+				"name": "recordId",
+				"type": "text",
+				"required": true,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_tob537dw",
+				"name": "dailyRecordId",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_000wukhd",
+				"name": "exerciseId",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_q2byg0y8",
+				"name": "setIndex",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_cdfabfvi",
+				"name": "plannedReps",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_ccpxqmss",
+				"name": "actualReps",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_ihzx4hab",
+				"name": "plannedWeight",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_boi0rp42",
+				"name": "actualWeight",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"hidden": false,
+				"id": "cre_k3kcho1a",
+				"name": "created",
+				"onCreate": true,
+				"onUpdate": false,
+				"system": false,
+				"type": "autodate"
+			},
+			{
+				"hidden": false,
+				"id": "upd_rqbkv1pf",
+				"name": "updated",
+				"onCreate": true,
+				"onUpdate": true,
+				"system": false,
+				"type": "autodate"
+			}
+		],
+		"listRule": "@request.auth.id = user",
+		"viewRule": "@request.auth.id = user",
+		"createRule": "@request.auth.id = user",
+		"updateRule": "@request.auth.id = user",
+		"deleteRule": "@request.auth.id = user",
+		"indexes": []
+	},
+	{
+		"id": "7m4mzse4zlta76u",
+		"name": "nutritionDailyRecords",
+		"type": "base",
+		"system": false,
+		"fields": [
+			{
+				"autogeneratePattern": "[a-z0-9]{15}",
+				"hidden": false,
+				"id": "id_l8pbzjt2mg",
+				"name": "id",
+				"pattern": "^[a-z0-9]+$",
+				"primaryKey": true,
+				"required": true,
+				"system": true,
+				"type": "text"
+			},
+			{
+				"id": "rel_4nsf10uma8",
+				"name": "user",
+				"type": "relation",
+				"required": true,
+				"collectionId": "_pb_users_auth_",
+				"cascadeDelete": true,
+				"maxSelect": 1,
+				"minSelect": 0,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_mrcudwzf",
+				"name": "recordId",
+				"type": "text",
+				"required": true,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_59ztec9e",
+				"name": "planId",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_w6ruz13w",
+				"name": "date",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "boo_secphv6x",
+				"name": "completed",
+				"type": "bool",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"hidden": false,
+				"id": "cre_72nq3z2d",
+				"name": "created",
+				"onCreate": true,
+				"onUpdate": false,
+				"system": false,
+				"type": "autodate"
+			},
+			{
+				"hidden": false,
+				"id": "upd_qt7c7frh",
+				"name": "updated",
+				"onCreate": true,
+				"onUpdate": true,
+				"system": false,
+				"type": "autodate"
+			}
+		],
+		"listRule": "@request.auth.id = user",
+		"viewRule": "@request.auth.id = user",
+		"createRule": "@request.auth.id = user",
+		"updateRule": "@request.auth.id = user",
+		"deleteRule": "@request.auth.id = user",
+		"indexes": []
+	},
+	{
+		"id": "12hupwc2az7wmpv",
+		"name": "nutritionFoodRecords",
+		"type": "base",
+		"system": false,
+		"fields": [
+			{
+				"autogeneratePattern": "[a-z0-9]{15}",
+				"hidden": false,
+				"id": "id_ngws6mtvhq",
+				"name": "id",
+				"pattern": "^[a-z0-9]+$",
+				"primaryKey": true,
+				"required": true,
+				"system": true,
+				"type": "text"
+			},
+			{
+				"id": "rel_e6o82q9us3",
+				"name": "user",
+				"type": "relation",
+				"required": true,
+				"collectionId": "_pb_users_auth_",
+				"cascadeDelete": true,
+				"maxSelect": 1,
+				"minSelect": 0,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_ylzzsvmu",
+				"name": "recordId",
+				"type": "text",
+				"required": true,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_shk2sejh",
+				"name": "dailyRecordId",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_ic9dngcu",
+				"name": "foodId",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_t2wy4fog",
+				"name": "plannedQuantity",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "boo_urg66u80",
+				"name": "consumed",
+				"type": "bool",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "boo_gcwsf3el",
+				"name": "consumedMoreThanPlanned",
+				"type": "bool",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_nk20bhvu",
+				"name": "planId",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_7viljyb0",
+				"name": "planWeek",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_9t6cxdst",
+				"name": "nutritionCycle",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_pzdsnz5k",
+				"name": "date",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_14nv1ouy",
+				"name": "mealId",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"hidden": false,
+				"id": "cre_uy52u7j6",
+				"name": "created",
+				"onCreate": true,
+				"onUpdate": false,
+				"system": false,
+				"type": "autodate"
+			},
+			{
+				"hidden": false,
+				"id": "upd_nykpmm78",
+				"name": "updated",
+				"onCreate": true,
+				"onUpdate": true,
+				"system": false,
+				"type": "autodate"
+			}
+		],
+		"listRule": "@request.auth.id = user",
+		"viewRule": "@request.auth.id = user",
+		"createRule": "@request.auth.id = user",
+		"updateRule": "@request.auth.id = user",
+		"deleteRule": "@request.auth.id = user",
+		"indexes": []
+	},
+	{
+		"id": "rm4ky4vw0u2l0g1",
+		"name": "extraFoodRecords",
+		"type": "base",
+		"system": false,
+		"fields": [
+			{
+				"autogeneratePattern": "[a-z0-9]{15}",
+				"hidden": false,
+				"id": "id_nhdlrl2vq6",
+				"name": "id",
+				"pattern": "^[a-z0-9]+$",
+				"primaryKey": true,
+				"required": true,
+				"system": true,
+				"type": "text"
+			},
+			{
+				"id": "rel_fulnhgq3e1",
+				"name": "user",
+				"type": "relation",
+				"required": true,
+				"collectionId": "_pb_users_auth_",
+				"cascadeDelete": true,
+				"maxSelect": 1,
+				"minSelect": 0,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_dso6aern",
+				"name": "recordId",
+				"type": "text",
+				"required": true,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_18yh0khb",
+				"name": "dailyRecordId",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_kmn8ya0r",
+				"name": "description",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_sjxtmcdc",
+				"name": "time",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"hidden": false,
+				"id": "cre_1zdzeice",
+				"name": "created",
+				"onCreate": true,
+				"onUpdate": false,
+				"system": false,
+				"type": "autodate"
+			},
+			{
+				"hidden": false,
+				"id": "upd_jc26ss3r",
+				"name": "updated",
+				"onCreate": true,
+				"onUpdate": true,
+				"system": false,
+				"type": "autodate"
+			}
+		],
+		"listRule": "@request.auth.id = user",
+		"viewRule": "@request.auth.id = user",
+		"createRule": "@request.auth.id = user",
+		"updateRule": "@request.auth.id = user",
+		"deleteRule": "@request.auth.id = user",
+		"indexes": []
+	},
+	{
+		"id": "oncw149c2m7obek",
+		"name": "weeklyProgressRecords",
+		"type": "base",
+		"system": false,
+		"fields": [
+			{
+				"autogeneratePattern": "[a-z0-9]{15}",
+				"hidden": false,
+				"id": "id_0n6d2f4nu9",
+				"name": "id",
+				"pattern": "^[a-z0-9]+$",
+				"primaryKey": true,
+				"required": true,
+				"system": true,
+				"type": "text"
+			},
+			{
+				"id": "rel_hlfo0auhxz",
+				"name": "user",
+				"type": "relation",
+				"required": true,
+				"collectionId": "_pb_users_auth_",
+				"cascadeDelete": true,
+				"maxSelect": 1,
+				"minSelect": 0,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_9yuq8ooe",
+				"name": "recordId",
+				"type": "text",
+				"required": true,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_jmkr5riu",
+				"name": "date",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_w5j9lflg",
+				"name": "weight",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_bev2palv",
+				"name": "chest",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_lcq6pmj6",
+				"name": "waist",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_slly167g",
+				"name": "hips",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_mdd28fpo",
+				"name": "arms",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "num_s0fworjz",
+				"name": "legs",
+				"type": "number",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"hidden": false,
+				"id": "cre_65u0je9f",
+				"name": "created",
+				"onCreate": true,
+				"onUpdate": false,
+				"system": false,
+				"type": "autodate"
+			},
+			{
+				"hidden": false,
+				"id": "upd_xxyvs28a",
+				"name": "updated",
+				"onCreate": true,
+				"onUpdate": true,
+				"system": false,
+				"type": "autodate"
+			}
+		],
+		"listRule": "@request.auth.id = user",
+		"viewRule": "@request.auth.id = user",
+		"createRule": "@request.auth.id = user",
+		"updateRule": "@request.auth.id = user",
+		"deleteRule": "@request.auth.id = user",
+		"indexes": []
+	},
+	{
+		"id": "75u0mvsmno3ymct",
+		"name": "workoutNutritionNotes",
+		"type": "base",
+		"system": false,
+		"fields": [
+			{
+				"autogeneratePattern": "[a-z0-9]{15}",
+				"hidden": false,
+				"id": "id_k37gbp68b0",
+				"name": "id",
+				"pattern": "^[a-z0-9]+$",
+				"primaryKey": true,
+				"required": true,
+				"system": true,
+				"type": "text"
+			},
+			{
+				"id": "rel_xihc1frula",
+				"name": "user",
+				"type": "relation",
+				"required": true,
+				"collectionId": "_pb_users_auth_",
+				"cascadeDelete": true,
+				"maxSelect": 1,
+				"minSelect": 0,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_vnumc4u1",
+				"name": "recordId",
+				"type": "text",
+				"required": true,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_hjrs16er",
+				"name": "date",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"id": "tex_pstua2h5",
+				"name": "note",
+				"type": "text",
+				"required": false,
+				"system": false,
+				"hidden": false
+			},
+			{
+				"hidden": false,
+				"id": "cre_c76h19jp",
+				"name": "created",
+				"onCreate": true,
+				"onUpdate": false,
+				"system": false,
+				"type": "autodate"
+			},
+			{
+				"hidden": false,
+				"id": "upd_4y1agzln",
+				"name": "updated",
+				"onCreate": true,
+				"onUpdate": true,
+				"system": false,
+				"type": "autodate"
+			}
+		],
+		"listRule": "@request.auth.id = user",
+		"viewRule": "@request.auth.id = user",
+		"createRule": "@request.auth.id = user",
+		"updateRule": "@request.auth.id = user",
+		"deleteRule": "@request.auth.id = user",
+		"indexes": []
+	}
+]
