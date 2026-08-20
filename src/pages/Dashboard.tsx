@@ -32,6 +32,8 @@ import DashboardChart from "@/src/components/DashboardChart";
 import { getTodayStr, getYesterdayStr, cn } from "@/src/lib/utils";
 import DailyTrackingModal from "@/src/components/DailyTrackingModal";
 import HabitModal, { CATEGORIES } from "@/src/components/HabitModal";
+import HabitDetailModal from "@/src/components/HabitDetailModal";
+import AllRecentActivityModal from "@/src/components/AllRecentActivityModal";
 import WorkoutNutritionSummary from "@/src/components/WorkoutNutritionSummary";
 
 const MOTIVATION_QUOTES = [
@@ -52,6 +54,8 @@ export default function Dashboard() {
 	const navigate = useNavigate();
 	const { habits, dayRecords } = useHabits("active");
 	const [isModalOpen, setIsModalOpen] = useState(false);
+	const [showAllActivityModal, setShowAllActivityModal] = useState(false);
+	const [detailHabit, setDetailHabit] = useState<Habit | undefined>(undefined);
 	const [currentTime, setCurrentTime] = useState(new Date());
 
 	const [trackingDate, setTrackingDate] = useState<string | null>(null);
@@ -252,10 +256,8 @@ export default function Dashboard() {
 	};
 
 	// Recent Activity logic
-	const recentRecords = allRecords
-		.filter((r) => r.completed)
-		.sort((a, b) => b.updatedAt - a.updatedAt)
-		.slice(0, 4);
+	const allRecentRecords = allRecords.filter((r) => r.completed).sort((a, b) => b.updatedAt - a.updatedAt);
+	const recentRecords = allRecentRecords.slice(0, 3);
 
 	return (
 		<div className='space-y-6 md:space-y-8 animate-in fade-in duration-300 pb-20' dir={dir}>
@@ -373,30 +375,44 @@ export default function Dashboard() {
 					</div>
 
 					<div className='bg-white dark:bg-slate-900 rounded-3xl p-6 shadow-sm border border-slate-100 dark:border-slate-800'>
-						<h3 className='font-bold text-slate-800 dark:text-slate-100 mb-4 flex items-center gap-2'>
-							<Activity size={18} className='text-blue-500' /> {t("recent_activity")}
-						</h3>
+						<div className='flex items-center justify-between mb-4'>
+							<h3 className='font-bold text-slate-800 dark:text-slate-100 flex items-center gap-2'>
+								<Activity size={18} className='text-blue-500' /> {t("recent_activity")}
+							</h3>
+						</div>
 						<div className='space-y-4'>
 							{recentRecords.length === 0 ? (
 								<p className='text-sm font-medium text-slate-500 dark:text-slate-400'>{t("no_recent_activity")}</p>
 							) : (
-								recentRecords.map((r) => {
-									const h = allHabits.find((h) => h.id === r.habitId);
-									if (!h) return null;
-									return (
-										<div key={r.id} className='flex items-start gap-3'>
-											<div className='w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center shrink-0'>
-												<Check size={14} className='text-emerald-500' />
+								<>
+									{recentRecords.map((r) => {
+										const h = allHabits.find((h) => h.id === r.habitId);
+										if (!h) return null;
+										return (
+											<div
+												key={r.id}
+												onClick={() => setDetailHabit(h)}
+												className='flex items-start gap-3 p-2 -mx-2 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 cursor-pointer transition-colors'>
+												<div className='w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-900/30 flex items-center justify-center shrink-0'>
+													<Check size={14} className='text-emerald-500' />
+												</div>
+												<div>
+													<p className='text-sm font-bold text-slate-700 dark:text-slate-200 line-clamp-1'>
+														{h.title}
+													</p>
+													<p className='text-xs font-medium text-slate-400'>
+														{r.date === todayStr ? t("today") : r.date}
+													</p>
+												</div>
 											</div>
-											<div>
-												<p className='text-sm font-bold text-slate-700 dark:text-slate-200 line-clamp-1'>{h.title}</p>
-												<p className='text-xs font-medium text-slate-400'>
-													{r.date === todayStr ? t("today") : r.date}
-												</p>
-											</div>
-										</div>
-									);
-								})
+										);
+									})}
+									<button
+										onClick={() => setShowAllActivityModal(true)}
+										className='w-full py-2.5 mt-2 bg-slate-50 hover:bg-slate-100 dark:bg-slate-800/50 dark:hover:bg-slate-800 text-slate-600 dark:text-slate-300 rounded-xl text-sm font-bold transition-colors flex items-center justify-center gap-2'>
+										{t("view_all") || "View All"}
+									</button>
+								</>
 							)}
 						</div>
 					</div>
@@ -542,6 +558,19 @@ export default function Dashboard() {
 					onSave={handleSaveRecord}
 				/>
 			)}
+
+			{showAllActivityModal && (
+				<AllRecentActivityModal
+					records={allRecentRecords}
+					habits={allHabits}
+					onClose={() => setShowAllActivityModal(false)}
+					onActivityClick={(habit) => {
+						setShowAllActivityModal(false);
+						setDetailHabit(habit);
+					}}
+				/>
+			)}
+			{detailHabit && <HabitDetailModal habit={detailHabit} onClose={() => setDetailHabit(undefined)} />}
 		</div>
 	);
 }

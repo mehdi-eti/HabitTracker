@@ -3,13 +3,13 @@
 import { useState } from "react";
 import DOMPurify from "dompurify";
 import { useLiveQuery } from "dexie-react-hooks";
-import { X, CalendarDays, History as HistoryIcon, CheckCircle2, XCircle, Check, FileText } from "lucide-react";
+import { X, CalendarDays, History as HistoryIcon, CheckCircle2, XCircle, FileText } from "lucide-react";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, addMonths, subMonths } from "date-fns";
 
 import { db } from "@/src/lib/db";
-import { parseLocalDate } from "@/src/lib/utils";
 import { Habit } from "@/src/types";
 import { CATEGORIES } from "./HabitModal";
+import { parseLocalDate } from "@/src/lib/utils";
 import { cn, getTodayStr } from "@/src/lib/utils";
 
 interface HabitDetailModalProps {
@@ -112,7 +112,7 @@ export default function HabitDetailModal({ habit, onClose }: HabitDetailModalPro
 
 	return (
 		<div className='fixed inset-0 bg-slate-900/50 backdrop-blur-sm flex items-center justify-center p-4 z-50'>
-			<div className='bg-white dark:bg-slate-900 rounded-4xl w-full max-w-5xl shadow-2xl border border-slate-100 dark:border-slate-800 flex flex-col max-h-[90vh] animate-in zoom-in-95 duration-200'>
+			<div className='bg-white dark:bg-slate-900 rounded-4xl w-full max-w-7xl shadow-2xl border border-slate-100 dark:border-slate-800 flex flex-col max-h-screen animate-in zoom-in-95 duration-200'>
 				{/* Header */}
 				<div className='flex items-center justify-between p-6 md:p-8 border-b border-slate-100 dark:border-slate-800 shrink-0'>
 					<div className='flex items-center gap-4'>
@@ -140,7 +140,7 @@ export default function HabitDetailModal({ habit, onClose }: HabitDetailModalPro
 
 				{/* Content Body - Scrolling area */}
 				<div className='flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar'>
-					<div className='grid grid-cols-1 lg:grid-cols-2 gap-8'>
+					<div className='grid grid-cols-1 lg:grid-cols-[1.2fr_3fr] gap-8 '>
 						{/* Left Col: Calendar */}
 						<div className='space-y-6'>
 							<div className='flex items-center justify-between'>
@@ -192,7 +192,6 @@ export default function HabitDetailModal({ habit, onClose }: HabitDetailModalPro
 												)}
 												title={format(day, "MMM d, yyyy")}>
 												<span className='text-sm font-bold'>{format(day, "d")}</span>
-												{status === "completed" && <Check size={12} className='absolute bottom-1' strokeWidth={3} />}
 												{records.find((r) => r.date === dateStr)?.note && (
 													<div className='absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-amber-400' />
 												)}

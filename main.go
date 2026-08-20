@@ -15,8 +15,6 @@ import (
 	webpush "github.com/SherClockHolmes/webpush-go"
 	"github.com/pocketbase/pocketbase"
 	"github.com/pocketbase/pocketbase/cmd"
-
-	_ "habittracker/migrations"
 )
 
 func startPocketBase() *pocketbase.PocketBase {

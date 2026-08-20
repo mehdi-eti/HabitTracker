@@ -244,6 +244,7 @@ export const translations = {
 		dont_have_account: "Don't have an account?",
 		sign_in_instead: "Sign in instead",
 		privacy_notice: "Your data stays private and secure.",
+		view_all: "View All",
 	},
 	fa: {
 		quick_actions: "اقدامات سریع",
@@ -488,6 +489,7 @@ export const translations = {
 		dont_have_account: "حساب کاربری ندارید؟",
 		sign_in_instead: "ورود به حساب",
 		privacy_notice: "اطلاعات شما خصوصی و امن باقی می‌ماند.",
+		view_all: "دیدن همه",
 	},
 };
 
