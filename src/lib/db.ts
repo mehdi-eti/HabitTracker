@@ -28,8 +28,12 @@ export class HabitTrackerDB extends Dexie {
   weeklyProgressRecords!: Table<WeeklyProgressRecord, string>;
   workoutNutritionNotes!: Table<WorkoutNutritionNote, string>;
 
+  // Prevent IndexedDB -> PocketBase hooks while syncing PocketBase -> IndexedDB.
+  ignoreSync = false;
+
   constructor() {
     super('HabitTrackerDB');
+
     this.version(1).stores({
       habits: 'id, status, originalHabitId',
       dayRecords: 'id, habitId, date, [habitId+date]',
@@ -52,7 +56,6 @@ export class HabitTrackerDB extends Dexie {
 
 export const db = new HabitTrackerDB();
 
-// Initialize default settings if they don't exist
 db.on('populate', async () => {
   await db.settings.add({
     id: 'global',
@@ -62,44 +65,56 @@ db.on('populate', async () => {
   });
 });
 
-
-
-
 const collectionsToSync = [
-  'habits', 'dayRecords', 'settings', 'workoutPlans', 
-  'workoutPlanVersions', 'workoutDailyRecords', 'workoutSetRecords', 
-  'nutritionDailyRecords', 'nutritionFoodRecords', 'extraFoodRecords', 
-  'weeklyProgressRecords', 'workoutNutritionNotes'
-];
+  'habits',
+  'dayRecords',
+  'settings',
+  'workoutPlans',
+  'workoutPlanVersions',
+  'workoutDailyRecords',
+  'workoutSetRecords',
+  'nutritionDailyRecords',
+  'nutritionFoodRecords',
+  'extraFoodRecords',
+  'weeklyProgressRecords',
+  'workoutNutritionNotes'
+] as const;
 
-collectionsToSync.forEach(col => {
-  // @ts-ignore
-  db[col].hook('creating', function (primKey, obj, trans) {
-    // @ts-ignore
-    if (pb.authStore.isValid && !db.ignoreSync) {
-      const payload = { ...obj, recordId: primKey, user: pb.authStore.model?.id };
-      delete payload.id;
-      pb.collection(col).create(payload).catch(console.error);
-    }
+collectionsToSync.forEach((collectionName) => {
+  // IndexedDB -> PocketBase: keep remote data in sync with local writes.
+  // @ts-ignore Dexie dynamic table access
+  db[collectionName].hook('creating', (primKey: string, obj: Record<string, unknown>) => {
+    if (!pb.authStore.isValid || db.ignoreSync) return;
+
+    const payload = {
+      ...obj,
+      recordId: primKey,
+      user: pb.authStore.model?.id
+    };
+    delete payload.id;
+
+    void pb.collection(collectionName).create(payload).catch(console.error);
   });
 
-  // @ts-ignore
-  db[col].hook('updating', function (mods, primKey, obj, trans) {
-    // @ts-ignore
-    if (pb.authStore.isValid && !db.ignoreSync) {
-      pb.collection(col).getFirstListItem(`recordId="${primKey}"`).then(record => {
-        pb.collection(col).update(record.id, mods).catch(console.error);
-      }).catch(console.error);
-    }
+  // @ts-ignore Dexie dynamic table access
+  db[collectionName].hook('updating', (mods: Record<string, unknown>, primKey: string) => {
+    if (!pb.authStore.isValid || db.ignoreSync) return;
+
+    void pb
+      .collection(collectionName)
+      .getFirstListItem(`recordId="${primKey}"`)
+      .then((record) => pb.collection(collectionName).update(record.id, mods))
+      .catch(console.error);
   });
 
-  // @ts-ignore
-  db[col].hook('deleting', function (primKey, obj, trans) {
-    // @ts-ignore
-    if (pb.authStore.isValid && !db.ignoreSync) {
-      pb.collection(col).getFirstListItem(`recordId="${primKey}"`).then(record => {
-        pb.collection(col).delete(record.id).catch(console.error);
-      }).catch(console.error);
-    }
+  // @ts-ignore Dexie dynamic table access
+  db[collectionName].hook('deleting', (primKey: string) => {
+    if (!pb.authStore.isValid || db.ignoreSync) return;
+
+    void pb
+      .collection(collectionName)
+      .getFirstListItem(`recordId="${primKey}"`)
+      .then((record) => pb.collection(collectionName).delete(record.id))
+      .catch(console.error);
   });
 });
