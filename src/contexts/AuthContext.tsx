@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { pb, syncDown } from "../lib/pocketbase";
+import { db } from "../lib/db";
 
 interface AuthContextType {
 	user: any;
@@ -21,6 +22,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 		if (pb.authStore.isValid) {
 			syncDown().catch(console.error);
 		}
+
 		return pb.authStore.onChange((token, model) => {
 			setUser(model);
 		});
@@ -52,37 +54,33 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
 	const logout = () => {
 		pb.authStore.clear();
-		// Also clear Dexie so the local DB is empty upon logout
-		import("../lib/db").then(({ db }) => {
-			const collections = [
-				"habits",
-				"dayRecords",
-				"settings",
-				"workoutPlans",
-				"workoutPlanVersions",
-				"workoutDailyRecords",
-				"workoutSetRecords",
-				"nutritionDailyRecords",
-				"nutritionFoodRecords",
-				"extraFoodRecords",
-				"weeklyProgressRecords",
-				"workoutNutritionNotes",
-			];
-			db.transaction(
-				"rw",
-				collections.map((c) => (db as any)[c]),
-				async () => {
-					// @ts-ignore
-					db.ignoreSync = true;
-					for (const col of collections) {
-						await (db as any)[col].clear();
-					}
-				},
-			).finally(() => {
-				// @ts-ignore
-				db.ignoreSync = false;
-				window.location.reload();
-			});
+		const collections = [
+			"habits",
+			"dayRecords",
+			"settings",
+			"workoutPlans",
+			"workoutPlanVersions",
+			"workoutDailyRecords",
+			"workoutSetRecords",
+			"nutritionDailyRecords",
+			"nutritionFoodRecords",
+			"extraFoodRecords",
+			"weeklyProgressRecords",
+			"workoutNutritionNotes",
+		] as const;
+
+		db.transaction(
+			"rw",
+			collections.map((collection) => (db as any)[collection]),
+			async () => {
+				db.ignoreSync = true;
+				for (const collection of collections) {
+					await (db as any)[collection].clear();
+				}
+			},
+		).finally(() => {
+			db.ignoreSync = false;
+			window.location.reload();
 		});
 	};
 
