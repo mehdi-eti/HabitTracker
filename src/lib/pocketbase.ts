@@ -1,50 +1,87 @@
 import PocketBase from 'pocketbase';
 import { db } from './db';
 
-// This URL should be the URL of the PocketBase instance. 
-// As an example, assuming local dev or environment variable.
-export const pb = new PocketBase(import.meta.env.VITE_POCKETBASE_URL || 'http://127.0.0.1:8090');
+export const pb = new PocketBase(
+  import.meta.env.VITE_POCKETBASE_URL || 'http://127.0.0.1:8090'
+);
 
-// Disable auto cancellation to allow concurrent requests during sync
 pb.autoCancellation(false);
 
-const collections = [
-  'habits', 'dayRecords', 'settings', 'workoutPlans', 
-  'workoutPlanVersions', 'workoutDailyRecords', 'workoutSetRecords', 
-  'nutritionDailyRecords', 'nutritionFoodRecords', 'extraFoodRecords', 
-  'weeklyProgressRecords', 'workoutNutritionNotes'
-];
+export const collections = [
+  'habits',
+  'dayRecords',
+  'settings',
+  'workoutPlans',
+  'workoutPlanVersions',
+  'workoutDailyRecords',
+  'workoutSetRecords',
+  'nutritionDailyRecords',
+  'nutritionFoodRecords',
+  'extraFoodRecords',
+  'weeklyProgressRecords',
+  'workoutNutritionNotes'
+] as const;
 
-export async function syncDown() {
+type CollectionName = (typeof collections)[number];
+
+const getLocalTable = (collection: CollectionName) =>
+  (db as unknown as Record<CollectionName, { clear: () => Promise<void>; bulkPut: (items: unknown[]) => Promise<void> }>)[collection];
+
+/**
+ * Pull the authenticated user's PocketBase data into IndexedDB.
+ * The UI can then read from Dexie/useLiveQuery instead of requesting PocketBase directly.
+ */
+export async function syncDown(): Promise<void> {
   if (!pb.authStore.isValid) return;
 
   const userId = pb.authStore.model?.id;
   if (!userId) return;
 
-  try {
-    const allData = {};
-    for (const col of collections) {
-      const records = await pb.collection(col).getFullList({
-        filter: `user = "${userId}"`
-      });
-      allData[col] = records.map(r => {
-        const { id, user, recordId, collectionId, collectionName, created, updated, expand, ...rest } = r;
-        return { id: recordId, ...rest };
-      });
-    }
+  const remoteData = new Map<CollectionName, unknown[]>();
 
-    await db.transaction('rw', collections.map(c => db[c as keyof typeof db]), async () => {
-      // @ts-ignore
-      db.ignoreSync = true;
-      for (const col of collections) {
-        // @ts-ignore
-        await db[col].clear();
-        // @ts-ignore
-        await db[col].bulkAdd(allData[col]);
-      }
+  for (const collectionName of collections) {
+    const records = await pb.collection(collectionName).getFullList({
+      filter: `user = "${userId}"`
     });
+
+    remoteData.set(
+      collectionName,
+      records.map((record) => {
+        const {
+          id: _id,
+          user: _user,
+          recordId,
+          collectionId: _collectionId,
+          collectionName: _collectionName,
+          created: _created,
+          updated: _updated,
+          expand: _expand,
+          ...data
+        } = record;
+
+        return {
+          id: recordId,
+          ...data
+        };
+      })
+    );
+  }
+
+  db.ignoreSync = true;
+
+  try {
+    await db.transaction(
+      'rw',
+      collections.map((collectionName) => getLocalTable(collectionName)),
+      async () => {
+        for (const collectionName of collections) {
+          const table = getLocalTable(collectionName);
+          await table.clear();
+          await table.bulkPut(remoteData.get(collectionName) ?? []);
+        }
+      }
+    );
   } finally {
-    // @ts-ignore
     db.ignoreSync = false;
   }
 }
